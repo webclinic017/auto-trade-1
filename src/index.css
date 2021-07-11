@@ -2,3 +2,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .form-input {
+    @apply w-full my-1 rounded shadow-sm border-gray-200 focus:border-blue-400 focus:ring-blue-400;
+  }
+}

@@ -8,7 +8,7 @@ function WorkerCard({ title }) {
   const [checked, setChecked] = useState(false);
 
   return (
-    <div className="h-30 bg-indigo-500 rounded-lg p-4 shadow-2xl font-extrabold text-white">
+    <div className="h-30 bg-indigo-500 rounded-lg p-4 shadow-md font-extrabold text-white">
       <div>{title}</div>
       <div className="font-light flex items-start">
         <Switch
@@ -19,7 +19,7 @@ function WorkerCard({ title }) {
           {checked ? (
             <SignalCellular4BarIcon className="text-green-400" />
           ) : (
-            <SignalCellular1BarIcon className="text-red-400" />
+            <SignalCellular1BarIcon className="text-red-500" />
           )}
         </div>
       </div>
