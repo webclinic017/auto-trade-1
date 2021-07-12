@@ -10,7 +10,6 @@ import { useStateValue } from "../StateProvider";
 function Home({ accessToken }) {
   const [
     { tradeStock, tradeIndexOpt, tradeIndexFut, tradeStockOpt, tradeStockFut },
-    dispatch,
   ] = useStateValue();
 
   return (

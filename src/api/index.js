@@ -1,8 +1,9 @@
 const uri = "ws.bittrade.space";
 
 export const rest = {
-  uri: "http://" + uri,
-  zerodha_login: "http://" + uri + "/zerodha_login/access_token",
+  uri: "https://" + uri,
+  zerodha_login: "https://" + uri + "/zerodha_login/access_token",
+  user_login: "https://" + uri + "/api-token-auth/",
 };
 
 export const ws = {

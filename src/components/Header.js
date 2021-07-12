@@ -6,10 +6,17 @@ import { IconButton } from "@material-ui/core";
 
 import { useHistory } from "react-router-dom";
 
-function Header({ setAccessToken }) {
+function Header({ setAccessToken, authToken, setAuthToken }) {
   const history = useHistory();
   const [popup, setPopup] = useState(false);
   const requestToken = useRef();
+
+  const logoutUser = () => {
+    localStorage.removeItem("@accessToken");
+    setAccessToken(null);
+    localStorage.removeItem("@authToken");
+    setAuthToken(null);
+  };
 
   const connectZerodha = () => {
     let data = {
@@ -40,49 +47,45 @@ function Header({ setAccessToken }) {
           <ShowChartIcon className="h-6 w-6" />
         </IconButton>
 
-        <strong className="hidden md:block">Auto Trade</strong>
+        <strong className="font-serif">Auto Trade</strong>
       </div>
 
-      <div className="flex flex-row justify-center items-center flex-1">
-        <input
-          placeholder="search"
-          className="bg-gray-200 rounded-lg outline-none p-2 w-1/2 hidden md:block"
-        />
-      </div>
-      <div className="flex flex-row justify-end items-center">
-        <IconButton className="mx-1 md:block">
-          <BellIcon className="h-6 w-6" />
-        </IconButton>
+      {authToken !== null ? (
+        <div className="flex-1 flex flex-row justify-end items-center">
+          <IconButton className="mx-1 md:block">
+            <BellIcon className="h-6 w-6" />
+          </IconButton>
 
-        <IconButton className="mx-1 md:block">
-          <LogoutIcon className="h-6 w-6" />
-        </IconButton>
+          <IconButton onClick={logoutUser} className="mx-1 md:block">
+            <LogoutIcon className="h-6 w-6" />
+          </IconButton>
 
-        <IconButton
-          onClick={() => history.push("/settings")}
-          className="mx-1 md:block"
-        >
-          <SettingIcon className="h-6 w-6" />
-        </IconButton>
+          <IconButton
+            onClick={() => history.push("/settings")}
+            className="mx-1 md:block"
+          >
+            <SettingIcon className="h-6 w-6" />
+          </IconButton>
 
-        <IconButton
-          onClick={() => {
-            setPopup(true);
-            localStorage.removeItem("@accessToken");
-            setAccessToken(null);
-            window.open(
-              `https://kite.zerodha.com/connect/login?api_key=${localStorage.getItem(
-                "@apiKey"
-              )}`,
-              "zerodha",
-              "height=500,width=650,top=100,left=400"
-            );
-          }}
-          className="mx-1 md:block"
-        >
-          <LabelImportantIcon className="h-6 w-6 text-red-600" />
-        </IconButton>
-      </div>
+          <IconButton
+            onClick={() => {
+              setPopup(true);
+              localStorage.removeItem("@accessToken");
+              setAccessToken(null);
+              window.open(
+                `https://kite.zerodha.com/connect/login?api_key=${localStorage.getItem(
+                  "@apiKey"
+                )}`,
+                "zerodha",
+                "height=500,width=650,top=100,left=400"
+              );
+            }}
+            className="mx-1 md:block"
+          >
+            <LabelImportantIcon className="h-6 w-6 text-red-600" />
+          </IconButton>
+        </div>
+      ) : null}
 
       {popup ? (
         <div className="w-screen h-screen  absolute top-0 right-0 bg-opacity-50 bg-gray-500 flex flex-col justify-center items-center">

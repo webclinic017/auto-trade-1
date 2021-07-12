@@ -2,8 +2,14 @@ import React, { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Settings from "./components/Settings";
+import Login from "./components/Login";
 
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import { StateProvider, useStateValue } from "./StateProvider";
 import reducer, { initialState } from "./reducer";
 
@@ -20,6 +26,9 @@ import { make_order_request } from "./services/zerodha";
 function Main() {
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("@accessToken")
+  );
+  const [authToken, setAuthToken] = useState(
+    localStorage.getItem("@authToken")
   );
 
   const [
@@ -145,13 +154,28 @@ function Main() {
 
   return (
     <Router>
-      <Header setAccessToken={setAccessToken} />
+      <Header
+        authToken={authToken}
+        setAuthToken={setAuthToken}
+        setAccessToken={setAccessToken}
+      />
       <Switch>
         <Route excat path="/settings">
-          <Settings />
+          {authToken !== null ? <Settings /> : <Redirect to="/login" />}
+        </Route>
+        <Route exact path="/login">
+          {authToken !== null ? (
+            <Redirect to="/" />
+          ) : (
+            <Login setAuthToken={setAuthToken} />
+          )}
         </Route>
         <Route excat path="/">
-          <Home accessToken={accessToken} />
+          {authToken !== null ? (
+            <Home accessToken={accessToken} />
+          ) : (
+            <Redirect to="/login" />
+          )}
         </Route>
       </Switch>
     </Router>
