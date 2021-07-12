@@ -5,7 +5,14 @@ import WorkerCard from "./WorkerCard";
 import { DollarIcon, MoneyIcon } from "./icons";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 
+import { useStateValue } from "../StateProvider";
+
 function Home({ accessToken }) {
+  const [
+    { tradeStock, tradeIndexOpt, tradeIndexFut, tradeStockOpt, tradeStockFut },
+    dispatch,
+  ] = useStateValue();
+
   return (
     <div className="p-3 mt-5">
       {accessToken === null ? (
@@ -37,11 +44,27 @@ function Home({ accessToken }) {
 
       <h1 className="my-5 text-2xl p-2 font-semibold">Workers</h1>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-        <WorkerCard title="index options" />
-        <WorkerCard title="index futures" />
-        <WorkerCard title="stocks" />
-        <WorkerCard title="stock options" />
-        <WorkerCard title="stock futures" />
+        <WorkerCard
+          title="index options"
+          value={tradeIndexOpt}
+          dispatchKey="T_INDEX_OPT"
+        />
+        <WorkerCard
+          title="index futures"
+          value={tradeIndexFut}
+          dispatchKey="T_INDEX_FUT"
+        />
+        <WorkerCard title="stocks" value={tradeStock} dispatchKey="T_STOCKS" />
+        <WorkerCard
+          title="stock options"
+          value={tradeStockOpt}
+          dispatchKey="T_STOCK_OPT"
+        />
+        <WorkerCard
+          title="stock futures"
+          value={tradeStockFut}
+          dispatchKey="T_STOCK_FUT"
+        />
       </div>
       <h1 className="my-5 text-2xl p-2 font-semibold">Analytics</h1>
     </div>

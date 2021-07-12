@@ -1,22 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import { Switch } from "@material-ui/core";
 
 import SignalCellular4BarIcon from "@material-ui/icons/SignalCellular4Bar";
 import SignalCellular1BarIcon from "@material-ui/icons/SignalCellular1Bar";
+import { useStateValue } from "../StateProvider";
 
-function WorkerCard({ title, uri, onMessage = () => {} }) {
-  const [checked, setChecked] = useState(false);
+function WorkerCard({ title, value, dispatchKey }) {
+  const [, dispatch] = useStateValue();
 
   return (
     <div className="h-30 bg-indigo-500 rounded-lg p-4 shadow-md font-extrabold text-white">
       <div>{title}</div>
       <div className="font-light flex items-start">
         <Switch
-          checked={checked}
-          onChange={(event) => setChecked(event.target.checked)}
+          checked={value}
+          onChange={(event) => dispatch({ type: dispatchKey })}
         />
         <div className="flex-1 flex justify-end">
-          {checked ? (
+          {value ? (
             <SignalCellular4BarIcon className="text-green-400" />
           ) : (
             <SignalCellular1BarIcon className="text-red-500" />
