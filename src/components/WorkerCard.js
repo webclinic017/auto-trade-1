@@ -4,7 +4,7 @@ import { Switch } from "@material-ui/core";
 import SignalCellular4BarIcon from "@material-ui/icons/SignalCellular4Bar";
 import SignalCellular1BarIcon from "@material-ui/icons/SignalCellular1Bar";
 
-function WorkerCard({ title }) {
+function WorkerCard({ title, uri, onMessage = () => {} }) {
   const [checked, setChecked] = useState(false);
 
   return (
