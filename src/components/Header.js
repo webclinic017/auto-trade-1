@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { BellIcon, LogoutIcon, SettingIcon } from "./icons";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
 import LabelImportantIcon from "@material-ui/icons/LabelImportant";
@@ -6,9 +6,32 @@ import { IconButton } from "@material-ui/core";
 
 import { useHistory } from "react-router-dom";
 
-function Header() {
+function Header({ setAccessToken }) {
   const history = useHistory();
   const [popup, setPopup] = useState(false);
+  const requestToken = useRef();
+
+  const connectZerodha = () => {
+    let data = {
+      api_key: localStorage.getItem("@apiKey"),
+      request_token: requestToken.current.value,
+      api_secret: localStorage.getItem("@apiSecret"),
+    };
+
+    fetch("https://ws.bittrade.space/zerodha_login/access_token", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        localStorage.setItem("@accessToken", data.access_token);
+        setAccessToken(data.access_token);
+        setPopup(false);
+      });
+  };
 
   return (
     <div className="p-3 shadow-md flex flex-row items-center sticky z-50 top-0 bg-white">
@@ -45,8 +68,12 @@ function Header() {
         <IconButton
           onClick={() => {
             setPopup(true);
+            localStorage.removeItem("@accessToken");
+            setAccessToken(null);
             window.open(
-              "https://kite.zerodha.com/connect/login",
+              `https://kite.zerodha.com/connect/login?api_key=${localStorage.getItem(
+                "@apiKey"
+              )}`,
               "zerodha",
               "height=500,width=650,top=100,left=400"
             );
@@ -65,8 +92,12 @@ function Header() {
                 type="text"
                 className="border-gray-300 col-span-3"
                 placeholder="request token"
+                ref={requestToken}
               />
-              <button className="bg-blue-500 text-white font-bold">
+              <button
+                onClick={connectZerodha}
+                className="bg-blue-500 text-white font-bold"
+              >
                 connect
               </button>
               <button

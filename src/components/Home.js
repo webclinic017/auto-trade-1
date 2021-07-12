@@ -5,15 +5,21 @@ import WorkerCard from "./WorkerCard";
 import { DollarIcon, MoneyIcon } from "./icons";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 
-function Home() {
+function Home({ accessToken }) {
   return (
-    <div className="p-3 mt-8">
+    <div className="p-3 mt-5">
+      {accessToken === null ? (
+        <h1 className="text-center p-4 -mt-3 mb-3 bg-red-500 rounded-md text-white font-bold">
+          please connect with zerodha
+        </h1>
+      ) : null}
+
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         <ColorCard
           title="Investment"
           color="yellow"
           icon={() => <DollarIcon className="h-6 w-6" />}
-          value={20000}
+          value={localStorage.getItem("investment")}
         />
         <ColorCard
           title="Buy"
