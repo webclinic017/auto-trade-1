@@ -32,8 +32,35 @@ function Main() {
   );
 
   const [
-    { tradeStock, tradeIndexOpt, tradeIndexFut, tradeStockOpt, tradeStockFut },
+    {
+      tradeStock,
+      tradeIndexOpt,
+      tradeIndexFut,
+      tradeStockOpt,
+      tradeStockFut,
+      orders,
+    },
+    dispatch,
   ] = useStateValue();
+
+  // append the trade
+  const appendTrade = (trade) => {
+    dispatch({
+      type: "APPEND_ORDER",
+      order: {
+        ticker: trade.trading_symbol,
+        quantity: trade.quantity,
+      },
+    });
+  };
+
+  // clear the trade
+  const clearTrade = (trade) => {
+    dispatch({
+      type: "CLEAR_ORDERS",
+      order: trade,
+    });
+  };
 
   // trading for stocks
   useEffect(() => {
@@ -44,14 +71,29 @@ function Main() {
         trade.endpoint = rest.uri + trade.endpoint;
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
-        trade.quantity = Math.trunc(
-          Number(localStorage.getItem("investment")) / trade.ltp
-        );
+
+        if (trade.tag === "EXIT") {
+          trade.quantity = 0;
+          for (let order in orders[trade.trading_symbol]) {
+            trade.quantity += order.quantity;
+          }
+        } else {
+          trade.quantity = Math.trunc(
+            Number(localStorage.getItem("investment")) / trade.ltp
+          );
+        }
+
         trade.token = localStorage.getItem("@authToken");
 
         make_order_request(
           trade,
-          () => {},
+          () => {
+            if (trade.tag === "EXIT") {
+              clearTrade(trade);
+            } else {
+              appendTrade(trade);
+            }
+          },
           () => {}
         );
       }
@@ -68,17 +110,30 @@ function Main() {
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
 
-        if (trade.trading_symbol.includes("BANKNIFTY")) {
-          trade.quantity = localStorage.getItem("bfQuantity");
+        if (trade.tag === "EXIT") {
+          trade.quantity = 0;
+          for (let order in orders[trade.trading_symbol]) {
+            trade.quantity += order.quantity;
+          }
         } else {
-          trade.quantity = localStorage.getItem("nfQuantity");
+          if (trade.trading_symbol.includes("BANKNIFTY")) {
+            trade.quantity = localStorage.getItem("bfQuantity");
+          } else {
+            trade.quantity = localStorage.getItem("nfQuantity");
+          }
         }
 
         trade.token = localStorage.getItem("@authToken");
 
         make_order_request(
           trade,
-          () => {},
+          () => {
+            if (trade.tag === "EXIT") {
+              clearTrade(trade);
+            } else {
+              appendTrade(trade);
+            }
+          },
           () => {}
         );
       }
@@ -95,17 +150,30 @@ function Main() {
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
 
-        if (trade.trading_symbol.includes("BANKNIFTY")) {
-          trade.quantity = localStorage.getItem("bfQuantity");
+        if (trade.tag === "EXIT") {
+          trade.quantity = 0;
+          for (let order in orders[trade.trading_symbol]) {
+            trade.quantity += order.quantity;
+          }
         } else {
-          trade.quantity = localStorage.getItem("nfQuantity");
+          if (trade.trading_symbol.includes("BANKNIFTY")) {
+            trade.quantity = localStorage.getItem("bfQuantity");
+          } else {
+            trade.quantity = localStorage.getItem("nfQuantity");
+          }
         }
 
         trade.token = localStorage.getItem("@authToken");
 
         make_order_request(
           trade,
-          () => {},
+          () => {
+            if (trade.tag === "EXIT") {
+              clearTrade(trade);
+            } else {
+              appendTrade(trade);
+            }
+          },
           () => {}
         );
       }
@@ -123,9 +191,22 @@ function Main() {
         trade.api_key = localStorage.getItem("@apiKey");
         trade.token = localStorage.getItem("@authToken");
 
+        if (trade.tag === "EXIT") {
+          trade.quantity = 0;
+          for (let order in orders[trade.trading_symbol]) {
+            trade.quantity += order.quantity;
+          }
+        }
+
         make_order_request(
           trade,
-          () => {},
+          () => {
+            if (trade.tag === "EXIT") {
+              clearTrade(trade);
+            } else {
+              appendTrade(trade);
+            }
+          },
           () => {}
         );
       }
@@ -143,9 +224,22 @@ function Main() {
         trade.api_key = localStorage.getItem("@apiKey");
         trade.token = localStorage.getItem("@authToken");
 
+        if (trade.tag === "EXIT") {
+          trade.quantity = 0;
+          for (let order in orders[trade.trading_symbol]) {
+            trade.quantity += order.quantity;
+          }
+        }
+
         make_order_request(
           trade,
-          () => {},
+          () => {
+            if (trade.tag === "EXIT") {
+              clearTrade(trade);
+            } else {
+              appendTrade(trade);
+            }
+          },
           () => {}
         );
       }

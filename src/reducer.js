@@ -4,9 +4,12 @@ export const initialState = {
   tradeIndexFut: false,
   tradeStockOpt: false,
   tradeStockFut: false,
+  orders: {},
 };
 
 const reducer = (state, action) => {
+  let orders;
+
   switch (action.type) {
     // toggle stocks
     case "T_STOCKS":
@@ -37,6 +40,27 @@ const reducer = (state, action) => {
         tradeStockOpt: false,
         tradeStockFut: false,
       };
+    case "APPEND_ORDER":
+      orders = state.orders;
+
+      if (!(action.order.ticker in orders)) {
+        orders[action.order.ticker] = [action.order];
+      } else {
+        orders[action.order.ticker] = [
+          ...orders[action.order.ticker],
+          action.order,
+        ];
+      }
+      console.log(orders);
+      return { ...state, orders: orders };
+    case "CLEAR_ORDERS":
+      orders = state.orders;
+
+      if (action.order.ticker in orders) {
+        orders[action.order.ticker] = [];
+      }
+      console.log(orders);
+      return { ...state, orders: orders };
     default:
       return state;
   }
