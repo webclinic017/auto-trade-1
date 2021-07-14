@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Settings from "./components/Settings";
@@ -31,35 +31,40 @@ function Main() {
     localStorage.getItem("@authToken")
   );
 
+  const orders = useRef({});
+
   const [
-    {
-      tradeStock,
-      tradeIndexOpt,
-      tradeIndexFut,
-      tradeStockOpt,
-      tradeStockFut,
-      orders,
-    },
-    dispatch,
+    { tradeStock, tradeIndexOpt, tradeIndexFut, tradeStockOpt, tradeStockFut },
   ] = useStateValue();
 
   // append the trade
   const appendTrade = (trade) => {
-    dispatch({
-      type: "APPEND_ORDER",
-      order: {
-        ticker: trade.trading_symbol,
+    if (!(trade.trading_symbol in orders.current)) {
+      orders.current[trade.trading_symbol] = [
+        {
+          trading_symbol: trade.trading_symbol,
+          quantity: trade.quantity,
+        },
+      ];
+    } else {
+      orders.current[trade.trading_symbol].push({
+        trading_symbol: trade.trading_symbol,
         quantity: trade.quantity,
-      },
-    });
+      });
+    }
+
+    console.log(orders.current);
   };
 
   // clear the trade
   const clearTrade = (trade) => {
-    dispatch({
-      type: "CLEAR_ORDERS",
-      order: trade,
-    });
+    console.log(trade);
+
+    if (trade.trading_symbol in orders.current) {
+      orders.current[trade.trading_symbol] = [];
+    }
+
+    console.log(orders.current);
   };
 
   // trading for stocks
@@ -74,8 +79,14 @@ function Main() {
 
         if (trade.tag === "EXIT") {
           trade.quantity = 0;
-          for (let order in orders[trade.trading_symbol]) {
-            trade.quantity += order.quantity;
+          for (
+            let i = 0;
+            i < orders.current[trade.trading_symbol].length;
+            i++
+          ) {
+            trade.quantity += Number(
+              orders.current[trade.trading_symbol][i].quantity
+            );
           }
         } else {
           trade.quantity = Math.trunc(
@@ -112,14 +123,20 @@ function Main() {
 
         if (trade.tag === "EXIT") {
           trade.quantity = 0;
-          for (let order in orders[trade.trading_symbol]) {
-            trade.quantity += order.quantity;
+          for (
+            let i = 0;
+            i < orders.current[trade.trading_symbol].length;
+            i++
+          ) {
+            trade.quantity += Number(
+              orders.current[trade.trading_symbol][i].quantity
+            );
           }
         } else {
           if (trade.trading_symbol.includes("BANKNIFTY")) {
-            trade.quantity = localStorage.getItem("bfQuantity");
+            trade.quantity = Number(localStorage.getItem("bfQuantity"));
           } else {
-            trade.quantity = localStorage.getItem("nfQuantity");
+            trade.quantity = Number(localStorage.getItem("nfQuantity"));
           }
         }
 
@@ -147,19 +164,25 @@ function Main() {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
-        trade.access_token = localStorage.getItem("@accessToken");
-        trade.api_key = localStorage.getItem("@apiKey");
+        trade.access_token = Number(localStorage.getItem("@accessToken"));
+        trade.api_key = Number(localStorage.getItem("@apiKey"));
 
         if (trade.tag === "EXIT") {
           trade.quantity = 0;
-          for (let order in orders[trade.trading_symbol]) {
-            trade.quantity += order.quantity;
+          for (
+            let i = 0;
+            i < orders.current[trade.trading_symbol].length;
+            i++
+          ) {
+            trade.quantity += Number(
+              orders.current[trade.trading_symbol][i].quantity
+            );
           }
         } else {
           if (trade.trading_symbol.includes("BANKNIFTY")) {
-            trade.quantity = localStorage.getItem("bfQuantity");
+            trade.quantity = Number(localStorage.getItem("bfQuantity"));
           } else {
-            trade.quantity = localStorage.getItem("nfQuantity");
+            trade.quantity = Number(localStorage.getItem("nfQuantity"));
           }
         }
 
@@ -193,8 +216,14 @@ function Main() {
 
         if (trade.tag === "EXIT") {
           trade.quantity = 0;
-          for (let order in orders[trade.trading_symbol]) {
-            trade.quantity += order.quantity;
+          for (
+            let i = 0;
+            i < orders.current[trade.trading_symbol].length;
+            i++
+          ) {
+            trade.quantity += Number(
+              orders.current[trade.trading_symbol][i].quantity
+            );
           }
         }
 
@@ -226,8 +255,14 @@ function Main() {
 
         if (trade.tag === "EXIT") {
           trade.quantity = 0;
-          for (let order in orders[trade.trading_symbol]) {
-            trade.quantity += order.quantity;
+          for (
+            let i = 0;
+            i < orders.current[trade.trading_symbol].length;
+            i++
+          ) {
+            trade.quantity += Number(
+              orders.current[trade.trading_symbol][i].quantity
+            );
           }
         }
 

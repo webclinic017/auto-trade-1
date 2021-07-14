@@ -30,11 +30,11 @@ function Settings() {
 
   return (
     <div className="flex flex-col p-3">
-      <label>api key</label>
-      <input ref={apiKey} type="text" className="form-input" />
+      <label>auto trade key</label>
+      <input ref={apiKey} type="password" className="form-input" />
 
-      <label>api secret</label>
-      <input ref={apiSecret} type="text" className="form-input" />
+      <label>auto trade secret</label>
+      <input ref={apiSecret} type="password" className="form-input" />
 
       <label>investment</label>
       <input ref={investment} type="number" className="form-input" />
