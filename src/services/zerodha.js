@@ -13,7 +13,13 @@ export const make_order_request = (
     },
     body: JSON.stringify(data),
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("there is an error");
+      } else {
+        return res.json();
+      }
+    })
     .then(() => {
       cb();
     })
