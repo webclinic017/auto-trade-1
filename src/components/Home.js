@@ -9,7 +9,15 @@ import { useStateValue } from "../StateProvider";
 
 function Home({ accessToken }) {
   const [
-    { tradeStock, tradeIndexOpt, tradeIndexFut, tradeStockOpt, tradeStockFut },
+    {
+      tradeStock,
+      tradeIndexOpt,
+      tradeIndexFut,
+      tradeStockOpt,
+      tradeStockFut,
+      buys,
+      sells,
+    },
   ] = useStateValue();
 
   return (
@@ -31,13 +39,13 @@ function Home({ accessToken }) {
           title="Buy"
           color="green"
           icon={() => <MoneyIcon className="h-6 w-6" />}
-          value={5000}
+          value={buys}
         />
         <ColorCard
           title="Sell"
           color="red"
           icon={() => <AccountBalanceIcon className="h-6 w-6" />}
-          value={1000}
+          value={sells}
         />
       </div>
 

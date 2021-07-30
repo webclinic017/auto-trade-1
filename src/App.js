@@ -34,7 +34,15 @@ function Main() {
   const orders = useRef({});
 
   const [
-    { tradeStock, tradeIndexOpt, tradeIndexFut, tradeStockOpt, tradeStockFut },
+    {
+      tradeStock,
+      tradeIndexOpt,
+      tradeIndexFut,
+      tradeStockOpt,
+      tradeStockFut,
+      tradeMode,
+    },
+    dispatch,
   ] = useStateValue();
 
   // append the trade
@@ -54,6 +62,9 @@ function Main() {
     }
 
     console.log(orders.current);
+    dispatch({
+      type: "ADD_BUY",
+    });
   };
 
   // clear the trade
@@ -65,12 +76,48 @@ function Main() {
     }
 
     console.log(orders.current);
+    dispatch({
+      type: "ADD_SELL",
+    });
   };
+
+  useEffect(() => {
+    setInterval(() => {
+      if (
+        localStorage.getItem("@authToken") &&
+        localStorage.getItem("@accessToken")
+      ) {
+        fetch(`${rest.pnl}`, {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            api_key: localStorage.getItem("@apiKey"),
+            access_token: localStorage.getItem("@accessToken"),
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            let maxProfit = Number(localStorage.getItem("maxProfit"));
+            let maxLoss = -1 * Number(localStorage.getItem("maxLoss"));
+            let pnl = data.pnl;
+
+            if (pnl >= maxProfit || pnl <= maxLoss) {
+              dispatch({
+                type: "STOP_TRADE_MODE",
+              });
+            }
+          });
+      }
+    }, 25000);
+  }, []);
 
   // trading for stocks
   useEffect(() => {
     stock.onmessage = (e) => {
-      if (tradeStock) {
+      if (tradeStock && tradeMode) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
@@ -109,12 +156,12 @@ function Main() {
         );
       }
     };
-  }, [tradeStock]);
+  }, [tradeStock, tradeMode]);
 
   // trading for index options
   useEffect(() => {
     index_opt.onmessage = (e) => {
-      if (tradeIndexOpt) {
+      if (tradeIndexOpt && tradeMode) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
@@ -155,12 +202,12 @@ function Main() {
         );
       }
     };
-  }, [tradeIndexOpt]);
+  }, [tradeIndexOpt, tradeMode]);
 
   // trading for index futures
   useEffect(() => {
     index_fut.onmessage = (e) => {
-      if (tradeIndexFut) {
+      if (tradeIndexFut && tradeMode) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
@@ -201,12 +248,12 @@ function Main() {
         );
       }
     };
-  }, [tradeIndexFut]);
+  }, [tradeIndexFut, tradeMode]);
 
   // trading for stock options
   useEffect(() => {
     stock_opt.onmessage = (e) => {
-      if (tradeStockOpt) {
+      if (tradeStockOpt && tradeMode) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
@@ -240,12 +287,12 @@ function Main() {
         );
       }
     };
-  }, [tradeStockOpt]);
+  }, [tradeStockOpt, tradeMode]);
 
   // trading for stock futures
   useEffect(() => {
     stock_fut.onmessage = (e) => {
-      if (tradeStockFut) {
+      if (tradeStockFut && tradeMode) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
@@ -279,7 +326,7 @@ function Main() {
         );
       }
     };
-  }, [tradeStockFut]);
+  }, [tradeStockFut, tradeMode]);
 
   return (
     <Router>

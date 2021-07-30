@@ -4,7 +4,9 @@ export const initialState = {
   tradeIndexFut: false,
   tradeStockOpt: false,
   tradeStockFut: false,
-  orders: {},
+  buys: 0,
+  sells: 0,
+  tradeMode: true,
 };
 
 const reducer = (state, action) => {
@@ -29,6 +31,7 @@ const reducer = (state, action) => {
     case "T_STOCK_FUT":
       return { ...state, tradeStockFut: !state.tradeStockFut };
 
+    // stop all workers
     case "STOP_WORKERS":
       return {
         ...state,
@@ -38,6 +41,29 @@ const reducer = (state, action) => {
         tradeStockOpt: false,
         tradeStockFut: false,
       };
+
+    // add a buy
+    case "ADD_BUY":
+      return {
+        ...state,
+        buy: state.buys + 1,
+      };
+
+    // add a sell
+    case "ADD_SELL":
+      return {
+        ...state,
+        buy: state.sells + 1,
+      };
+
+    // stop the trade mode
+    case "STOP_TRADE_MODE":
+      return {
+        ...state,
+        tradeMode: false,
+      };
+
+    // by default return the state
     default:
       return state;
   }

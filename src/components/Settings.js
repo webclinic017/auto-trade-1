@@ -8,6 +8,8 @@ function Settings() {
   const investment = useRef();
   const nfQuantity = useRef();
   const bfQuantity = useRef();
+  const maxProfit = useRef();
+  const maxLoss = useRef();
 
   const history = useHistory();
 
@@ -17,6 +19,8 @@ function Settings() {
     investment.current.value = localStorage.getItem("investment");
     nfQuantity.current.value = localStorage.getItem("nfQuantity");
     bfQuantity.current.value = localStorage.getItem("bfQuantity");
+    maxProfit.current.value = localStorage.getItem("maxProfit");
+    maxLoss.current.value = localStorage.getItem("maxLoss");
   }, []);
 
   const updateSettings = () => {
@@ -25,6 +29,8 @@ function Settings() {
     localStorage.setItem("investment", investment.current.value);
     localStorage.setItem("nfQuantity", nfQuantity.current.value);
     localStorage.setItem("bfQuantity", bfQuantity.current.value);
+    localStorage.setItem("maxProfit", maxProfit.current.value);
+    localStorage.setItem("maxLoss", maxLoss.current.value);
     history.goBack();
   };
 
@@ -44,6 +50,12 @@ function Settings() {
 
       <label>bf quantity</label>
       <input ref={bfQuantity} type="number" className="form-input" />
+
+      <label>max profit</label>
+      <input ref={maxProfit} type="number" className="form-input" />
+
+      <label>max loss</label>
+      <input ref={maxLoss} type="number" className="form-input" />
 
       <div className="my-2 w-full">
         <Button onClick={updateSettings} variant="contained" color="primary">

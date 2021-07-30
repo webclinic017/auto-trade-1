@@ -4,6 +4,7 @@ export const rest = {
   uri: "https://" + uri,
   zerodha_login: "https://" + uri + "/zerodha_login/access_token",
   user_login: "https://" + uri + "/api-token-auth/",
+  pnl: "https://" + uri + "/pnl/",
 };
 
 export const ws = {
