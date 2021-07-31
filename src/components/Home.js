@@ -17,6 +17,7 @@ function Home({ accessToken }) {
       tradeStockFut,
       buys,
       sells,
+      tradeMode,
     },
   ] = useStateValue();
 
@@ -25,6 +26,12 @@ function Home({ accessToken }) {
       {accessToken === null ? (
         <h1 className="text-center p-4 -mt-3 mb-3 bg-red-500 rounded-md text-white font-bold">
           please connect with zerodha
+        </h1>
+      ) : null}
+
+      {tradeMode ? (
+        <h1 className="text-center p-4 -mt-3 mb-3 bg-red-800 rounded-md text-red-600 font-bold">
+          you cant trade as your limit of pnl has exceeded
         </h1>
       ) : null}
 

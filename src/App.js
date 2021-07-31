@@ -81,35 +81,40 @@ function Main() {
     });
   };
 
+  const checkTrade = () => {
+    fetch(`${rest.pnl}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        api_key: localStorage.getItem("@apiKey"),
+        access_token: localStorage.getItem("@accessToken"),
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        let maxProfit = Number(localStorage.getItem("maxProfit"));
+        let maxLoss = -1 * Number(localStorage.getItem("maxLoss"));
+        let pnl = data.pnl;
+
+        if (pnl >= maxProfit || pnl <= maxLoss) {
+          dispatch({
+            type: "STOP_TRADE_MODE",
+          });
+        }
+      });
+  };
+
   useEffect(() => {
     setInterval(() => {
+      checkTrade();
       if (
         localStorage.getItem("@authToken") &&
         localStorage.getItem("@accessToken")
       ) {
-        fetch(`${rest.pnl}`, {
-          method: "POST",
-          headers: {
-            Authorization: `Token ${localStorage.getItem("@authToken")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            api_key: localStorage.getItem("@apiKey"),
-            access_token: localStorage.getItem("@accessToken"),
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            let maxProfit = Number(localStorage.getItem("maxProfit"));
-            let maxLoss = -1 * Number(localStorage.getItem("maxLoss"));
-            let pnl = data.pnl;
-
-            if (pnl >= maxProfit || pnl <= maxLoss) {
-              dispatch({
-                type: "STOP_TRADE_MODE",
-              });
-            }
-          });
+        checkTrade();
       }
     }, 25000);
   }, []);
