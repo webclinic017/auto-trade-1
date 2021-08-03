@@ -63,6 +63,13 @@ const reducer = (state, action) => {
         tradeMode: false,
       };
 
+    // start the trade mode
+    case "START_TRADE_MODE":
+      return {
+        ...state,
+        tradeMode: true,
+      };
+
     // by default return the state
     default:
       return state;

@@ -103,13 +103,17 @@ function Main() {
           dispatch({
             type: "STOP_TRADE_MODE",
           });
+        } else {
+          dispatch({
+            type: "START_TRADE_MODE",
+          });
         }
       });
   };
 
   useEffect(() => {
-    setInterval(() => {
-      checkTrade();
+    checkTrade();
+    let interval = setInterval(() => {
       if (
         localStorage.getItem("@authToken") &&
         localStorage.getItem("@accessToken")
@@ -117,6 +121,10 @@ function Main() {
         checkTrade();
       }
     }, 25000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   // trading for stocks
@@ -128,17 +136,23 @@ function Main() {
         trade.endpoint = rest.uri + trade.endpoint;
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
+        let trade_ = true;
 
         if (trade.tag === "EXIT") {
-          trade.quantity = 0;
-          for (
-            let i = 0;
-            i < orders.current[trade.trading_symbol].length;
-            i++
-          ) {
-            trade.quantity += Number(
-              orders.current[trade.trading_symbol][i].quantity
-            );
+          try {
+            trade.quantity = 0;
+            for (
+              let i = 0;
+              i < orders.current[trade.trading_symbol].length;
+              i++
+            ) {
+              trade.quantity += Number(
+                orders.current[trade.trading_symbol][i].quantity
+              );
+            }
+          } catch (error) {
+            trade_ = false;
+            console.error(error);
           }
         } else {
           trade.quantity = Math.trunc(
@@ -148,17 +162,19 @@ function Main() {
 
         trade.token = localStorage.getItem("@authToken");
 
-        make_order_request(
-          trade,
-          () => {
-            if (trade.tag === "EXIT") {
-              clearTrade(trade);
-            } else {
-              appendTrade(trade);
-            }
-          },
-          () => {}
-        );
+        if (trade_) {
+          make_order_request(
+            trade,
+            () => {
+              if (trade.tag === "EXIT") {
+                clearTrade(trade);
+              } else {
+                appendTrade(trade);
+              }
+            },
+            () => {}
+          );
+        }
       }
     };
   }, [tradeStock, tradeMode]);
@@ -172,18 +188,25 @@ function Main() {
         trade.endpoint = rest.uri + trade.endpoint;
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
+        let trade_ = true;
 
         if (trade.tag === "EXIT") {
-          trade.quantity = 0;
-          for (
-            let i = 0;
-            i < orders.current[trade.trading_symbol].length;
-            i++
-          ) {
-            trade.quantity += Number(
-              orders.current[trade.trading_symbol][i].quantity
-            );
+          try {
+            trade.quantity = 0;
+            for (
+              let i = 0;
+              i < orders.current[trade.trading_symbol].length;
+              i++
+            ) {
+              trade.quantity += Number(
+                orders.current[trade.trading_symbol][i].quantity
+              );
+            }
+          } catch (err) {
+            trade_ = false;
+            console.error(err);
           }
+          trade.quantity = 0;
         } else {
           if (trade.trading_symbol.includes("BANKNIFTY")) {
             trade.quantity = Number(localStorage.getItem("bfQuantity"));
@@ -194,17 +217,19 @@ function Main() {
 
         trade.token = localStorage.getItem("@authToken");
 
-        make_order_request(
-          trade,
-          () => {
-            if (trade.tag === "EXIT") {
-              clearTrade(trade);
-            } else {
-              appendTrade(trade);
-            }
-          },
-          () => {}
-        );
+        if (trade_) {
+          make_order_request(
+            trade,
+            () => {
+              if (trade.tag === "EXIT") {
+                clearTrade(trade);
+              } else {
+                appendTrade(trade);
+              }
+            },
+            () => {}
+          );
+        }
       }
     };
   }, [tradeIndexOpt, tradeMode]);
@@ -218,17 +243,23 @@ function Main() {
         trade.endpoint = rest.uri + trade.endpoint;
         trade.access_token = Number(localStorage.getItem("@accessToken"));
         trade.api_key = Number(localStorage.getItem("@apiKey"));
+        let trade_ = true;
 
         if (trade.tag === "EXIT") {
-          trade.quantity = 0;
-          for (
-            let i = 0;
-            i < orders.current[trade.trading_symbol].length;
-            i++
-          ) {
-            trade.quantity += Number(
-              orders.current[trade.trading_symbol][i].quantity
-            );
+          try {
+            trade.quantity = 0;
+            for (
+              let i = 0;
+              i < orders.current[trade.trading_symbol].length;
+              i++
+            ) {
+              trade.quantity += Number(
+                orders.current[trade.trading_symbol][i].quantity
+              );
+            }
+          } catch (err) {
+            console.error(err);
+            trade_ = false;
           }
         } else {
           if (trade.trading_symbol.includes("BANKNIFTY")) {
@@ -240,17 +271,19 @@ function Main() {
 
         trade.token = localStorage.getItem("@authToken");
 
-        make_order_request(
-          trade,
-          () => {
-            if (trade.tag === "EXIT") {
-              clearTrade(trade);
-            } else {
-              appendTrade(trade);
-            }
-          },
-          () => {}
-        );
+        if (trade_) {
+          make_order_request(
+            trade,
+            () => {
+              if (trade.tag === "EXIT") {
+                clearTrade(trade);
+              } else {
+                appendTrade(trade);
+              }
+            },
+            () => {}
+          );
+        }
       }
     };
   }, [tradeIndexFut, tradeMode]);
@@ -265,31 +298,39 @@ function Main() {
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
         trade.token = localStorage.getItem("@authToken");
+        let trade_ = true;
 
         if (trade.tag === "EXIT") {
-          trade.quantity = 0;
-          for (
-            let i = 0;
-            i < orders.current[trade.trading_symbol].length;
-            i++
-          ) {
-            trade.quantity += Number(
-              orders.current[trade.trading_symbol][i].quantity
-            );
+          try {
+            trade.quantity = 0;
+            for (
+              let i = 0;
+              i < orders.current[trade.trading_symbol].length;
+              i++
+            ) {
+              trade.quantity += Number(
+                orders.current[trade.trading_symbol][i].quantity
+              );
+            }
+          } catch (err) {
+            console.error(err);
+            trade_ = false;
           }
         }
 
-        make_order_request(
-          trade,
-          () => {
-            if (trade.tag === "EXIT") {
-              clearTrade(trade);
-            } else {
-              appendTrade(trade);
-            }
-          },
-          () => {}
-        );
+        if (trade_) {
+          make_order_request(
+            trade,
+            () => {
+              if (trade.tag === "EXIT") {
+                clearTrade(trade);
+              } else {
+                appendTrade(trade);
+              }
+            },
+            () => {}
+          );
+        }
       }
     };
   }, [tradeStockOpt, tradeMode]);
@@ -304,31 +345,39 @@ function Main() {
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
         trade.token = localStorage.getItem("@authToken");
+        let trade_ = true;
 
         if (trade.tag === "EXIT") {
-          trade.quantity = 0;
-          for (
-            let i = 0;
-            i < orders.current[trade.trading_symbol].length;
-            i++
-          ) {
-            trade.quantity += Number(
-              orders.current[trade.trading_symbol][i].quantity
-            );
+          try {
+            trade.quantity = 0;
+            for (
+              let i = 0;
+              i < orders.current[trade.trading_symbol].length;
+              i++
+            ) {
+              trade.quantity += Number(
+                orders.current[trade.trading_symbol][i].quantity
+              );
+            }
+          } catch (err) {
+            console.error(err);
+            trade_ = false;
           }
         }
 
-        make_order_request(
-          trade,
-          () => {
-            if (trade.tag === "EXIT") {
-              clearTrade(trade);
-            } else {
-              appendTrade(trade);
-            }
-          },
-          () => {}
-        );
+        if (trade_) {
+          make_order_request(
+            trade,
+            () => {
+              if (trade.tag === "EXIT") {
+                clearTrade(trade);
+              } else {
+                appendTrade(trade);
+              }
+            },
+            () => {}
+          );
+        }
       }
     };
   }, [tradeStockFut, tradeMode]);
