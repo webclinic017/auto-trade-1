@@ -161,6 +161,7 @@ function Main() {
         }
 
         trade.token = localStorage.getItem("@authToken");
+        console.log(trade);
 
         if (trade_) {
           make_order_request(
@@ -206,7 +207,6 @@ function Main() {
             trade_ = false;
             console.error(err);
           }
-          trade.quantity = 0;
         } else {
           if (trade.trading_symbol.includes("BANKNIFTY")) {
             trade.quantity = Number(localStorage.getItem("bfQuantity"));
@@ -216,6 +216,7 @@ function Main() {
         }
 
         trade.token = localStorage.getItem("@authToken");
+        console.log(trade);
 
         if (trade_) {
           make_order_request(
@@ -270,6 +271,7 @@ function Main() {
         }
 
         trade.token = localStorage.getItem("@authToken");
+        console.log(trade);
 
         if (trade_) {
           make_order_request(
@@ -318,6 +320,8 @@ function Main() {
           }
         }
 
+        console.log(trade);
+
         if (trade_) {
           make_order_request(
             trade,
@@ -364,6 +368,8 @@ function Main() {
             trade_ = false;
           }
         }
+
+        console.log(trade);
 
         if (trade_) {
           make_order_request(
