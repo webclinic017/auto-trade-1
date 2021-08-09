@@ -130,7 +130,7 @@ function Main() {
   // trading for stocks
   useEffect(() => {
     stock.onmessage = (e) => {
-      if (tradeStock && tradeMode) {
+      if (tradeStock) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
@@ -162,19 +162,26 @@ function Main() {
 
         trade.token = localStorage.getItem("@authToken");
         console.log(trade);
+        clearTrade(trade);
 
         if (trade_) {
-          make_order_request(
-            trade,
-            () => {
-              if (trade.tag === "EXIT") {
-                clearTrade(trade);
-              } else {
+          if (tradeMode && trade.tag !== "EXIT") {
+            make_order_request(
+              trade,
+              () => {
                 appendTrade(trade);
-              }
-            },
-            () => {}
-          );
+              },
+              () => {}
+            );
+          } else if (trade.tag === "EXIT") {
+            make_order_request(
+              trade,
+              () => {
+                clearTrade(trade);
+              },
+              () => {}
+            );
+          }
         }
       }
     };
@@ -219,17 +226,23 @@ function Main() {
         console.log(trade);
 
         if (trade_) {
-          make_order_request(
-            trade,
-            () => {
-              if (trade.tag === "EXIT") {
-                clearTrade(trade);
-              } else {
+          if (tradeMode && trade.tag !== "EXIT") {
+            make_order_request(
+              trade,
+              () => {
                 appendTrade(trade);
-              }
-            },
-            () => {}
-          );
+              },
+              () => {}
+            );
+          } else if (trade.tag === "EXIT") {
+            make_order_request(
+              trade,
+              () => {
+                clearTrade(trade);
+              },
+              () => {}
+            );
+          }
         }
       }
     };
@@ -274,17 +287,23 @@ function Main() {
         console.log(trade);
 
         if (trade_) {
-          make_order_request(
-            trade,
-            () => {
-              if (trade.tag === "EXIT") {
-                clearTrade(trade);
-              } else {
+          if (tradeMode && trade.tag !== "EXIT") {
+            make_order_request(
+              trade,
+              () => {
                 appendTrade(trade);
-              }
-            },
-            () => {}
-          );
+              },
+              () => {}
+            );
+          } else if (trade.tag === "EXIT") {
+            make_order_request(
+              trade,
+              () => {
+                clearTrade(trade);
+              },
+              () => {}
+            );
+          }
         }
       }
     };
@@ -323,17 +342,23 @@ function Main() {
         console.log(trade);
 
         if (trade_) {
-          make_order_request(
-            trade,
-            () => {
-              if (trade.tag === "EXIT") {
-                clearTrade(trade);
-              } else {
+          if (tradeMode && trade.tag !== "EXIT") {
+            make_order_request(
+              trade,
+              () => {
                 appendTrade(trade);
-              }
-            },
-            () => {}
-          );
+              },
+              () => {}
+            );
+          } else if (trade.tag === "EXIT") {
+            make_order_request(
+              trade,
+              () => {
+                clearTrade(trade);
+              },
+              () => {}
+            );
+          }
         }
       }
     };
@@ -372,17 +397,23 @@ function Main() {
         console.log(trade);
 
         if (trade_) {
-          make_order_request(
-            trade,
-            () => {
-              if (trade.tag === "EXIT") {
-                clearTrade(trade);
-              } else {
+          if (tradeMode && trade.tag !== "EXIT") {
+            make_order_request(
+              trade,
+              () => {
                 appendTrade(trade);
-              }
-            },
-            () => {}
-          );
+              },
+              () => {}
+            );
+          } else if (trade.tag === "EXIT") {
+            make_order_request(
+              trade,
+              () => {
+                clearTrade(trade);
+              },
+              () => {}
+            );
+          }
         }
       }
     };
