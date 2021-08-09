@@ -120,7 +120,7 @@ function Main() {
       ) {
         checkTrade();
       }
-    }, 25000);
+    }, 1000 * 30);
 
     return () => {
       clearInterval(interval);
