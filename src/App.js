@@ -88,6 +88,11 @@ function Main() {
       .then((res) => res.json())
       .then((data) => {
         let maxProfit = Number(localStorage.getItem("maxProfit"));
+
+        if (maxProfit == 0 || maxProfit == NaN) {
+          maxProfit = Infinity;
+        }
+
         let maxLoss = -1 * Number(localStorage.getItem("maxLoss"));
         let pnl = data.pnl;
 
