@@ -48,17 +48,9 @@ function Main() {
   // append the trade
   const appendTrade = (trade) => {
     if (!(trade.trading_symbol in orders.current)) {
-      orders.current[trade.trading_symbol] = [
-        {
-          trading_symbol: trade.trading_symbol,
-          quantity: trade.quantity,
-        },
-      ];
+      orders.current[trade.trading_symbol] = [trade];
     } else {
-      orders.current[trade.trading_symbol].push({
-        trading_symbol: trade.trading_symbol,
-        quantity: trade.quantity,
-      });
+      orders.current[trade.trading_symbol].push(trade);
     }
 
     console.log(orders.current);
@@ -102,6 +94,47 @@ function Main() {
         if (pnl >= maxProfit || pnl <= maxLoss) {
           dispatch({
             type: "STOP_TRADE_MODE",
+          });
+
+          // exit all the orders
+          Object.keys(orders.current).forEach((key) => {
+            let orders_list = orders.current[key];
+            let order = {
+              endpoint: "",
+              entry_price: 0,
+              exchange: "",
+              instrument_token: 0,
+              quantity: 0,
+              tag: "EXIT",
+              trading_symbol: "",
+              uri: "",
+            };
+
+            orders_list.forEach((o) => {
+              order.endpoint = o.endpoint;
+              order.entry_price = Number(o.entry_price);
+              order.exchange = o.exchange;
+              order.instrument_token = o.instrument_token;
+              order.quantity += Number(o.quantity);
+              order.trading_symbol = o.trading_symbol;
+              order.uri = o.uri;
+            });
+            order.quantity = Math.trunc(order.quantity);
+            if (order.endpoint.includes("buy")) {
+              order.endpoint = order.endpoint.replace("buy", "sell");
+            } else if (order.endpoint.includes("sell")) {
+              order.endpoint = order.endpoint.replace("sell", "buy");
+            }
+
+            if (order.quantity > 0) {
+              make_order_request(
+                order,
+                () => {
+                  clearTrade(order);
+                },
+                () => {}
+              );
+            }
           });
         } else {
           dispatch({
@@ -164,7 +197,7 @@ function Main() {
         console.log(trade);
         clearTrade(trade);
 
-        if (trade_) {
+        if (trade_ && trade.quantity > 0) {
           if (tradeMode && trade.tag !== "EXIT") {
             make_order_request(
               trade,
