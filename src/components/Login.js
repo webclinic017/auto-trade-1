@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { rest } from "../api";
 
 function Login({ setAuthToken }) {
   const userName = useRef();
   const passWord = useRef();
+  const [loginError, setLoginError] = useState(false);
 
   const loginUser = () => {
     fetch(rest.user_login, {
@@ -16,18 +17,33 @@ function Login({ setAuthToken }) {
         password: passWord.current.value,
       }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw Error("login error");
+        } else {
+          setLoginError(false);
+          return res.json();
+        }
+      })
       .then((data) => {
         userName.current.value = "";
         passWord.current.value = "";
         localStorage.setItem("@authToken", data.token);
         setAuthToken(data.token);
+      })
+      .catch((err) => {
+        setLoginError(true);
       });
   };
 
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-1 flex flex-col p-3 items-center justify-center">
+        {loginError ? (
+          <strong className="font-sans text-red-700">
+            error occured while login
+          </strong>
+        ) : null}
         <strong className="text-3xl md:text-xl font-serif text-blue-400 my-2">
           Login
         </strong>
