@@ -62,9 +62,20 @@ function Main() {
   // clear the trade
   const clearTrade = (trade) => {
     console.log(trade);
+    let total_quantity = 0;
 
     if (trade.trading_symbol in orders.current) {
-      orders.current[trade.trading_symbol] = [];
+      for (let i = 0; i < orders.current[trade.trading_symbol].length; i++) {
+        if (total_quantity >= 2000) {
+          break;
+        }
+        total_quantity += orders.current[trade.trading_symbol][i].quantity;
+      }
+
+      while (total_quantity > 0) {
+        let order = orders.current[trade.trading_symbol].pop();
+        total_quantity -= order.quantity;
+      }
     }
 
     console.log(orders.current);
@@ -184,6 +195,10 @@ function Main() {
               i < orders.current[trade.trading_symbol].length;
               i++
             ) {
+              if (trade.quantity >= 2000) {
+                break;
+              }
+
               trade.quantity += Number(
                 orders.current[trade.trading_symbol][i].quantity
               );
@@ -244,6 +259,9 @@ function Main() {
               i < orders.current[trade.trading_symbol].length;
               i++
             ) {
+              if (trade.quantity >= 2000) {
+                break;
+              }
               trade.quantity += Number(
                 orders.current[trade.trading_symbol][i].quantity
               );
@@ -254,9 +272,23 @@ function Main() {
           }
         } else {
           if (trade.trading_symbol.includes("BANKNIFTY")) {
-            trade.quantity = Number(localStorage.getItem("bfQuantity"));
+            trade.quantity = Math.floor(
+              Number(localStorage.getItem("bfQuantity")) / 72 / trade.ltp / 25
+            );
+            if (trade.quantity == 0) {
+              trade.quantity = 1 * 25;
+            } else {
+              trade.quantity *= 25;
+            }
           } else {
-            trade.quantity = Number(localStorage.getItem("nfQuantity"));
+            trade.quantity = Math.floor(
+              Number(localStorage.getItem("nfQuantity")) / 72 / trade.ltp / 50
+            );
+            if (trade.quantity == 0) {
+              trade.quantity = 1 * 50;
+            } else {
+              trade.quantity *= 50;
+            }
           }
         }
 
@@ -305,6 +337,9 @@ function Main() {
               i < orders.current[trade.trading_symbol].length;
               i++
             ) {
+              if (trade.quantity >= 2000) {
+                break;
+              }
               trade.quantity += Number(
                 orders.current[trade.trading_symbol][i].quantity
               );
@@ -315,9 +350,23 @@ function Main() {
           }
         } else {
           if (trade.trading_symbol.includes("BANKNIFTY")) {
-            trade.quantity = Number(localStorage.getItem("bfQuantity"));
+            trade.quantity = Math.floor(
+              Number(localStorage.getItem("bfQuantity")) / 72 / trade.ltp / 25
+            );
+            if (trade.quantity == 0) {
+              trade.quantity = 1 * 25;
+            } else {
+              trade.quantity *= 25;
+            }
           } else {
-            trade.quantity = Number(localStorage.getItem("nfQuantity"));
+            trade.quantity = Math.floor(
+              Number(localStorage.getItem("nfQuantity")) / 72 / trade.ltp / 50
+            );
+            if (trade.quantity == 0) {
+              trade.quantity = 1 * 50;
+            } else {
+              trade.quantity *= 50;
+            }
           }
         }
 
@@ -367,6 +416,9 @@ function Main() {
               i < orders.current[trade.trading_symbol].length;
               i++
             ) {
+              if (trade.quantity >= 2000) {
+                break;
+              }
               trade.quantity += Number(
                 orders.current[trade.trading_symbol][i].quantity
               );
@@ -422,6 +474,9 @@ function Main() {
               i < orders.current[trade.trading_symbol].length;
               i++
             ) {
+              if (trade.quantity >= 2000) {
+                break;
+              }
               trade.quantity += Number(
                 orders.current[trade.trading_symbol][i].quantity
               );

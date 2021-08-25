@@ -45,10 +45,10 @@ function Settings() {
       <label>investment</label>
       <input ref={investment} type="number" className="form-input" />
 
-      <label>nf quantity</label>
+      <label>nifty investment</label>
       <input ref={nfQuantity} type="number" className="form-input" />
 
-      <label>bf quantity</label>
+      <label>bank nifty investment</label>
       <input ref={bfQuantity} type="number" className="form-input" />
 
       <label>max profit</label>
