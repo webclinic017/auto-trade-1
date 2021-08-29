@@ -16,6 +16,9 @@ function Home({ accessToken }) {
     tradeStockOpt,
     tradeStockFut,
 
+    sells,
+    buys,
+
     setTradeIndexOpt,
     setTradeIndexFut,
     setTradeStock,
@@ -48,13 +51,13 @@ function Home({ accessToken }) {
           title="Buy"
           color="green"
           icon={() => <MoneyIcon className="h-6 w-6" />}
-          value={0}
+          value={buys}
         />
         <ColorCard
           title="Sell"
           color="red"
           icon={() => <AccountBalanceIcon className="h-6 w-6" />}
-          value={0}
+          value={sells}
         />
       </div>
 

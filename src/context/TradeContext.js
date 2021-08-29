@@ -28,9 +28,15 @@ export const TradeProvider = ({ children }) => {
   const [tradeStockOpt, setTradeStockOpt] = useState(false);
   const [tradeStockFut, setTradeStockFut] = useState(false);
 
+  // trading mode
   const [tradeMode, setTradeMode] = useState(true);
 
+  // dictonaries to keep track of orders
   const orders = useRef({});
+
+  // keep track of number of orders
+  const [buys, setBuys] = useState(0);
+  const [sells, setSells] = useState(0);
 
   // append the trade
   const appendTrade = (trade) => {
@@ -39,6 +45,8 @@ export const TradeProvider = ({ children }) => {
     } else {
       orders.current[trade.trading_symbol].push(trade);
     }
+
+    setBuys((x) => x + 1);
   };
 
   // clear the trade
@@ -60,10 +68,7 @@ export const TradeProvider = ({ children }) => {
       }
     }
 
-    console.log(orders.current);
-    // dispatch({
-    //   type: "ADD_SELL",
-    // });
+    setSells((x) => x + 1);
   };
 
   const checkTrade = () => {
@@ -519,6 +524,8 @@ export const TradeProvider = ({ children }) => {
         tradeStock,
         tradeStockOpt,
         tradeStockFut,
+        sells,
+        buys,
       }}
     >
       {children}
