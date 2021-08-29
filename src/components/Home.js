@@ -5,21 +5,23 @@ import WorkerCard from "./WorkerCard";
 import { DollarIcon, MoneyIcon } from "./icons";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 
-import { useStateValue } from "../StateProvider";
+import { useTrade } from "../context/TradeContext";
 
 function Home({ accessToken }) {
-  const [
-    {
-      tradeStock,
-      tradeIndexOpt,
-      tradeIndexFut,
-      tradeStockOpt,
-      tradeStockFut,
-      buys,
-      sells,
-      tradeMode,
-    },
-  ] = useStateValue();
+  const {
+    tradeMode,
+    tradeIndexOpt,
+    tradeIndexFut,
+    tradeStock,
+    tradeStockOpt,
+    tradeStockFut,
+
+    setTradeIndexOpt,
+    setTradeIndexFut,
+    setTradeStock,
+    setTradeStockOpt,
+    setTradeStockFut,
+  } = useTrade();
 
   return (
     <div className="p-3 mt-5">
@@ -46,13 +48,13 @@ function Home({ accessToken }) {
           title="Buy"
           color="green"
           icon={() => <MoneyIcon className="h-6 w-6" />}
-          value={buys}
+          value={0}
         />
         <ColorCard
           title="Sell"
           color="red"
           icon={() => <AccountBalanceIcon className="h-6 w-6" />}
-          value={sells}
+          value={0}
         />
       </div>
 
@@ -61,23 +63,23 @@ function Home({ accessToken }) {
         <WorkerCard
           title="index options"
           value={tradeIndexOpt}
-          dispatchKey="T_INDEX_OPT"
+          fun={setTradeIndexOpt}
         />
         <WorkerCard
           title="index futures"
           value={tradeIndexFut}
-          dispatchKey="T_INDEX_FUT"
+          fun={setTradeIndexFut}
         />
-        <WorkerCard title="stocks" value={tradeStock} dispatchKey="T_STOCKS" />
+        <WorkerCard title="stocks" value={tradeStock} fun={setTradeStock} />
         <WorkerCard
           title="stock options"
           value={tradeStockOpt}
-          dispatchKey="T_STOCK_OPT"
+          fun={setTradeStockOpt}
         />
         <WorkerCard
           title="stock futures"
           value={tradeStockFut}
-          dispatchKey="T_STOCK_FUT"
+          fun={setTradeStockFut}
         />
       </div>
       <h1 className="my-5 text-2xl p-2 font-semibold">Analytics</h1>
