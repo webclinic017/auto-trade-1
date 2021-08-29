@@ -5,6 +5,8 @@ export const rest = {
   zerodha_login: "https://" + uri + "/zerodha_login/access_token",
   user_login: "https://" + uri + "/api-token-auth/",
   pnl: "https://" + uri + "/pnl/",
+  market_api: "https://" + uri + "/orders/market",
+  limit_api: "https://" + uri + "/orders/limit",
 };
 
 export const ws = {

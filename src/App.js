@@ -12,6 +12,8 @@ import {
 } from "react-router-dom";
 
 import { TradeProvider } from "./context/TradeContext";
+import { StoreProvider } from "./contex/StoreContext";
+import { initialState, reducer } from "./reducers";
 
 function Main() {
   const [accessToken, setAccessToken] = useState(
@@ -53,9 +55,11 @@ function Main() {
 
 function App() {
   return (
-    <TradeProvider>
-      <Main />
-    </TradeProvider>
+    <StoreProvider initialState={initialState} reducer={reducer}>
+      <TradeProvider>
+        <Main />
+      </TradeProvider>
+    </StoreProvider>
   );
 }
 

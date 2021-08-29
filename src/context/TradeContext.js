@@ -15,6 +15,7 @@ import {
 } from "../services/ws";
 import { rest } from "../api";
 import { make_order_request } from "../services/zerodha";
+import { useStore } from "./StoreContext";
 
 const TradeContext = createContext();
 
@@ -37,6 +38,9 @@ export const TradeProvider = ({ children }) => {
   // keep track of number of orders
   const [buys, setBuys] = useState(0);
   const [sells, setSells] = useState(0);
+
+  // use the store context
+  const [, dispatch] = useStore();
 
   // append the trade
   const appendTrade = (trade) => {
@@ -134,6 +138,8 @@ export const TradeProvider = ({ children }) => {
               make_order_request(
                 order,
                 () => {
+                  dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                  dispatch({ type: "UPDATE_LIMIT_ORDERS" });
                   clearTrade(order);
                 },
                 () => {}
@@ -225,6 +231,8 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
+                dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                // dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -233,6 +241,8 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
+                dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                // dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -304,6 +314,8 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
+                dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                // dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -312,6 +324,8 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
+                dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                // dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -370,6 +384,8 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -378,6 +394,8 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -430,6 +448,8 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -438,6 +458,8 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -490,6 +512,8 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -498,6 +522,8 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
