@@ -12,7 +12,7 @@ import {
 } from "react-router-dom";
 
 import { TradeProvider } from "./context/TradeContext";
-import { StoreProvider } from "./contex/StoreContext";
+import { StoreProvider } from "./context/StoreContext";
 import { initialState, reducer } from "./reducers";
 
 function Main() {
