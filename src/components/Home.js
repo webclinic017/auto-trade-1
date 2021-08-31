@@ -28,7 +28,7 @@ function Home({ accessToken }) {
     setTradeStockFut,
   } = useTrade();
 
-  const [{ limit_orders }] = useStore();
+  const [{ market_orders }] = useStore();
 
   return (
     <div className="p-3 mt-5">
