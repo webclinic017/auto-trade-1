@@ -232,7 +232,7 @@ export const TradeProvider = ({ children }) => {
               () => {
                 appendTrade(trade);
                 dispatch({ type: "UPDATE_MARKET_ORDERS" });
-                dispatch({ type: "UPDATE_LIMIT_ORDERS" });
+                // dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -242,7 +242,7 @@ export const TradeProvider = ({ children }) => {
               () => {
                 clearTrade(trade);
                 dispatch({ type: "UPDATE_MARKET_ORDERS" });
-                dispatch({ type: "UPDATE_LIMIT_ORDERS" });
+                // dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -325,7 +325,7 @@ export const TradeProvider = ({ children }) => {
               () => {
                 clearTrade(trade);
                 dispatch({ type: "UPDATE_MARKET_ORDERS" });
-                dispatch({ type: "UPDATE_LIMIT_ORDERS" });
+                // dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
             );
@@ -384,7 +384,7 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
-                dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
                 dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
@@ -394,7 +394,7 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
-                dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
                 dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
@@ -448,7 +448,7 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
-                dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
                 dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
@@ -458,7 +458,7 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
-                dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
                 dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
@@ -512,7 +512,7 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
-                dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
                 dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
@@ -522,7 +522,7 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
-                dispatch({ type: "UPDATE_MARKET_ORDERS" });
+                // dispatch({ type: "UPDATE_MARKET_ORDERS" });
                 dispatch({ type: "UPDATE_LIMIT_ORDERS" });
               },
               () => {}
