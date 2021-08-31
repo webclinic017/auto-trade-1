@@ -5,29 +5,31 @@ export const initialState = {
   limit_orders: [],
 };
 
-export const reducer = async ({ state, action }) => {
+export const reducer = async (state, action) => {
+  let res, data;
+
   switch (action.type) {
     case "UPDATE_MARKET_ORDERS":
-      let res = await fetch(rest.market_api, {
+      res = await fetch(rest.market_api, {
         method: "GET",
         headers: {
           Authorization: `Token ${localStorage.getItem("@authToken")}`,
         },
       });
 
-      let data = await res.json();
-      return { market_api: data };
+      data = await res.json();
+      return { market_orders: data, ...state };
 
     case "UPDATE_LIMIT_ORDERS":
-      let res = await fetch(rest.limit_api, {
+      res = await fetch(rest.limit_api, {
         method: "GET",
         headers: {
           Authorization: `Token ${localStorage.getItem("@authToken")}`,
         },
       });
 
-      let data = await res.json();
-      return { limit_api: data };
+      data = await res.json();
+      return { limit_orders: data, ...state };
 
     default:
       return state;
