@@ -14,6 +14,7 @@ import {
 import { TradeProvider } from "./context/TradeContext";
 import { StoreProvider } from "./context/StoreContext";
 import { initialState, reducer } from "./reducers";
+import { NetworkProvider } from "./context/NetworkContext";
 
 function Main() {
   const [accessToken, setAccessToken] = useState(
@@ -56,9 +57,11 @@ function Main() {
 function App() {
   return (
     <StoreProvider initialState={initialState} reducer={reducer}>
-      <TradeProvider>
-        <Main />
-      </TradeProvider>
+      <NetworkProvider>
+        <TradeProvider>
+          <Main />
+        </TradeProvider>
+      </NetworkProvider>
     </StoreProvider>
   );
 }
