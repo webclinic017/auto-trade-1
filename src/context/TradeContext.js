@@ -285,23 +285,25 @@ export const TradeProvider = ({ children }) => {
           }
         } else {
           if (trade.trading_symbol.includes("BANKNIFTY")) {
-            trade.quantity = Math.floor(
-              Number(localStorage.getItem("bfQuantity")) / 72 / trade.ltp / 25
-            );
-            if (trade.quantity === 0) {
-              trade.quantity = 1 * 25;
-            } else {
-              trade.quantity *= 25;
-            }
+            trade.quantity = 25;
+            // trade.quantity = Math.floor(
+            //   Number(localStorage.getItem("bfQuantity")) / 72 / trade.ltp / 25
+            // );
+            // if (trade.quantity === 0) {
+            //   trade.quantity = 1 * 25;
+            // } else {
+            //   trade.quantity *= 25;
+            // }
           } else {
-            trade.quantity = Math.floor(
-              Number(localStorage.getItem("nfQuantity")) / 72 / trade.ltp / 50
-            );
-            if (trade.quantity === 0) {
-              trade.quantity = 1 * 50;
-            } else {
-              trade.quantity *= 50;
-            }
+            trade.quantity = 50;
+            // trade.quantity = Math.floor(
+            //   Number(localStorage.getItem("nfQuantity")) / 72 / trade.ltp / 50
+            // );
+            // if (trade.quantity === 0) {
+            //   trade.quantity = 1 * 50;
+            // } else {
+            //   trade.quantity *= 50;
+            // }
           }
         }
 
