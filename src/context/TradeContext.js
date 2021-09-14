@@ -40,7 +40,7 @@ export const TradeProvider = ({ children }) => {
   const [sells, setSells] = useState(0);
 
   // use the store context
-  const [, dispatch] = useStore();
+  const [{ market_orders, limit_orders }, dispatch] = useStore();
 
   // append the trade
   const appendTrade = (trade) => {
@@ -162,7 +162,7 @@ export const TradeProvider = ({ children }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        dispatch({ type: "UPDATE_MARKET_ORDERS", data });
+        dispatch({ type: "UPDATE_MARKET_ORDERS", data: data.results });
       });
   };
 
@@ -176,9 +176,19 @@ export const TradeProvider = ({ children }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        dispatch({ type: "UPDATE_LIMIT_ORDERS", data });
+        dispatch({ type: "UPDATE_LIMIT_ORDERS", data: data.results });
       });
   };
+
+  useEffect(() => {
+    updateLimitOrders();
+    updateMarketOrders();
+  }, []);
+
+  // useEffect(() => {
+  //   console.log(market_orders);
+  //   console.log(limit_orders);
+  // });
 
   useEffect(() => {
     checkTrade();

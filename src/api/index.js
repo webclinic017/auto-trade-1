@@ -1,19 +1,25 @@
 const uri = "ws.bittrade.space";
+const protocol = "https";
+const wsprotocol = "wss";
+
+// const uri = "127.0.0.1:8000";
+// const protocol = "http";
+// const wsprotocol = "ws";
 
 export const rest = {
-  uri: "https://" + uri,
-  zerodha_login: "https://" + uri + "/zerodha_login/access_token",
-  user_login: "https://" + uri + "/api-token-auth/",
-  pnl: "https://" + uri + "/pnl/",
-  market_api: "https://" + uri + "/orders/market",
-  limit_api: "https://" + uri + "/orders/limit",
+  uri: `${protocol}://` + uri,
+  zerodha_login: `${protocol}://` + uri + "/zerodha_login/access_token",
+  user_login: `${protocol}://` + uri + "/api-token-auth/",
+  pnl: `${protocol}://` + uri + "/pnl/",
+  market_api: `${protocol}://` + uri + "/orders/market",
+  limit_api: `${protocol}://` + uri + "/orders/limit",
 };
 
 export const ws = {
-  ws: "wss://" + uri,
-  stocks: "wss://" + uri + "/ws/stocks_notifications/",
-  index: "wss://" + uri + "/ws/index_opt_notifications/",
-  index_fut: "wss://" + uri + "/ws/index_fut_notifications/",
-  stock_options: "wss://" + uri + "/ws/stock_opt_notifications/",
-  stock_futures: "wss://" + uri + "/ws/stock_fut_notifications/",
+  ws: `${wsprotocol}://` + uri,
+  stocks: `${wsprotocol}://` + uri + "/ws/stocks_notifications/",
+  index: `${wsprotocol}://` + uri + "/ws/index_opt_notifications/",
+  index_fut: `${wsprotocol}://` + uri + "/ws/index_fut_notifications/",
+  stock_options: `${wsprotocol}://` + uri + "/ws/stock_opt_notifications/",
+  stock_futures: `${wsprotocol}://` + uri + "/ws/stock_fut_notifications/",
 };

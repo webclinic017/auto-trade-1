@@ -4,16 +4,12 @@ export const initialState = {
 };
 
 export const reducer = (state, action) => {
-  let res, data;
-
   switch (action.type) {
     case "UPDATE_MARKET_ORDERS":
-      data = action.data;
-      return { market_orders: data, ...state };
+      return { ...state, market_orders: action.data };
 
     case "UPDATE_LIMIT_ORDERS":
-      data = action.data;
-      return { limit_orders: data, ...state };
+      return { ...state, limit_orders: action.data };
 
     default:
       return state;

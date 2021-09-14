@@ -31,7 +31,7 @@ function Home({ accessToken }) {
     setTradeStockFut,
   } = useTrade();
 
-  const [{ market_orders }] = useStore();
+  const [{ market_orders, limit_orders }, dispatch] = useStore();
   const network = useNetwork();
 
   return (
@@ -105,6 +105,18 @@ function Home({ accessToken }) {
         <h1 className="my-5 text-2xl p-2 font-semibold">Orders</h1>
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-1">
           {market_orders?.map((item) => {
+            return (
+              <OrderCard
+                key={item.id}
+                trading_symbol={item.trading_symbol}
+                action={item.action}
+                quantity={item.quantity}
+                exchange={item.exchange}
+              />
+            );
+          })}
+
+          {limit_orders?.map((item) => {
             return (
               <OrderCard
                 key={item.id}
