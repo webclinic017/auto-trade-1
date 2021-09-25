@@ -16,41 +16,29 @@ import { StoreProvider } from "./context/StoreContext";
 import { initialState, reducer } from "./reducers";
 import { NetworkProvider } from "./context/NetworkContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import LoadingScreen from "./components/LoadingScreen";
 
 function Main() {
-  const [accessToken, setAccessToken] = useState(
-    localStorage.getItem("@accessToken")
-  );
-  const [authToken, setAuthToken] = useState(
-    localStorage.getItem("@authToken")
-  );
-
   const auth = useAuth();
 
   return (
     <Router>
-      <Header
-        authToken={authToken}
-        setAuthToken={setAuthToken}
-        setAccessToken={setAccessToken}
-      />
+      <Header />
       <Switch>
         <Route excat path="/settings">
           {auth.login ? <Settings /> : <Redirect to="/login" />}
         </Route>
         <Route exact path="/login">
-          {auth.login ? (
+          {auth.is_loading ? (
+            <LoadingScreen />
+          ) : auth.login ? (
             <Redirect to="/" />
           ) : (
-            <Login setAuthToken={setAuthToken} />
+            <Login />
           )}
         </Route>
         <Route excat path="/">
-          {auth.login ? (
-            <Home accessToken={accessToken} />
-          ) : (
-            <Redirect to="/login" />
-          )}
+          {auth.login ? <Home /> : <Redirect to="/login" />}
         </Route>
       </Switch>
     </Router>

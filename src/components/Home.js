@@ -10,9 +10,11 @@ import { IconButton } from "@material-ui/core";
 import { useTrade } from "../context/TradeContext";
 import { useStore } from "../context/StoreContext";
 import { useNetwork } from "../context/NetworkContext";
+import { useAuth } from "../context/AuthContext";
+
 import OrderCard from "./OrderCard";
 
-function Home({ accessToken }) {
+function Home() {
   const {
     tradeMode,
     tradeIndexOpt,
@@ -33,6 +35,7 @@ function Home({ accessToken }) {
 
   const [{ market_orders, limit_orders }, dispatch] = useStore();
   const network = useNetwork();
+  const auth = useAuth();
 
   return (
     <div className="p-3 mt-5">
@@ -44,7 +47,7 @@ function Home({ accessToken }) {
           </IconButton>
         </h1>
       ) : null}
-      {accessToken === null ? (
+      {auth.access_token === null ? (
         <h1 className="text-center p-4 -mt-3 mb-3 bg-red-500 rounded-md text-white font-bold">
           please connect with zerodha
         </h1>
@@ -102,32 +105,7 @@ function Home({ accessToken }) {
         />
       </div>
       <div className="p-3">
-        <h1 className="my-5 text-2xl p-2 font-semibold">Orders</h1>
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-1">
-          {market_orders?.map((item) => {
-            return (
-              <OrderCard
-                key={item.id}
-                trading_symbol={item.trading_symbol}
-                action={item.action}
-                quantity={item.quantity}
-                exchange={item.exchange}
-              />
-            );
-          })}
-
-          {limit_orders?.map((item) => {
-            return (
-              <OrderCard
-                key={item.id}
-                trading_symbol={item.trading_symbol}
-                action={item.action}
-                quantity={item.quantity}
-                exchange={item.exchange}
-              />
-            );
-          })}
-        </div>
+        <h1 className="my-5 text-2xl p-2 font-semibold">Dashboard</h1>
       </div>
     </div>
   );

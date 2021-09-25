@@ -14,6 +14,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.getItem("@apiSecret")
   );
 
+  const [is_loading, setIsLoading] = useState(true);
+
   const userLogin = (username, password, cb = () => {}) => {
     fetch(rest.user_login, {
       method: "POST",
@@ -46,6 +48,7 @@ export const AuthProvider = ({ children }) => {
   const userLogout = () => {
     localStorage.removeItem("@authToken");
     setLogin(false);
+    setLoginError(false);
     localStorage.removeItem("@accessToken");
   };
 
@@ -81,12 +84,14 @@ export const AuthProvider = ({ children }) => {
       .then((res) => {
         if (res.ok) {
           setLogin(true);
+          setIsLoading(false);
         } else {
           throw new Error("user not logged in");
         }
       })
       .catch((err) => {
         setLogin(false);
+        setIsLoading(false);
       });
   }, []);
 
@@ -94,6 +99,7 @@ export const AuthProvider = ({ children }) => {
     login,
     loginError,
     access_token,
+    is_loading,
     userLogin,
     userLogout,
     connectZerodha,

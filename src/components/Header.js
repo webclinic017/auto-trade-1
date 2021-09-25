@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
-import { BellIcon, LogoutIcon, SettingIcon } from "./icons";
+import { LogoutIcon, SettingIcon } from "./icons";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
+import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
+
 import LabelImportantIcon from "@material-ui/icons/LabelImportant";
 import { IconButton } from "@material-ui/core";
 
@@ -33,7 +35,7 @@ function Header() {
       {auth.login ? (
         <div className="flex-1 flex flex-row justify-end items-center">
           <IconButton className="mx-1 md:block">
-            <BellIcon className="h-6 w-6" />
+            <ShoppingBasketIcon className="h-6 w-6" />
           </IconButton>
 
           <IconButton onClick={auth.userLogout} className="mx-1 md:block">
