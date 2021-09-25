@@ -34,6 +34,9 @@ export const TradeProvider = ({ children }) => {
   // dictonaries to keep track of orders
   const orders = useRef({});
 
+  //pnl
+  const [pnl, setPnl] = useState(0);
+
   // keep track of number of orders
   const [buys, setBuys] = useState(0);
   const [sells, setSells] = useState(0);
@@ -93,6 +96,7 @@ export const TradeProvider = ({ children }) => {
 
         let maxLoss = -1 * Number(localStorage.getItem("maxLoss"));
         let pnl = data.pnl;
+        setPnl(pnl);
 
         if (pnl >= maxProfit || pnl <= maxLoss) {
           //   dispatch({
@@ -512,6 +516,7 @@ export const TradeProvider = ({ children }) => {
         tradeStockFut,
         sells,
         buys,
+        pnl,
       }}
     >
       {children}

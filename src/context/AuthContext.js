@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { rest } from "../api";
 
+import { useStore } from "./StoreContext";
+
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -17,6 +19,8 @@ export const AuthProvider = ({ children }) => {
   );
 
   const [is_loading, setIsLoading] = useState(true);
+
+  const [{ margins }, dispatch] = useStore();
 
   const userLogin = (username, password, cb = () => {}) => {
     fetch(rest.user_login, {
@@ -108,6 +112,27 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
+  const updateMargins = () => {
+    fetch(rest.margins, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+      },
+      body: JSON.stringify({
+        api_key: api_key,
+        access_token: access_token,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch({
+          type: "UPDATE_MARGINS",
+          margins: data,
+        });
+      });
+  };
+
   useEffect(() => {
     fetch(rest.is_login, {
       method: "GET",
@@ -133,21 +158,15 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (access_token !== null) {
-      fetch(rest.margins, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${localStorage.getItem("@authToken")}`,
-        },
-        body: JSON.stringify({
-          api_key: api_key,
-          access_token: access_token,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log(data));
+      updateMargins();
     }
+
+    // eslint-disable-next-line
   }, [access_token, api_key]);
+
+  useEffect(() => {
+    console.log(margins);
+  }, [margins]);
 
   const context = {
     login,

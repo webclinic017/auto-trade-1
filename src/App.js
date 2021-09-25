@@ -51,15 +51,15 @@ function Main() {
 
 function App() {
   return (
-    <AuthProvider>
-      <StoreProvider initialState={initialState} reducer={reducer}>
+    <StoreProvider initialState={initialState} reducer={reducer}>
+      <AuthProvider>
         <NetworkProvider>
           <TradeProvider>
             <Main />
           </TradeProvider>
         </NetworkProvider>
-      </StoreProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </StoreProvider>
   );
 }
 

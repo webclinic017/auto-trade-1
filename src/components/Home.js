@@ -5,11 +5,15 @@ import WorkerCard from "./WorkerCard";
 import { DollarIcon, MoneyIcon } from "./icons";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
+import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
+
 import { IconButton } from "@material-ui/core";
 
 import { useTrade } from "../context/TradeContext";
 import { useNetwork } from "../context/NetworkContext";
 import { useAuth } from "../context/AuthContext";
+import { useStore } from "../context/StoreContext";
 
 function Home() {
   const {
@@ -22,6 +26,7 @@ function Home() {
 
     sells,
     buys,
+    pnl,
 
     setTradeIndexOpt,
     setTradeIndexFut,
@@ -32,6 +37,7 @@ function Home() {
 
   const network = useNetwork();
   const auth = useAuth();
+  const [{ margins }] = useStore();
 
   return (
     <div className="p-3 mt-5">
@@ -58,10 +64,10 @@ function Home() {
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         <ColorCard
-          title="Margin Avaliable"
+          title="Total Margin"
           color="yellow"
           icon={() => <DollarIcon className="h-6 w-6" />}
-          value={localStorage.getItem("investment")}
+          value={margins?.equity?.available?.opening_balance}
         />
         <ColorCard
           title="Buy"
@@ -75,13 +81,20 @@ function Home() {
           icon={() => <AccountBalanceIcon className="h-6 w-6" />}
           value={sells}
         />
+        <ColorCard
+          title="Margin Avaliable"
+          color="blue"
+          value={margins?.equity?.available?.live_balance}
+          icon={() => <AccountBalanceWalletIcon className="h-6 w-6" />}
+        />
+        <ColorCard
+          title="Pnl"
+          color="gray"
+          value={pnl}
+          icon={() => <AttachMoneyIcon className="h-6 w-6" />}
+        />
       </div>
 
-      <div className="p-8">
-        <h1>Total Margin: 100000</h1>
-        <h1>Margin Used: 1000</h1>
-        <h1>Avaliable Margin: 50000</h1>
-      </div>
       <h1 className="my-5 text-2xl p-2 font-semibold">Workers</h1>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
         <WorkerCard
