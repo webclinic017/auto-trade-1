@@ -62,6 +62,12 @@ function Home() {
         </h1>
       )}
 
+      {auth.profileError ? (
+        <h1 className="text-center p-4 -mt-3 mb-3 bg-red-500 rounded-md text-white font-bold">
+          please update your settings
+        </h1>
+      ) : null}
+
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         <ColorCard
           title="Total Margin"

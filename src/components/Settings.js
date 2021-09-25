@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from "react";
 import { Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 
+import { useAuth } from "../context/AuthContext";
+
 import { rest } from "../api";
 
 function Settings() {
@@ -14,6 +16,7 @@ function Settings() {
   const maxLoss = useRef();
 
   const history = useHistory();
+  const auth = useAuth();
 
   const updateProfile = () => {
     const body = {
@@ -36,6 +39,8 @@ function Settings() {
     }).then((res) => {
       if (!res.ok) {
         throw new Error("failed to update profile");
+      } else {
+        auth.setProfileError(false);
       }
     });
   };
