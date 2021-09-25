@@ -131,6 +131,24 @@ export const AuthProvider = ({ children }) => {
       });
   }, []);
 
+  useEffect(() => {
+    if (access_token !== null) {
+      fetch(rest.margins, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("@authToken")}`,
+        },
+        body: JSON.stringify({
+          api_key: api_key,
+          access_token: access_token,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log(data));
+    }
+  }, [access_token, api_key]);
+
   const context = {
     login,
     loginError,

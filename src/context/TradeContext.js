@@ -15,7 +15,6 @@ import {
 } from "../services/ws";
 import { rest } from "../api";
 import { make_order_request } from "../services/zerodha";
-import { useStore } from "./StoreContext";
 
 const TradeContext = createContext();
 
@@ -38,9 +37,6 @@ export const TradeProvider = ({ children }) => {
   // keep track of number of orders
   const [buys, setBuys] = useState(0);
   const [sells, setSells] = useState(0);
-
-  // use the store context
-  const [{ market_orders, limit_orders }, dispatch] = useStore();
 
   // append the trade
   const appendTrade = (trade) => {

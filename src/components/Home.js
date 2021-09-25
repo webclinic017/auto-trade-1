@@ -8,7 +8,6 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import { IconButton } from "@material-ui/core";
 
 import { useTrade } from "../context/TradeContext";
-import { useStore } from "../context/StoreContext";
 import { useNetwork } from "../context/NetworkContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -31,7 +30,6 @@ function Home() {
     setTradeStockFut,
   } = useTrade();
 
-  const [{ market_orders, limit_orders }, dispatch] = useStore();
   const network = useNetwork();
   const auth = useAuth();
 
