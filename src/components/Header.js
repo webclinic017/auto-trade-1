@@ -29,7 +29,7 @@ function Header() {
           <ShowChartIcon className="h-6 w-6" />
         </IconButton>
 
-        <strong className="font-serif">Auto Trade</strong>
+        <strong className="font-serif">Bit Trade</strong>
       </div>
 
       {auth.login ? (

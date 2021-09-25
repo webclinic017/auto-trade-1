@@ -6,6 +6,8 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [login, setLogin] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const [profileError, setProfileError] = useState(false);
+
   const [access_token, setAccessToken] = useState(
     localStorage.getItem("@accessToken")
   );
@@ -37,6 +39,7 @@ export const AuthProvider = ({ children }) => {
       })
       .then((data) => {
         localStorage.setItem("@authToken", data.token);
+        updateProfile();
         setLogin(true);
         cb();
       })
@@ -46,10 +49,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const userLogout = () => {
-    localStorage.removeItem("@authToken");
     setLogin(false);
     setLoginError(false);
-    localStorage.removeItem("@accessToken");
+    localStorage.clear();
   };
 
   const connectZerodha = (requestToken, cb = () => {}) => {
@@ -74,6 +76,38 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
+  const updateProfile = () => {
+    fetch(rest.profile_detail, {
+      method: "GET",
+      headers: {
+        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error("Profile Error");
+        }
+      })
+      .then((data) => {
+        setProfileError(false);
+        localStorage.setItem("@apiKey", data.api_key);
+        setApiKey(data.api_key);
+        localStorage.setItem("@apiSecret", data.api_secret);
+        setApiSecret(data.api_secret);
+
+        localStorage.setItem("investment", data.investment);
+        localStorage.setItem("nfQuantity", data.nifty_investment);
+        localStorage.setItem("bfQuantity", data.banknifty_investment);
+        localStorage.setItem("maxProfit", data.max_profit);
+        localStorage.setItem("maxLoss", data.max_loss);
+      })
+      .catch((err) => {
+        setProfileError(true);
+      });
+  };
+
   useEffect(() => {
     fetch(rest.is_login, {
       method: "GET",
@@ -83,6 +117,8 @@ export const AuthProvider = ({ children }) => {
     })
       .then((res) => {
         if (res.ok) {
+          // retrive the user profile and then update the access token api key etc
+          updateProfile();
           setLogin(true);
           setIsLoading(false);
         } else {
@@ -100,12 +136,14 @@ export const AuthProvider = ({ children }) => {
     loginError,
     access_token,
     is_loading,
+    profileError,
     userLogin,
     userLogout,
     connectZerodha,
     setAccessToken,
     setApiKey,
     setApiSecret,
+    setProfileError,
   };
 
   return (

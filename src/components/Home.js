@@ -37,6 +37,7 @@ function Home() {
 
   return (
     <div className="p-3 mt-5">
+      <h1 className="my-1 text-2xl p-2 font-semibold">Dashboard</h1>
       {network === false ? (
         <h1 className="text-center p-2 my-3 bg-yellow-400 text-white font-bold rounded shadow-md">
           network disconnected please refresh the page
@@ -59,7 +60,7 @@ function Home() {
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         <ColorCard
-          title="Investment"
+          title="Margin Avaliable"
           color="yellow"
           icon={() => <DollarIcon className="h-6 w-6" />}
           value={localStorage.getItem("investment")}
@@ -78,6 +79,11 @@ function Home() {
         />
       </div>
 
+      <div className="p-8">
+        <h1>Total Margin: 100000</h1>
+        <h1>Margin Used: 1000</h1>
+        <h1>Avaliable Margin: 50000</h1>
+      </div>
       <h1 className="my-5 text-2xl p-2 font-semibold">Workers</h1>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
         <WorkerCard
@@ -101,9 +107,6 @@ function Home() {
           value={tradeStockFut}
           fun={setTradeStockFut}
         />
-      </div>
-      <div className="p-3">
-        <h1 className="my-5 text-2xl p-2 font-semibold">Dashboard</h1>
       </div>
     </div>
   );

@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from "react";
 import { Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 
+import { rest } from "../api";
+
 function Settings() {
   const apiKey = useRef();
   const apiSecret = useRef();
@@ -12,6 +14,31 @@ function Settings() {
   const maxLoss = useRef();
 
   const history = useHistory();
+
+  const updateProfile = () => {
+    const body = {
+      api_key: apiKey.current.value,
+      api_secret: apiSecret.current.value,
+      investment: investment.current.value,
+      nifty_investment: nfQuantity.current.value,
+      banknifty_investment: bfQuantity.current.value,
+      max_profit: maxProfit.current.value,
+      max_loss: maxLoss.current.value,
+    };
+
+    fetch(rest.update_profile, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+      },
+      body: JSON.stringify(body),
+    }).then((res) => {
+      if (!res.ok) {
+        throw new Error("failed to update profile");
+      }
+    });
+  };
 
   useEffect(() => {
     apiKey.current.value = localStorage.getItem("@apiKey");
@@ -31,6 +58,8 @@ function Settings() {
     localStorage.setItem("bfQuantity", bfQuantity.current.value);
     localStorage.setItem("maxProfit", maxProfit.current.value);
     localStorage.setItem("maxLoss", maxLoss.current.value);
+
+    updateProfile();
     history.goBack();
   };
 

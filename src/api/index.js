@@ -14,6 +14,9 @@ export const rest = {
   market_api: `${protocol}://` + uri + "/orders/market",
   limit_api: `${protocol}://` + uri + "/orders/limit",
   is_login: `${protocol}://` + uri + "/users/is_login",
+  margins: `${protocol}://` + uri + "/margins/",
+  update_profile: `${protocol}://` + uri + "/users/update/profile",
+  profile_detail: `${protocol}://` + uri + "/users/profile/detail",
 };
 
 export const ws = {
