@@ -12,8 +12,6 @@ import { useStore } from "../context/StoreContext";
 import { useNetwork } from "../context/NetworkContext";
 import { useAuth } from "../context/AuthContext";
 
-import OrderCard from "./OrderCard";
-
 function Home() {
   const {
     tradeMode,

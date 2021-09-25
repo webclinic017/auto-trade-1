@@ -7,6 +7,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableFooter,
+  TablePagination,
   Paper,
   Chip,
 } from "@material-ui/core";
@@ -14,16 +16,14 @@ import color from "tailwindcss/colors";
 import LoadingScreen from "./LoadingScreen";
 
 import { rest } from "../api";
-import { useAuth } from "../context/AuthContext";
 
 function Orders() {
   const [market_orders, setMarketOrders] = useState([]);
   const [limit_orders, setLimitOrders] = useState([]);
   const [is_loading, setIsLoading] = useState(true);
-  const auth = useAuth();
 
-  useEffect(() => {
-    fetch(rest.market_api, {
+  const loadMarketOrders = (url) => {
+    fetch(url, {
       method: "GET",
       headers: {
         Authorization: `Token ${localStorage.getItem("@authToken")}`,
@@ -35,8 +35,10 @@ function Orders() {
       .then((data) => {
         setMarketOrders(data);
       });
+  };
 
-    fetch(rest.limit_api, {
+  const loadLimitOrders = (url) => {
+    fetch(url, {
       method: "GET",
       headers: {
         Authorization: `Token ${localStorage.getItem("@authToken")}`,
@@ -49,6 +51,11 @@ function Orders() {
         setLimitOrders(data);
         setIsLoading(false);
       });
+  };
+
+  useEffect(() => {
+    loadMarketOrders(rest.market_api);
+    loadLimitOrders(rest.limit_api);
   }, []);
 
   if (is_loading) {
@@ -110,6 +117,30 @@ function Orders() {
                   );
                 })}
               </TableBody>
+              <TableFooter>
+                <TablePagination
+                  rowsPerPageOptions={[10]}
+                  count={market_orders.count}
+                  rowsPerPage={10}
+                  page={market_orders.page_number - 1}
+                  nextIconButtonProps={{
+                    onClick: () => {
+                      if (market_orders.next !== null) {
+                        loadMarketOrders(market_orders.next);
+                      }
+                    },
+                    disabled: market_orders.next === null,
+                  }}
+                  backIconButtonProps={{
+                    onClick: () => {
+                      if (market_orders.previous !== null) {
+                        loadMarketOrders(market_orders.previous);
+                      }
+                    },
+                    disabled: market_orders.previous === null,
+                  }}
+                />
+              </TableFooter>
             </Table>
           </TableContainer>
         </div>
@@ -164,6 +195,30 @@ function Orders() {
                   );
                 })}
               </TableBody>
+              <TableFooter>
+                <TablePagination
+                  rowsPerPageOptions={[10]}
+                  count={limit_orders.count}
+                  rowsPerPage={10}
+                  page={limit_orders.page_number - 1}
+                  nextIconButtonProps={{
+                    onClick: () => {
+                      if (limit_orders.next !== null) {
+                        loadMarketOrders(limit_orders.next);
+                      }
+                    },
+                    disabled: limit_orders.next === null,
+                  }}
+                  backIconButtonProps={{
+                    onClick: () => {
+                      if (limit_orders.previous !== null) {
+                        loadMarketOrders(limit_orders.previous);
+                      }
+                    },
+                    disabled: limit_orders.previous === null,
+                  }}
+                />
+              </TableFooter>
             </Table>
           </TableContainer>
         </div>
