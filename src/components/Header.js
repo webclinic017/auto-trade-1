@@ -5,39 +5,19 @@ import LabelImportantIcon from "@material-ui/icons/LabelImportant";
 import { IconButton } from "@material-ui/core";
 
 import { useHistory } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-function Header({ setAccessToken, authToken, setAuthToken }) {
+function Header() {
   const history = useHistory();
   const [popup, setPopup] = useState(false);
   const requestToken = useRef();
 
-  const logoutUser = () => {
-    localStorage.removeItem("@accessToken");
-    setAccessToken(null);
-    localStorage.removeItem("@authToken");
-    setAuthToken(null);
-  };
+  const auth = useAuth();
 
   const connectZerodha = () => {
-    let data = {
-      api_key: localStorage.getItem("@apiKey"),
-      request_token: requestToken.current.value,
-      api_secret: localStorage.getItem("@apiSecret"),
-    };
-
-    fetch("https://ws.bittrade.space/zerodha_login/access_token", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        localStorage.setItem("@accessToken", data.access_token);
-        setAccessToken(data.access_token);
-        setPopup(false);
-      });
+    auth.connectZerodha(requestToken.current.value, () => {
+      setPopup(false);
+    });
   };
 
   return (
@@ -50,13 +30,13 @@ function Header({ setAccessToken, authToken, setAuthToken }) {
         <strong className="font-serif">Auto Trade</strong>
       </div>
 
-      {authToken !== null ? (
+      {auth.login ? (
         <div className="flex-1 flex flex-row justify-end items-center">
           <IconButton className="mx-1 md:block">
             <BellIcon className="h-6 w-6" />
           </IconButton>
 
-          <IconButton onClick={logoutUser} className="mx-1 md:block">
+          <IconButton onClick={auth.userLogout} className="mx-1 md:block">
             <LogoutIcon className="h-6 w-6" />
           </IconButton>
 
@@ -71,7 +51,7 @@ function Header({ setAccessToken, authToken, setAuthToken }) {
             onClick={() => {
               setPopup(true);
               localStorage.removeItem("@accessToken");
-              setAccessToken(null);
+              auth.setAccessToken(null);
               window.open(
                 `https://kite.zerodha.com/connect/login?api_key=${localStorage.getItem(
                   "@apiKey"

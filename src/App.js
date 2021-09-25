@@ -15,6 +15,7 @@ import { TradeProvider } from "./context/TradeContext";
 import { StoreProvider } from "./context/StoreContext";
 import { initialState, reducer } from "./reducers";
 import { NetworkProvider } from "./context/NetworkContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
 function Main() {
   const [accessToken, setAccessToken] = useState(
@@ -23,6 +24,8 @@ function Main() {
   const [authToken, setAuthToken] = useState(
     localStorage.getItem("@authToken")
   );
+
+  const auth = useAuth();
 
   return (
     <Router>
@@ -33,17 +36,17 @@ function Main() {
       />
       <Switch>
         <Route excat path="/settings">
-          {authToken !== null ? <Settings /> : <Redirect to="/login" />}
+          {auth.login ? <Settings /> : <Redirect to="/login" />}
         </Route>
         <Route exact path="/login">
-          {authToken !== null ? (
+          {auth.login ? (
             <Redirect to="/" />
           ) : (
             <Login setAuthToken={setAuthToken} />
           )}
         </Route>
         <Route excat path="/">
-          {authToken !== null ? (
+          {auth.login ? (
             <Home accessToken={accessToken} />
           ) : (
             <Redirect to="/login" />
@@ -56,13 +59,15 @@ function Main() {
 
 function App() {
   return (
-    <StoreProvider initialState={initialState} reducer={reducer}>
-      <NetworkProvider>
-        <TradeProvider>
-          <Main />
-        </TradeProvider>
-      </NetworkProvider>
-    </StoreProvider>
+    <AuthProvider>
+      <StoreProvider initialState={initialState} reducer={reducer}>
+        <NetworkProvider>
+          <TradeProvider>
+            <Main />
+          </TradeProvider>
+        </NetworkProvider>
+      </StoreProvider>
+    </AuthProvider>
   );
 }
 

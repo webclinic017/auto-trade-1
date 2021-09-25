@@ -1,39 +1,17 @@
-import React, { useRef, useState } from "react";
-import { rest } from "../api";
+import React, { useRef } from "react";
+import { useAuth } from "../context/AuthContext";
 
 function Login({ setAuthToken }) {
   const userName = useRef();
   const passWord = useRef();
-  const [loginError, setLoginError] = useState(false);
+
+  const { userLogin, loginError } = useAuth();
 
   const loginUser = () => {
-    fetch(rest.user_login, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: userName.current.value,
-        password: passWord.current.value,
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw Error("login error");
-        } else {
-          setLoginError(false);
-          return res.json();
-        }
-      })
-      .then((data) => {
-        userName.current.value = "";
-        passWord.current.value = "";
-        localStorage.setItem("@authToken", data.token);
-        setAuthToken(data.token);
-      })
-      .catch((err) => {
-        setLoginError(true);
-      });
+    userLogin(userName.current.value, passWord.current.value, () => {
+      userName.current.value = "";
+      passWord.current.value = "";
+    });
   };
 
   return (

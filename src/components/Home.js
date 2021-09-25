@@ -127,18 +127,6 @@ function Home({ accessToken }) {
               />
             );
           })}
-
-          {market_orders?.map((item) => {
-            return (
-              <OrderCard
-                key={item.id}
-                trading_symbol={item.trading_symbol}
-                action={item.action}
-                quantity={item.quantity}
-                exchange={item.exchange}
-              />
-            );
-          })}
         </div>
       </div>
     </div>
