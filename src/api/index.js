@@ -1,10 +1,10 @@
-// const uri = "ws.bittrade.space";
-// const protocol = "https";
-// const wsprotocol = "wss";
+const uri = "ws.bittrade.space";
+const protocol = "https";
+const wsprotocol = "wss";
 
-const uri = "127.0.0.1:8000";
-const protocol = "http";
-const wsprotocol = "ws";
+// const uri = "127.0.0.1:8000";
+// const protocol = "http";
+// const wsprotocol = "ws";
 
 export const rest = {
   uri: `${protocol}://` + uri,
