@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Home from "./components/Home";
 import Settings from "./components/Settings";
 import Login from "./components/Login";
+import Orders from "./components/Orders";
 
 import {
   BrowserRouter as Router,
@@ -36,6 +37,9 @@ function Main() {
           ) : (
             <Login />
           )}
+        </Route>
+        <Route exact path="/orders">
+          {auth.login ? <Orders /> : <Redirect to="/login" />}
         </Route>
         <Route excat path="/">
           {auth.login ? <Home /> : <Redirect to="/login" />}

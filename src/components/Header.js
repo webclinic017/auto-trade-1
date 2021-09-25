@@ -34,7 +34,12 @@ function Header() {
 
       {auth.login ? (
         <div className="flex-1 flex flex-row justify-end items-center">
-          <IconButton className="mx-1 md:block">
+          <IconButton
+            onClick={() => {
+              history.push("/orders");
+            }}
+            className="mx-1 md:block"
+          >
             <ShoppingBasketIcon className="h-6 w-6" />
           </IconButton>
 
