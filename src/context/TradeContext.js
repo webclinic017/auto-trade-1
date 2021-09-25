@@ -138,8 +138,6 @@ export const TradeProvider = ({ children }) => {
               make_order_request(
                 order,
                 () => {
-                  updateMarketOrders();
-                  updateLimitOrders();
                   clearTrade(order);
                 },
                 () => {}
@@ -151,39 +149,6 @@ export const TradeProvider = ({ children }) => {
         }
       });
   };
-
-  // fetch the market orders
-  const updateMarketOrders = () => {
-    fetch(rest.market_api, {
-      method: "GET",
-      headers: {
-        Authorization: `Token ${localStorage.getItem("@authToken")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        dispatch({ type: "UPDATE_MARKET_ORDERS", data: data.results });
-      });
-  };
-
-  // fetch the limit orders
-  const updateLimitOrders = () => {
-    fetch(rest.limit_api, {
-      method: "GET",
-      headers: {
-        Authorization: `Token ${localStorage.getItem("@authToken")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        dispatch({ type: "UPDATE_LIMIT_ORDERS", data: data.results });
-      });
-  };
-
-  useEffect(() => {
-    updateLimitOrders();
-    updateMarketOrders();
-  }, []);
 
   useEffect(() => {
     checkTrade();
@@ -264,7 +229,6 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
-                updateMarketOrders();
               },
               () => {}
             );
@@ -273,7 +237,6 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
-                updateMarketOrders();
               },
               () => {}
             );
@@ -331,7 +294,6 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
-                updateMarketOrders();
               },
               () => {}
             );
@@ -340,7 +302,6 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
-                updateMarketOrders();
               },
               () => {}
             );
@@ -399,7 +360,6 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
-                updateLimitOrders();
               },
               () => {}
             );
@@ -408,7 +368,6 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
-                updateLimitOrders();
               },
               () => {}
             );
@@ -461,7 +420,6 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
-                updateLimitOrders();
               },
               () => {}
             );
@@ -470,7 +428,6 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
-                updateLimitOrders();
               },
               () => {}
             );
@@ -523,7 +480,6 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 appendTrade(trade);
-                updateLimitOrders();
               },
               () => {}
             );
@@ -532,7 +488,6 @@ export const TradeProvider = ({ children }) => {
               trade,
               () => {
                 clearTrade(trade);
-                updateLimitOrders();
               },
               () => {}
             );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Table,
@@ -10,11 +10,50 @@ import {
   Paper,
   Chip,
 } from "@material-ui/core";
-import { useStore } from "../context/StoreContext";
 import color from "tailwindcss/colors";
+import LoadingScreen from "./LoadingScreen";
+
+import { rest } from "../api";
+import { useAuth } from "../context/AuthContext";
 
 function Orders() {
-  const [{ market_orders, limit_orders }] = useStore();
+  const [market_orders, setMarketOrders] = useState([]);
+  const [limit_orders, setLimitOrders] = useState([]);
+  const [is_loading, setIsLoading] = useState(true);
+  const auth = useAuth();
+
+  useEffect(() => {
+    fetch(rest.market_api, {
+      method: "GET",
+      headers: {
+        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setMarketOrders(data);
+      });
+
+    fetch(rest.limit_api, {
+      method: "GET",
+      headers: {
+        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setLimitOrders(data);
+        setIsLoading(false);
+      });
+  }, []);
+
+  if (is_loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="p-3">
@@ -44,7 +83,7 @@ function Orders() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {market_orders.map((item) => {
+                {market_orders?.results?.map((item) => {
                   return (
                     <TableRow key={item.id}>
                       <TableCell>{item.id}</TableCell>
@@ -98,7 +137,7 @@ function Orders() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {limit_orders.map((item) => {
+                {limit_orders?.results?.map((item) => {
                   return (
                     <TableRow key={item.id}>
                       <TableCell>{item.id}</TableCell>
