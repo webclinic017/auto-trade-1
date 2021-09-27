@@ -16,6 +16,8 @@ import {
 import { rest } from "../api";
 import { make_order_request } from "../services/zerodha";
 
+import { useAuth } from "./AuthContext";
+
 const TradeContext = createContext();
 
 export const TradeProvider = ({ children }) => {
@@ -40,6 +42,8 @@ export const TradeProvider = ({ children }) => {
   // keep track of number of orders
   const [buys, setBuys] = useState(0);
   const [sells, setSells] = useState(0);
+
+  const auth = useAuth();
 
   // append the trade
   const appendTrade = (trade) => {
@@ -147,7 +151,8 @@ export const TradeProvider = ({ children }) => {
         } else {
           setTradeMode(true);
         }
-      });
+      })
+      .catch((err) => auth.setAccessToken(null));
   };
 
   useEffect(() => {
