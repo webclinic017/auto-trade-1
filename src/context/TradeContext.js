@@ -17,6 +17,7 @@ import { rest } from "../api";
 import { make_order_request } from "../services/zerodha";
 
 import { useAuth } from "./AuthContext";
+import { useStore } from "./StoreContext";
 
 const TradeContext = createContext();
 
@@ -44,6 +45,7 @@ export const TradeProvider = ({ children }) => {
   const [sells, setSells] = useState(0);
 
   const auth = useAuth();
+  const [, dispatch] = useStore();
 
   // append the trade
   const appendTrade = (trade) => {
@@ -230,13 +232,34 @@ export const TradeProvider = ({ children }) => {
 
         if (trade_) {
           if (tradeMode && trade.tag !== "EXIT") {
-            make_order_request(
-              trade,
-              () => {
-                appendTrade(trade);
+            let price = trade.quantity * trade.ltp;
+            fetch(rest.margins, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${localStorage.getItem("@authToken")}`,
               },
-              () => {}
-            );
+              body: JSON.stringify({
+                api_key: auth.api_key,
+                access_token: auth.access_token,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (price < data["equity"]["available"]["cash"])
+                  make_order_request(
+                    trade,
+                    () => {
+                      data["equity"]["available"]["cash"] -= price;
+                      appendTrade(trade);
+                      dispatch({
+                        type: "UPDATE_MARGINS",
+                        margins: data,
+                      });
+                    },
+                    () => {}
+                  );
+              });
           } else if (trade.tag === "EXIT") {
             make_order_request(
               trade,
@@ -295,13 +318,34 @@ export const TradeProvider = ({ children }) => {
 
         if (trade_) {
           if (tradeMode && trade.tag !== "EXIT") {
-            make_order_request(
-              trade,
-              () => {
-                appendTrade(trade);
+            let price = trade.quantity * trade.ltp;
+            fetch(rest.margins, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${localStorage.getItem("@authToken")}`,
               },
-              () => {}
-            );
+              body: JSON.stringify({
+                api_key: auth.api_key,
+                access_token: auth.access_token,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (price < data["equity"]["available"]["cash"])
+                  make_order_request(
+                    trade,
+                    () => {
+                      data["equity"]["available"]["cash"] -= price;
+                      appendTrade(trade);
+                      dispatch({
+                        type: "UPDATE_MARGINS",
+                        margins: data,
+                      });
+                    },
+                    () => {}
+                  );
+              });
           } else if (trade.tag === "EXIT") {
             make_order_request(
               trade,
@@ -361,13 +405,34 @@ export const TradeProvider = ({ children }) => {
 
         if (trade_ && trade.quantity > 0) {
           if (tradeMode && trade.tag !== "EXIT") {
-            make_order_request(
-              trade,
-              () => {
-                appendTrade(trade);
+            let price = trade.quantity * trade.ltp;
+            fetch(rest.margins, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${localStorage.getItem("@authToken")}`,
               },
-              () => {}
-            );
+              body: JSON.stringify({
+                api_key: auth.api_key,
+                access_token: auth.access_token,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (price < data["equity"]["available"]["cash"])
+                  make_order_request(
+                    trade,
+                    () => {
+                      data["equity"]["available"]["cash"] -= price;
+                      appendTrade(trade);
+                      dispatch({
+                        type: "UPDATE_MARGINS",
+                        margins: data,
+                      });
+                    },
+                    () => {}
+                  );
+              });
           } else if (trade.tag === "EXIT") {
             make_order_request(
               trade,
@@ -421,13 +486,34 @@ export const TradeProvider = ({ children }) => {
 
         if (trade_) {
           if (tradeMode && trade.tag !== "EXIT") {
-            make_order_request(
-              trade,
-              () => {
-                appendTrade(trade);
+            let price = trade.quantity * trade.ltp;
+            fetch(rest.margins, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${localStorage.getItem("@authToken")}`,
               },
-              () => {}
-            );
+              body: JSON.stringify({
+                api_key: auth.api_key,
+                access_token: auth.access_token,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (price < data["equity"]["available"]["cash"])
+                  make_order_request(
+                    trade,
+                    () => {
+                      data["equity"]["available"]["cash"] -= price;
+                      appendTrade(trade);
+                      dispatch({
+                        type: "UPDATE_MARGINS",
+                        margins: data,
+                      });
+                    },
+                    () => {}
+                  );
+              });
           } else if (trade.tag === "EXIT") {
             make_order_request(
               trade,
@@ -481,13 +567,34 @@ export const TradeProvider = ({ children }) => {
 
         if (trade_) {
           if (tradeMode && trade.tag !== "EXIT") {
-            make_order_request(
-              trade,
-              () => {
-                appendTrade(trade);
+            let price = trade.quantity * trade.ltp;
+            fetch(rest.margins, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${localStorage.getItem("@authToken")}`,
               },
-              () => {}
-            );
+              body: JSON.stringify({
+                api_key: auth.api_key,
+                access_token: auth.access_token,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (price < data["equity"]["available"]["cash"])
+                  make_order_request(
+                    trade,
+                    () => {
+                      data["equity"]["available"]["cash"] -= price;
+                      appendTrade(trade);
+                      dispatch({
+                        type: "UPDATE_MARGINS",
+                        margins: data,
+                      });
+                    },
+                    () => {}
+                  );
+              });
           } else if (trade.tag === "EXIT") {
             make_order_request(
               trade,
