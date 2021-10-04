@@ -17,6 +17,9 @@ export const rest = {
   margins: `${protocol}://` + uri + "/margins/",
   update_profile: `${protocol}://` + uri + "/users/update/profile",
   profile_detail: `${protocol}://` + uri + "/users/profile/detail",
+  positions: `${protocol}://` + uri + "/positions",
+  position: (instrument_token) =>
+    `${protocol}://` + uri + `/position/${instrument_token}`,
 };
 
 export const ws = {
