@@ -172,6 +172,7 @@ export const AuthProvider = ({ children }) => {
     login,
     loginError,
     access_token,
+    api_key,
     is_loading,
     profileError,
     userLogin,

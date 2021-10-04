@@ -246,7 +246,7 @@ export const TradeProvider = ({ children }) => {
             })
               .then((res) => res.json())
               .then((data) => {
-                if (price < data["equity"]["available"]["cash"])
+                if (price < data["equity"]["available"]["cash"]) {
                   make_order_request(
                     trade,
                     () => {
@@ -259,6 +259,9 @@ export const TradeProvider = ({ children }) => {
                     },
                     () => {}
                   );
+                } else {
+                  throw new Error("insufficent funds");
+                }
               });
           } else if (trade.tag === "EXIT") {
             make_order_request(
@@ -332,7 +335,7 @@ export const TradeProvider = ({ children }) => {
             })
               .then((res) => res.json())
               .then((data) => {
-                if (price < data["equity"]["available"]["cash"])
+                if (price < data["equity"]["available"]["cash"]) {
                   make_order_request(
                     trade,
                     () => {
@@ -345,6 +348,9 @@ export const TradeProvider = ({ children }) => {
                     },
                     () => {}
                   );
+                } else {
+                  throw new Error("insufficent funds");
+                }
               });
           } else if (trade.tag === "EXIT") {
             make_order_request(
@@ -419,7 +425,7 @@ export const TradeProvider = ({ children }) => {
             })
               .then((res) => res.json())
               .then((data) => {
-                if (price < data["equity"]["available"]["cash"])
+                if (price < data["equity"]["available"]["cash"]) {
                   make_order_request(
                     trade,
                     () => {
@@ -432,6 +438,9 @@ export const TradeProvider = ({ children }) => {
                     },
                     () => {}
                   );
+                } else {
+                  throw new Error("insufficent funds");
+                }
               });
           } else if (trade.tag === "EXIT") {
             make_order_request(
@@ -500,7 +509,7 @@ export const TradeProvider = ({ children }) => {
             })
               .then((res) => res.json())
               .then((data) => {
-                if (price < data["equity"]["available"]["cash"])
+                if (price < data["equity"]["available"]["cash"]) {
                   make_order_request(
                     trade,
                     () => {
@@ -513,6 +522,9 @@ export const TradeProvider = ({ children }) => {
                     },
                     () => {}
                   );
+                } else {
+                  throw new Error("insufficent funds");
+                }
               });
           } else if (trade.tag === "EXIT") {
             make_order_request(
@@ -581,7 +593,7 @@ export const TradeProvider = ({ children }) => {
             })
               .then((res) => res.json())
               .then((data) => {
-                if (price < data["equity"]["available"]["cash"])
+                if (price < data["equity"]["available"]["cash"]) {
                   make_order_request(
                     trade,
                     () => {
@@ -594,6 +606,9 @@ export const TradeProvider = ({ children }) => {
                     },
                     () => {}
                   );
+                } else {
+                  throw new Error("insufficent funds");
+                }
               });
           } else if (trade.tag === "EXIT") {
             make_order_request(
