@@ -124,13 +124,20 @@ export const AuthProvider = ({ children }) => {
         access_token: access_token,
       }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+
+        throw new Error("failed to reterive margin");
+      })
       .then((data) => {
         dispatch({
           type: "UPDATE_MARGINS",
           margins: data,
         });
-      });
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {

@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useEffect,
-  useState,
-  useRef,
-  useContext,
-} from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
 
 import {
   index_opt,
@@ -34,9 +28,6 @@ export const TradeProvider = ({ children }) => {
   // trading mode
   const [tradeMode, setTradeMode] = useState(true);
 
-  // dictonaries to keep track of orders
-  const orders = useRef({});
-
   //pnl
   const [pnl, setPnl] = useState(0);
 
@@ -46,39 +37,6 @@ export const TradeProvider = ({ children }) => {
 
   const auth = useAuth();
   const [, dispatch] = useStore();
-
-  // append the trade
-  const appendTrade = (trade) => {
-    if (!(trade.trading_symbol in orders.current)) {
-      orders.current[trade.trading_symbol] = [trade];
-    } else {
-      orders.current[trade.trading_symbol].push(trade);
-    }
-
-    setBuys((x) => x + 1);
-  };
-
-  // clear the trade
-  const clearTrade = (trade) => {
-    console.log(trade);
-    let total_quantity = 0;
-
-    if (trade.trading_symbol in orders.current) {
-      for (let i = 0; i < orders.current[trade.trading_symbol].length; i++) {
-        if (total_quantity >= 2000) {
-          break;
-        }
-        total_quantity += orders.current[trade.trading_symbol][i].quantity;
-      }
-
-      while (total_quantity > 0) {
-        let order = orders.current[trade.trading_symbol].pop();
-        total_quantity -= order.quantity;
-      }
-    }
-
-    setSells((x) => x + 1);
-  };
 
   const checkTrade = () => {
     fetch(`${rest.pnl}`, {
@@ -105,51 +63,8 @@ export const TradeProvider = ({ children }) => {
         setPnl(pnl);
 
         if (pnl >= maxProfit || pnl <= maxLoss) {
-          //   dispatch({
-          //     type: "STOP_TRADE_MODE",
-          //   });
           setTradeMode(false);
-
-          // exit all the orders
-          Object.keys(orders.current).forEach((key) => {
-            let orders_list = orders.current[key];
-            let order = {
-              endpoint: "",
-              entry_price: 0,
-              exchange: "",
-              instrument_token: 0,
-              quantity: 0,
-              tag: "EXIT",
-              trading_symbol: "",
-              uri: "",
-            };
-
-            orders_list.forEach((o) => {
-              order.endpoint = o.endpoint;
-              order.entry_price = Number(o.entry_price);
-              order.exchange = o.exchange;
-              order.instrument_token = o.instrument_token;
-              order.quantity += Number(o.quantity);
-              order.trading_symbol = o.trading_symbol;
-              order.uri = o.uri;
-            });
-            order.quantity = Math.trunc(order.quantity);
-            if (order.endpoint.includes("buy")) {
-              order.endpoint = order.endpoint.replace("buy", "sell");
-            } else if (order.endpoint.includes("sell")) {
-              order.endpoint = order.endpoint.replace("sell", "buy");
-            }
-
-            if (order.quantity > 0) {
-              make_order_request(
-                order,
-                () => {
-                  clearTrade(order);
-                },
-                () => {}
-              );
-            }
-          });
+          // api for exiting all orders
         } else {
           setTradeMode(true);
         }
@@ -177,100 +92,91 @@ export const TradeProvider = ({ children }) => {
 
   // trading for index options
   useEffect(() => {
-    index_opt.onmessage = (e) => {
+    index_opt.onmessage = async (e) => {
       if (tradeIndexOpt && tradeMode) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
-        let trade_ = true;
 
-        if (trade.tag === "EXIT") {
-          try {
-            trade.quantity = 0;
-            for (
-              let i = 0;
-              i < orders.current[trade.trading_symbol].length;
-              i++
-            ) {
-              if (trade.quantity >= 2000) {
-                break;
-              }
-              trade.quantity += Number(
-                orders.current[trade.trading_symbol][i].quantity
-              );
-            }
-          } catch (err) {
-            trade_ = false;
-            console.error(err);
-          }
-        } else {
-          if (trade.trading_symbol.includes("BANKNIFTY")) {
-            trade.quantity = Math.floor(
-              Number(localStorage.getItem("bfQuantity")) / 36 / trade.ltp / 25
-            );
-            if (trade.quantity === 0) {
-              trade.quantity = 1 * 25;
-            } else {
-              trade.quantity *= 25;
-            }
-          } else {
-            trade.quantity = Math.floor(
-              Number(localStorage.getItem("nfQuantity")) / 36 / trade.ltp / 50
-            );
-            if (trade.quantity === 0) {
-              trade.quantity = 1 * 50;
-            } else {
-              trade.quantity *= 50;
-            }
-          }
-        }
+        // check the type of trade
+        if (trade.tag === "EXIT" && tradeMode) {
+          // first get all the positions from the database
+          const token = trade.instrument_token;
+          const res = await fetch(rest.position(token));
 
-        trade.token = localStorage.getItem("@authToken");
-        console.log(trade);
+          if (res.ok) {
+            const position = await res.json();
 
-        if (trade_) {
-          if (tradeMode && trade.tag !== "EXIT") {
-            let price = trade.quantity * trade.ltp;
-            fetch(rest.margins, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Token ${localStorage.getItem("@authToken")}`,
-              },
-              body: JSON.stringify({
-                api_key: auth.api_key,
-                access_token: auth.access_token,
-              }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                if (price < data["equity"]["available"]["cash"]) {
-                  make_order_request(
-                    trade,
-                    () => {
-                      data["equity"]["available"]["cash"] -= price;
-                      appendTrade(trade);
-                      dispatch({
-                        type: "UPDATE_MARGINS",
-                        margins: data,
-                      });
-                    },
-                    () => {}
-                  );
-                } else {
-                  throw new Error("insufficent funds");
-                }
+            if (position.quantity > 2000) {
+              // make the quantity to exit as 2000
+              position.quantity = 2000;
+            }
+
+            position.tag = "EXIT";
+            position.endpoint = rest.uri + trade.endpoint;
+            position.access_token = localStorage.getItem("@accessToken");
+            position.api_key = localStorage.getItem("@apiKey");
+            position.token = localStorage.getItem("@authToken");
+
+            make_order_request(position, () => {
+              fetch(rest.position(token), {
+                method: "POST",
+                body: JSON.stringify(position),
+              }).then((res) => {
+                setSells((x) => x + 1);
               });
-          } else if (trade.tag === "EXIT") {
-            make_order_request(
-              trade,
-              () => {
-                clearTrade(trade);
-              },
-              () => {}
-            );
+            });
+          }
+        } else if (trade.tag.includes("ENTRY") && tradeMode) {
+          // this is an entry trade
+          const token = trade.instrument_token;
+
+          // just calculate the quantity that must be traded
+          if (trade.trading_symbol.includes("BANKNIFTY")) {
+            trade.quantity = 25;
+          } else {
+            trade.quantity = 50;
+          }
+
+          trade.token = localStorage.getItem("@authToken");
+
+          // now place the buy order by checking the margins api
+          const res = await fetch(rest.margins, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            },
+            body: JSON.stringify({
+              api_key: auth.api_key,
+              access_token: auth.access_token,
+            }),
+          });
+
+          if (res.ok) {
+            const margins = await res.json();
+            const price = trade.ltp * trade.quantity;
+
+            if (price <= margins["equity"]["available"]["cash"] / 2) {
+              // make the request
+              make_order_request(trade, () => {
+                margins["equity"]["available"]["cash"] -= price;
+                dispatch({
+                  type: "UPDATE_MARGINS",
+                  margins,
+                });
+
+                // after the trade has been placed successfully then update the positions api
+                fetch(rest.position(token), {
+                  method: "POST",
+                  body: JSON.stringify(trade),
+                }).then((res) => {
+                  setBuys((x) => x + 1);
+                });
+              });
+            }
           }
         }
       }
@@ -280,86 +186,90 @@ export const TradeProvider = ({ children }) => {
 
   // trading for index futures
   useEffect(() => {
-    index_fut.onmessage = (e) => {
+    index_fut.onmessage = async (e) => {
       if (tradeIndexFut && tradeMode) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
-        trade.access_token = Number(localStorage.getItem("@accessToken"));
-        trade.api_key = Number(localStorage.getItem("@apiKey"));
-        let trade_ = true;
+        trade.access_token = localStorage.getItem("@accessToken");
+        trade.api_key = localStorage.getItem("@apiKey");
 
-        if (trade.tag === "EXIT") {
-          try {
-            trade.quantity = 0;
-            for (
-              let i = 0;
-              i < orders.current[trade.trading_symbol].length;
-              i++
-            ) {
-              if (trade.quantity >= 2000) {
-                break;
-              }
-              trade.quantity += Number(
-                orders.current[trade.trading_symbol][i].quantity
-              );
+        // check the type of trade
+        if (trade.tag === "EXIT" && tradeMode) {
+          // first get all the positions from the database
+          const token = trade.instrument_token;
+          const res = await fetch(rest.position(token));
+
+          if (res.ok) {
+            const position = await res.json();
+
+            if (position.quantity > 2000) {
+              // make the quantity to exit as 2000
+              position.quantity = 2000;
             }
-          } catch (err) {
-            console.error(err);
-            trade_ = false;
+            position.tag = "EXIT";
+            position.endpoint = rest.uri + trade.endpoint;
+            position.access_token = localStorage.getItem("@accessToken");
+            position.api_key = localStorage.getItem("@apiKey");
+            position.token = localStorage.getItem("@authToken");
+
+            make_order_request(position, () => {
+              fetch(rest.position(token), {
+                method: "POST",
+                body: JSON.stringify(position),
+              }).then((res) => {
+                setSells((x) => x + 1);
+              });
+            });
           }
-        } else {
+        } else if (trade.tag.includes("ENTRY") && tradeMode) {
+          // this is an entry trade
+          const token = trade.instrument_token;
+
+          // just calculate the quantity that must be traded
           if (trade.trading_symbol.includes("BANKNIFTY")) {
             trade.quantity = 25;
           } else {
             trade.quantity = 50;
           }
-        }
 
-        trade.token = localStorage.getItem("@authToken");
-        console.log(trade);
+          trade.token = localStorage.getItem("@authToken");
 
-        if (trade_) {
-          if (tradeMode && trade.tag !== "EXIT") {
-            let price = trade.quantity * trade.ltp;
-            fetch(rest.margins, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Token ${localStorage.getItem("@authToken")}`,
-              },
-              body: JSON.stringify({
-                api_key: auth.api_key,
-                access_token: auth.access_token,
-              }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                if (price < data["equity"]["available"]["cash"]) {
-                  make_order_request(
-                    trade,
-                    () => {
-                      data["equity"]["available"]["cash"] -= price;
-                      appendTrade(trade);
-                      dispatch({
-                        type: "UPDATE_MARGINS",
-                        margins: data,
-                      });
-                    },
-                    () => {}
-                  );
-                } else {
-                  throw new Error("insufficent funds");
-                }
+          // now place the buy order by checking the margins api
+          const res = await fetch(rest.margins, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            },
+            body: JSON.stringify({
+              api_key: auth.api_key,
+              access_token: auth.access_token,
+            }),
+          });
+
+          if (res.ok) {
+            const margins = await res.json();
+            const price = trade.ltp * trade.quantity;
+
+            if (price <= margins["equity"]["available"]["cash"] / 2) {
+              // make the request
+              make_order_request(trade, () => {
+                margins["equity"]["available"]["cash"] -= price;
+                dispatch({
+                  type: "UPDATE_MARGINS",
+                  margins,
+                });
+
+                // after the trade has been placed successfully then update the positions api
+                fetch(rest.position(token), {
+                  method: "POST",
+                  body: JSON.stringify(trade),
+                }).then((res) => {
+                  setBuys((x) => x + 1);
+                });
               });
-          } else if (trade.tag === "EXIT") {
-            make_order_request(
-              trade,
-              () => {
-                clearTrade(trade);
-              },
-              () => {}
-            );
+            }
           }
         }
       }
@@ -370,86 +280,91 @@ export const TradeProvider = ({ children }) => {
 
   // trading for stocks
   useEffect(() => {
-    stock.onmessage = (e) => {
-      if (tradeStock) {
+    stock.onmessage = async (e) => {
+      if (tradeStock && tradeMode) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
-        let trade_ = true;
 
-        if (trade.tag === "EXIT") {
-          try {
-            trade.quantity = 0;
-            for (
-              let i = 0;
-              i < orders.current[trade.trading_symbol].length;
-              i++
-            ) {
-              if (trade.quantity >= 2000) {
-                break;
-              }
+        // check the type of trade
+        if (trade.tag === "EXIT" && tradeMode) {
+          // first get all the positions from the database
+          const token = trade.instrument_token;
+          const res = await fetch(rest.position(token));
 
-              trade.quantity += Number(
-                orders.current[trade.trading_symbol][i].quantity
-              );
+          if (res.ok) {
+            const position = await res.json();
+
+            if (position.quantity > 2000) {
+              // make the quantity to exit as 2000
+              position.quantity = 2000;
             }
-          } catch (error) {
-            trade_ = false;
-            console.error(error);
-          }
-        } else {
-          trade.quantity = Math.trunc(
-            Number(localStorage.getItem("investment")) / trade.ltp
-          );
-        }
+            position.tag = "EXIT";
+            position.endpoint = rest.uri + trade.endpoint;
+            position.access_token = localStorage.getItem("@accessToken");
+            position.api_key = localStorage.getItem("@apiKey");
+            position.token = localStorage.getItem("@authToken");
+            position.price = trade.price;
 
-        trade.token = localStorage.getItem("@authToken");
-        console.log(trade);
-        clearTrade(trade);
-
-        if (trade_ && trade.quantity > 0) {
-          if (tradeMode && trade.tag !== "EXIT") {
-            let price = trade.quantity * trade.ltp;
-            fetch(rest.margins, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Token ${localStorage.getItem("@authToken")}`,
-              },
-              body: JSON.stringify({
-                api_key: auth.api_key,
-                access_token: auth.access_token,
-              }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                if (price < data["equity"]["available"]["cash"]) {
-                  make_order_request(
-                    trade,
-                    () => {
-                      data["equity"]["available"]["cash"] -= price;
-                      appendTrade(trade);
-                      dispatch({
-                        type: "UPDATE_MARGINS",
-                        margins: data,
-                      });
-                    },
-                    () => {}
-                  );
-                } else {
-                  throw new Error("insufficent funds");
-                }
+            make_order_request(position, () => {
+              fetch(rest.position(token), {
+                method: "POST",
+                body: JSON.stringify(position),
+              }).then((res) => {
+                setSells((x) => x + 1);
               });
-          } else if (trade.tag === "EXIT") {
-            make_order_request(
-              trade,
-              () => {
-                clearTrade(trade);
-              },
-              () => {}
-            );
+            });
+          }
+        } else if (trade.tag.includes("ENTRY") && tradeMode) {
+          // this is an entry trade
+          const token = trade.instrument_token;
+
+          // just calculate the quantity that must be traded
+          if (trade.trading_symbol.includes("BANKNIFTY")) {
+            trade.quantity = 25;
+          } else {
+            trade.quantity = 50;
+          }
+
+          trade.token = localStorage.getItem("@authToken");
+
+          // now place the buy order by checking the margins api
+          const res = await fetch(rest.margins, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            },
+            body: JSON.stringify({
+              api_key: auth.api_key,
+              access_token: auth.access_token,
+            }),
+          });
+
+          if (res.ok) {
+            const margins = await res.json();
+            const price = trade.ltp * trade.quantity;
+
+            if (price <= margins["equity"]["available"]["cash"] / 2) {
+              // make the request
+              make_order_request(trade, () => {
+                margins["equity"]["available"]["cash"] -= price;
+                dispatch({
+                  type: "UPDATE_MARGINS",
+                  margins,
+                });
+
+                // after the trade has been placed successfully then update the positions api
+                fetch(rest.position(token), {
+                  method: "POST",
+                  body: JSON.stringify(trade),
+                }).then((res) => {
+                  setBuys((x) => x + 1);
+                });
+              });
+            }
           }
         }
       }
@@ -460,80 +375,91 @@ export const TradeProvider = ({ children }) => {
 
   // trading for stock options
   useEffect(() => {
-    stock_opt.onmessage = (e) => {
+    stock_opt.onmessage = async (e) => {
       if (tradeStockOpt && tradeMode) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
-        trade.token = localStorage.getItem("@authToken");
-        let trade_ = true;
 
-        if (trade.tag === "EXIT") {
-          try {
-            trade.quantity = 0;
-            for (
-              let i = 0;
-              i < orders.current[trade.trading_symbol].length;
-              i++
-            ) {
-              if (trade.quantity >= 2000) {
-                break;
-              }
-              trade.quantity += Number(
-                orders.current[trade.trading_symbol][i].quantity
-              );
+        // check the type of trade
+        if (trade.tag === "EXIT" && tradeMode) {
+          // first get all the positions from the database
+          const token = trade.instrument_token;
+          const res = await fetch(rest.position(token));
+
+          if (res.ok) {
+            const position = await res.json();
+
+            if (position.quantity > 2000) {
+              // make the quantity to exit as 2000
+              position.quantity = 2000;
             }
-          } catch (err) {
-            console.error(err);
-            trade_ = false;
-          }
-        }
+            position.tag = "EXIT";
+            position.endpoint = rest.uri + trade.endpoint;
+            position.access_token = localStorage.getItem("@accessToken");
+            position.api_key = localStorage.getItem("@apiKey");
+            position.token = localStorage.getItem("@authToken");
+            position.price = trade.price;
 
-        console.log(trade);
-
-        if (trade_) {
-          if (tradeMode && trade.tag !== "EXIT") {
-            let price = trade.quantity * trade.ltp;
-            fetch(rest.margins, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Token ${localStorage.getItem("@authToken")}`,
-              },
-              body: JSON.stringify({
-                api_key: auth.api_key,
-                access_token: auth.access_token,
-              }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                if (price < data["equity"]["available"]["cash"]) {
-                  make_order_request(
-                    trade,
-                    () => {
-                      data["equity"]["available"]["cash"] -= price;
-                      appendTrade(trade);
-                      dispatch({
-                        type: "UPDATE_MARGINS",
-                        margins: data,
-                      });
-                    },
-                    () => {}
-                  );
-                } else {
-                  throw new Error("insufficent funds");
-                }
+            make_order_request(position, () => {
+              fetch(rest.position(token), {
+                method: "POST",
+                body: JSON.stringify(position),
+              }).then((res) => {
+                setSells((x) => x + 1);
               });
-          } else if (trade.tag === "EXIT") {
-            make_order_request(
-              trade,
-              () => {
-                clearTrade(trade);
-              },
-              () => {}
-            );
+            });
+          }
+        } else if (trade.tag.includes("ENTRY") && tradeMode) {
+          // this is an entry trade
+          const token = trade.instrument_token;
+
+          // just calculate the quantity that must be traded
+          if (trade.trading_symbol.includes("BANKNIFTY")) {
+            trade.quantity = 25;
+          } else {
+            trade.quantity = 50;
+          }
+
+          trade.token = localStorage.getItem("@authToken");
+
+          // now place the buy order by checking the margins api
+          const res = await fetch(rest.margins, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            },
+            body: JSON.stringify({
+              api_key: auth.api_key,
+              access_token: auth.access_token,
+            }),
+          });
+
+          if (res.ok) {
+            const margins = await res.json();
+            const price = trade.ltp * trade.quantity;
+
+            if (price <= margins["equity"]["available"]["cash"] / 2) {
+              // make the request
+              make_order_request(trade, () => {
+                margins["equity"]["available"]["cash"] -= price;
+                dispatch({
+                  type: "UPDATE_MARGINS",
+                  margins,
+                });
+
+                // after the trade has been placed successfully then update the positions api
+                fetch(rest.position(token), {
+                  method: "POST",
+                  body: JSON.stringify(trade),
+                }).then((res) => {
+                  setBuys((x) => x + 1);
+                });
+              });
+            }
           }
         }
       }
@@ -544,80 +470,91 @@ export const TradeProvider = ({ children }) => {
 
   // trading for stock futures
   useEffect(() => {
-    stock_fut.onmessage = (e) => {
+    stock_fut.onmessage = async (e) => {
       if (tradeStockFut && tradeMode) {
         let data = JSON.parse(e.data);
         let trade = data.trade;
         trade.endpoint = rest.uri + trade.endpoint;
         trade.access_token = localStorage.getItem("@accessToken");
         trade.api_key = localStorage.getItem("@apiKey");
-        trade.token = localStorage.getItem("@authToken");
-        let trade_ = true;
 
-        if (trade.tag === "EXIT") {
-          try {
-            trade.quantity = 0;
-            for (
-              let i = 0;
-              i < orders.current[trade.trading_symbol].length;
-              i++
-            ) {
-              if (trade.quantity >= 2000) {
-                break;
-              }
-              trade.quantity += Number(
-                orders.current[trade.trading_symbol][i].quantity
-              );
+        // check the type of trade
+        if (trade.tag === "EXIT" && tradeMode) {
+          // first get all the positions from the database
+          const token = trade.instrument_token;
+          const res = await fetch(rest.position(token));
+
+          if (res.ok) {
+            const position = await res.json();
+
+            if (position.quantity > 2000) {
+              // make the quantity to exit as 2000
+              position.quantity = 2000;
             }
-          } catch (err) {
-            console.error(err);
-            trade_ = false;
-          }
-        }
+            position.tag = "EXIT";
+            position.endpoint = rest.uri + trade.endpoint;
+            position.access_token = localStorage.getItem("@accessToken");
+            position.api_key = localStorage.getItem("@apiKey");
+            position.token = localStorage.getItem("@authToken");
+            position.price = trade.price;
 
-        console.log(trade);
-
-        if (trade_) {
-          if (tradeMode && trade.tag !== "EXIT") {
-            let price = trade.quantity * trade.ltp;
-            fetch(rest.margins, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Token ${localStorage.getItem("@authToken")}`,
-              },
-              body: JSON.stringify({
-                api_key: auth.api_key,
-                access_token: auth.access_token,
-              }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                if (price < data["equity"]["available"]["cash"]) {
-                  make_order_request(
-                    trade,
-                    () => {
-                      data["equity"]["available"]["cash"] -= price;
-                      appendTrade(trade);
-                      dispatch({
-                        type: "UPDATE_MARGINS",
-                        margins: data,
-                      });
-                    },
-                    () => {}
-                  );
-                } else {
-                  throw new Error("insufficent funds");
-                }
+            make_order_request(position, () => {
+              fetch(rest.position(token), {
+                method: "POST",
+                body: JSON.stringify(position),
+              }).then((res) => {
+                setSells((x) => x + 1);
               });
-          } else if (trade.tag === "EXIT") {
-            make_order_request(
-              trade,
-              () => {
-                clearTrade(trade);
-              },
-              () => {}
-            );
+            });
+          }
+        } else if (trade.tag.includes("ENTRY") && tradeMode) {
+          // this is an entry trade
+          const token = trade.instrument_token;
+
+          // just calculate the quantity that must be traded
+          if (trade.trading_symbol.includes("BANKNIFTY")) {
+            trade.quantity = 25;
+          } else {
+            trade.quantity = 50;
+          }
+
+          trade.token = localStorage.getItem("@authToken");
+
+          // now place the buy order by checking the margins api
+          const res = await fetch(rest.margins, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            },
+            body: JSON.stringify({
+              api_key: auth.api_key,
+              access_token: auth.access_token,
+            }),
+          });
+
+          if (res.ok) {
+            const margins = await res.json();
+            const price = trade.ltp * trade.quantity;
+
+            if (price <= margins["equity"]["available"]["cash"] / 2) {
+              // make the request
+              make_order_request(trade, () => {
+                margins["equity"]["available"]["cash"] -= price;
+                dispatch({
+                  type: "UPDATE_MARGINS",
+                  margins,
+                });
+
+                // after the trade has been placed successfully then update the positions api
+                fetch(rest.position(token), {
+                  method: "POST",
+                  body: JSON.stringify(trade),
+                }).then((res) => {
+                  setBuys((x) => x + 1);
+                });
+              });
+            }
           }
         }
       }
