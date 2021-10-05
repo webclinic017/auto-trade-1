@@ -104,7 +104,12 @@ export const TradeProvider = ({ children }) => {
         if (trade.tag === "EXIT" && tradeMode) {
           // first get all the positions from the database
           const token = trade.instrument_token;
-          const res = await fetch(rest.position(token));
+          const res = await fetch(rest.position(token), {
+            method: "GET",
+            headers: {
+              Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            },
+          });
 
           if (res.ok) {
             const position = await res.json();
@@ -198,7 +203,12 @@ export const TradeProvider = ({ children }) => {
         if (trade.tag === "EXIT" && tradeMode) {
           // first get all the positions from the database
           const token = trade.instrument_token;
-          const res = await fetch(rest.position(token));
+          const res = await fetch(rest.position(token), {
+            method: "GET",
+            headers: {
+              Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            },
+          });
 
           if (res.ok) {
             const position = await res.json();
@@ -292,7 +302,12 @@ export const TradeProvider = ({ children }) => {
         if (trade.tag === "EXIT" && tradeMode) {
           // first get all the positions from the database
           const token = trade.instrument_token;
-          const res = await fetch(rest.position(token));
+          const res = await fetch(rest.position(token), {
+            method: "GET",
+            headers: {
+              Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            },
+          });
 
           if (res.ok) {
             const position = await res.json();
@@ -387,7 +402,12 @@ export const TradeProvider = ({ children }) => {
         if (trade.tag === "EXIT" && tradeMode) {
           // first get all the positions from the database
           const token = trade.instrument_token;
-          const res = await fetch(rest.position(token));
+          const res = await fetch(rest.position(token), {
+            method: "GET",
+            headers: {
+              Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            },
+          });
 
           if (res.ok) {
             const position = await res.json();
@@ -482,7 +502,12 @@ export const TradeProvider = ({ children }) => {
         if (trade.tag === "EXIT" && tradeMode) {
           // first get all the positions from the database
           const token = trade.instrument_token;
-          const res = await fetch(rest.position(token));
+          const res = await fetch(rest.position(token), {
+            method: "GET",
+            headers: {
+              Authorization: `Token ${localStorage.getItem("@authToken")}`,
+            },
+          });
 
           if (res.ok) {
             const position = await res.json();
