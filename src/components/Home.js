@@ -1,6 +1,7 @@
 import React from "react";
 import ColorCard from "./ColorCard";
 import WorkerCard from "./WorkerCard";
+import Positions from "./Positions";
 
 import { DollarIcon, MoneyIcon } from "./icons";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
@@ -125,6 +126,7 @@ function Home() {
           fun={setTradeStockFut}
         />
       </div>
+      <Positions />
     </div>
   );
 }
