@@ -24,9 +24,5 @@ export const rest = {
 
 export const ws = {
   ws: `${wsprotocol}://` + uri,
-  stocks: `${wsprotocol}://` + uri + "/ws/stocks_notifications/",
-  index: `${wsprotocol}://` + uri + "/ws/index_opt_notifications/",
-  index_fut: `${wsprotocol}://` + uri + "/ws/index_fut_notifications/",
-  stock_options: `${wsprotocol}://` + uri + "/ws/stock_opt_notifications/",
-  stock_futures: `${wsprotocol}://` + uri + "/ws/stock_fut_notifications/",
+  socket: `${wsprotocol}://` + uri + "/ws/indian/trade",
 };
