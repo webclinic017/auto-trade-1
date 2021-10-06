@@ -87,8 +87,9 @@ export const TradeProvider = ({ children }) => {
     socket.onmessage = async (e) => {
       if (tradeMode) {
         let data = JSON.parse(e.data);
-        let type = data.type;
+        const type = data.type;
         let flag = false;
+        const trade = data.trade;
 
         switch (type) {
           case "INDEXOPT":
