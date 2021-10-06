@@ -116,7 +116,11 @@ export const TradeProvider = ({ children }) => {
           // function for entry
           if (trade.tag === "ENTRY") {
             const token = trade.instrument_token;
+
+            trade.access_token = localStorage.getItem("@accessToken");
+            trade.api_key = localStorage.getItem("@apiKey");
             trade.token = localStorage.getItem("@authToken");
+
             const res = await fetch(rest.margins, {
               method: "POST",
               headers: {
@@ -124,8 +128,8 @@ export const TradeProvider = ({ children }) => {
                 Authorization: `Token ${localStorage.getItem("@authToken")}`,
               },
               body: JSON.stringify({
-                api_key: auth.api_key,
-                access_token: auth.access_token,
+                api_key: localStorage.getItem("@apiKey"),
+                access_token: localStorage.getItem("@accessToken"),
               }),
             });
 
