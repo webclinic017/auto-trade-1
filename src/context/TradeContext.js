@@ -129,6 +129,10 @@ export const TradeProvider = ({ children }) => {
               fetch(rest.position(token), {
                 method: "POST",
                 body: JSON.stringify(position),
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Token ${localStorage.getItem("@authToken")}`,
+                },
               }).then((res) => {
                 setSells((x) => x + 1);
               });
@@ -177,6 +181,12 @@ export const TradeProvider = ({ children }) => {
                 fetch(rest.position(token), {
                   method: "POST",
                   body: JSON.stringify(trade),
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${localStorage.getItem(
+                      "@authToken"
+                    )}`,
+                  },
                 }).then((res) => {
                   setBuys((x) => x + 1);
                 });
@@ -227,6 +237,10 @@ export const TradeProvider = ({ children }) => {
               fetch(rest.position(token), {
                 method: "POST",
                 body: JSON.stringify(position),
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Token ${localStorage.getItem("@authToken")}`,
+                },
               }).then((res) => {
                 setSells((x) => x + 1);
               });
@@ -275,6 +289,12 @@ export const TradeProvider = ({ children }) => {
                 fetch(rest.position(token), {
                   method: "POST",
                   body: JSON.stringify(trade),
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${localStorage.getItem(
+                      "@authToken"
+                    )}`,
+                  },
                 }).then((res) => {
                   setBuys((x) => x + 1);
                 });
@@ -327,6 +347,10 @@ export const TradeProvider = ({ children }) => {
               fetch(rest.position(token), {
                 method: "POST",
                 body: JSON.stringify(position),
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Token ${localStorage.getItem("@authToken")}`,
+                },
               }).then((res) => {
                 setSells((x) => x + 1);
               });
@@ -335,13 +359,6 @@ export const TradeProvider = ({ children }) => {
         } else if (trade.tag.includes("ENTRY") && tradeMode) {
           // this is an entry trade
           const token = trade.instrument_token;
-
-          // just calculate the quantity that must be traded
-          if (trade.trading_symbol.includes("BANKNIFTY")) {
-            trade.quantity = 25;
-          } else {
-            trade.quantity = 50;
-          }
 
           trade.token = localStorage.getItem("@authToken");
 
@@ -375,6 +392,12 @@ export const TradeProvider = ({ children }) => {
                 fetch(rest.position(token), {
                   method: "POST",
                   body: JSON.stringify(trade),
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${localStorage.getItem(
+                      "@authToken"
+                    )}`,
+                  },
                 }).then((res) => {
                   setBuys((x) => x + 1);
                 });
@@ -427,6 +450,10 @@ export const TradeProvider = ({ children }) => {
               fetch(rest.position(token), {
                 method: "POST",
                 body: JSON.stringify(position),
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Token ${localStorage.getItem("@authToken")}`,
+                },
               }).then((res) => {
                 setSells((x) => x + 1);
               });
@@ -435,13 +462,6 @@ export const TradeProvider = ({ children }) => {
         } else if (trade.tag.includes("ENTRY") && tradeMode) {
           // this is an entry trade
           const token = trade.instrument_token;
-
-          // just calculate the quantity that must be traded
-          if (trade.trading_symbol.includes("BANKNIFTY")) {
-            trade.quantity = 25;
-          } else {
-            trade.quantity = 50;
-          }
 
           trade.token = localStorage.getItem("@authToken");
 
@@ -475,6 +495,12 @@ export const TradeProvider = ({ children }) => {
                 fetch(rest.position(token), {
                   method: "POST",
                   body: JSON.stringify(trade),
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${localStorage.getItem(
+                      "@authToken"
+                    )}`,
+                  },
                 }).then((res) => {
                   setBuys((x) => x + 1);
                 });
@@ -527,6 +553,10 @@ export const TradeProvider = ({ children }) => {
               fetch(rest.position(token), {
                 method: "POST",
                 body: JSON.stringify(position),
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Token ${localStorage.getItem("@authToken")}`,
+                },
               }).then((res) => {
                 setSells((x) => x + 1);
               });
@@ -535,13 +565,6 @@ export const TradeProvider = ({ children }) => {
         } else if (trade.tag.includes("ENTRY") && tradeMode) {
           // this is an entry trade
           const token = trade.instrument_token;
-
-          // just calculate the quantity that must be traded
-          if (trade.trading_symbol.includes("BANKNIFTY")) {
-            trade.quantity = 25;
-          } else {
-            trade.quantity = 50;
-          }
 
           trade.token = localStorage.getItem("@authToken");
 
@@ -575,6 +598,12 @@ export const TradeProvider = ({ children }) => {
                 fetch(rest.position(token), {
                   method: "POST",
                   body: JSON.stringify(trade),
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${localStorage.getItem(
+                      "@authToken"
+                    )}`,
+                  },
                 }).then((res) => {
                   setBuys((x) => x + 1);
                 });
