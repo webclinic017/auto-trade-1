@@ -188,6 +188,7 @@ export const TradeProvider = ({ children }) => {
               position.access_token = localStorage.getItem("@accessToken");
               position.api_key = localStorage.getItem("@apiKey");
               position.token = localStorage.getItem("@authToken");
+              position.exchange = trade.exchange;
 
               make_order_request(position, () => {
                 fetch(rest.position(token), {
