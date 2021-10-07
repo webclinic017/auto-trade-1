@@ -120,6 +120,7 @@ export const TradeProvider = ({ children }) => {
             trade.access_token = localStorage.getItem("@accessToken");
             trade.api_key = localStorage.getItem("@apiKey");
             trade.token = localStorage.getItem("@authToken");
+            trade.endpoint = rest.uri + trade.endpoint;
 
             const res = await fetch(rest.margins, {
               method: "POST",
