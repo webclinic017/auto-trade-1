@@ -1,10 +1,10 @@
-const uri = "ws.bittrade.space";
-const protocol = "https";
-const wsprotocol = "wss";
+// const uri = "ws.bittrade.space";
+// const protocol = "https";
+// const wsprotocol = "wss";
 
-// const uri = "127.0.0.1:8000";
-// const protocol = "http";
-// const wsprotocol = "ws";
+const protocol = "http";
+const wsprotocol = "ws";
+const uri = "127.0.0.1:8000";
 
 export const rest = {
   uri: `${protocol}://` + uri,
@@ -18,8 +18,7 @@ export const rest = {
   update_profile: `${protocol}://` + uri + "/users/update/profile",
   profile_detail: `${protocol}://` + uri + "/users/profile/detail",
   positions: `${protocol}://` + uri + "/positions",
-  position: (instrument_token) =>
-    `${protocol}://` + uri + `/position/${instrument_token}`,
+  enque: `${protocol}://` + uri + "/enque",
 };
 
 export const ws = {

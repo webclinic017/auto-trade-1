@@ -1,9 +1,8 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
 import { socket } from "../services/ws";
 import { rest } from "../api";
-import { make_order_request } from "../services/zerodha";
 import { useAuth } from "./AuthContext";
-import { useStore } from "./StoreContext";
+// import { useStore } from "./StoreContext";
 
 const TradeContext = createContext();
 
@@ -28,7 +27,7 @@ export const TradeProvider = ({ children }) => {
   const [sells, setSells] = useState(0);
 
   const auth = useAuth();
-  const [, dispatch] = useStore();
+  // const [, dispatch] = useStore();
 
   const checkTrade = () => {
     fetch(`${rest.pnl}`, {
@@ -113,99 +112,21 @@ export const TradeProvider = ({ children }) => {
         }
 
         if (flag) {
-          // function for entry
-          if (trade.tag === "ENTRY") {
-            const token = trade.instrument_token;
-
-            trade.access_token = localStorage.getItem("@accessToken");
-            trade.api_key = localStorage.getItem("@apiKey");
-            trade.token = localStorage.getItem("@authToken");
-            trade.endpoint = rest.uri + trade.endpoint;
-
-            const res = await fetch(rest.margins, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Token ${localStorage.getItem("@authToken")}`,
-              },
-              body: JSON.stringify({
-                api_key: localStorage.getItem("@apiKey"),
-                access_token: localStorage.getItem("@accessToken"),
-              }),
-            });
-
-            if (res.ok) {
-              const margins = await res.json();
-              const price = trade.ltp * trade.quantity;
-
-              if (price <= margins["equity"]["available"]["cash"] / 2) {
-                // make the request
-                make_order_request(trade, () => {
-                  margins["equity"]["available"]["cash"] -= price;
-                  dispatch({
-                    type: "UPDATE_MARGINS",
-                    margins,
-                  });
-
-                  // after the trade has been placed successfully then update the positions api
-                  fetch(rest.position(token), {
-                    method: "POST",
-                    body: JSON.stringify(trade),
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Token ${localStorage.getItem(
-                        "@authToken"
-                      )}`,
-                    },
-                  }).then(() => {
-                    setBuys((x) => x + 1);
-                  });
-                });
-              }
-            }
-          }
-
-          // function for exit
-          if (trade.tag === "EXIT") {
-            const token = trade.instrument_token;
-            const res = await fetch(rest.position(token), {
-              method: "GET",
-              headers: {
-                Authorization: `Token ${localStorage.getItem("@authToken")}`,
-              },
-            });
-
-            if (res.ok) {
-              const position = await res.json();
-
-              if (position.quantity > 2000) {
-                // make the quantity to exit as 2000
-                position.quantity = 2000;
-              }
-
-              position.tag = "EXIT";
-              position.endpoint = rest.uri + trade.endpoint;
-              position.access_token = localStorage.getItem("@accessToken");
-              position.api_key = localStorage.getItem("@apiKey");
-              position.token = localStorage.getItem("@authToken");
-              position.exchange = trade.exchange;
-
-              make_order_request(position, () => {
-                fetch(rest.position(token), {
-                  method: "POST",
-                  body: JSON.stringify(position),
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Token ${localStorage.getItem(
-                      "@authToken"
-                    )}`,
-                  },
-                }).then(() => {
-                  setSells((x) => x + 1);
-                });
-              });
-            }
-          }
+          // modify the trade
+          trade.access_token = localStorage.getItem("@accessToken");
+          trade.api_key = localStorage.getItem("@apiKey");
+          trade.token = localStorage.getItem("@authToken");
+          // send the trade to message queue
+          fetch(rest.enque, {
+            method: "POST",
+            body: JSON.stringify(trade),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${trade.token}`,
+            },
+          }).then((res) => {
+            setTimeout(() => {}, 1000);
+          });
         }
       }
     };
