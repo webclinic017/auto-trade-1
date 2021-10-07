@@ -124,9 +124,40 @@ export const TradeProvider = ({ children }) => {
               "Content-Type": "application/json",
               Authorization: `Token ${trade.token}`,
             },
-          }).then((res) => {
-            setTimeout(() => {}, 1000);
-          });
+          })
+            .then((res) => {
+              return res.json();
+            })
+            .then((data) => {
+              // ask for the status of the task that is inserted into the queue
+              const interval = setInterval(() => {
+                fetch(rest.task_status(data.id), {
+                  method: "GET",
+                  headers: {
+                    Authorization: `Token ${trade.token}`,
+                  },
+                })
+                  .then((res) => {
+                    if (res.ok) {
+                      return res.json();
+                    }
+                    throw new Error("task failed");
+                  })
+                  .then((data) => {
+                    if (data["status"] === "SUCCESS") {
+                      if (trade.tag === "ENTRY") {
+                        setBuys((x) => x + 1);
+                      } else if (trade.tag === "EXIT") {
+                        setSells((x) => x + 1);
+                      }
+                      clearInterval(interval);
+                    } else if (data["status"] === "FAILURE") {
+                      clearInterval(interval);
+                    }
+                  })
+                  .catch((err) => console.log(err));
+              }, 3000);
+            });
         }
       }
     };

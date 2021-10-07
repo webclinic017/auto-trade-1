@@ -19,6 +19,7 @@ export const rest = {
   profile_detail: `${protocol}://` + uri + "/users/profile/detail",
   positions: `${protocol}://` + uri + "/positions",
   enque: `${protocol}://` + uri + "/enque",
+  task_status: (id) => `${protocol}://` + uri + `/task/${id}/status`,
 };
 
 export const ws = {
