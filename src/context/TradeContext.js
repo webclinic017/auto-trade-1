@@ -87,7 +87,7 @@ export const TradeProvider = ({ children }) => {
     socket.onmessage = async (e) => {
       if (tradeMode) {
         let data = JSON.parse(e.data);
-        const type = data.type;
+        const type = data.trade.type;
         let flag = false;
         const trade = data.trade;
 
