@@ -115,7 +115,8 @@ export const TradeProvider = ({ children }) => {
 
         if (
           trade.tag === "ENTRY" &&
-          trade.ltp * trade.quantity <= margins?.equity?.available?.cash
+          trade.ltp * trade.quantity <= margins?.equity?.available?.cash &&
+          trade.ltp > 0
         ) {
           should_trade = true;
         } else {
