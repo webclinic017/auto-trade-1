@@ -1,18 +1,19 @@
 import { rest } from "../api";
 
 const is_status_client_error = (status_code) => {
-  return 400 <= status_code <= 499;
+  return 400 <= status_code && status_code <= 499;
 };
 
 const is_status_server_error = (status_code) => {
-  return 500 <= status_code <= 599;
+  return 500 <= status_code && status_code <= 599;
 };
 
 const is_status_success = (status_code) => {
-  return 200 <= status_code <= 299;
+  return 200 <= status_code && status_code <= 299;
 };
 
 export const make_order_request = (trade) => {
+  console.log("market order started");
   return new Promise(async (resolve, reject) => {
     const endpoint = rest.uri + trade.endpoint;
     const token = trade.token;

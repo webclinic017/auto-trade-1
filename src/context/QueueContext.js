@@ -54,7 +54,7 @@ export const QueueProvider = ({ children }) => {
           setLock(false);
         });
     }
-  });
+  }, [queue, lock]);
 
   return (
     <QueueContext.Provider value={{ push }}>{children}</QueueContext.Provider>
