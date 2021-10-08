@@ -122,6 +122,8 @@ export const TradeProvider = ({ children }) => {
           trade.price > 0
         ) {
           should_trade = true;
+        } else if (trade.tag === "EXIT") {
+          should_trade = true;
         } else {
           should_trade = false;
         }
