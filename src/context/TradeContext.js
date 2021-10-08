@@ -173,7 +173,7 @@ export const TradeProvider = ({ children }) => {
                     }
                   })
                   .catch((err) => console.log(err));
-              }, 3000);
+              }, 10000);
             });
         }
       }
