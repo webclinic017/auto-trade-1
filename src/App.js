@@ -18,6 +18,7 @@ import { initialState, reducer } from "./reducers";
 import { NetworkProvider } from "./context/NetworkContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import LoadingScreen from "./components/LoadingScreen";
+import { QueueProvider } from "./context/QueueContext";
 
 function Main() {
   const auth = useAuth();
@@ -54,9 +55,11 @@ function App() {
     <StoreProvider initialState={initialState} reducer={reducer}>
       <AuthProvider>
         <NetworkProvider>
-          <TradeProvider>
-            <Main />
-          </TradeProvider>
+          <QueueProvider>
+            <TradeProvider>
+              <Main />
+            </TradeProvider>
+          </QueueProvider>
         </NetworkProvider>
       </AuthProvider>
     </StoreProvider>

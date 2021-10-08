@@ -20,6 +20,8 @@ export const rest = {
   positions: `${protocol}://` + uri + "/positions",
   enque: `${protocol}://` + uri + "/enque",
   task_status: (id) => `${protocol}://` + uri + `/task/${id}/status`,
+  position: (instrument_token) =>
+    `${protocol}://` + uri + "/position/" + instrument_token,
 };
 
 export const ws = {

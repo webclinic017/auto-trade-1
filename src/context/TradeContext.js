@@ -3,6 +3,7 @@ import { socket } from "../services/ws";
 import { rest } from "../api";
 import { useAuth } from "./AuthContext";
 import { useStore } from "./StoreContext";
+import { useQueue } from "./QueueContext";
 
 const TradeContext = createContext();
 
@@ -29,6 +30,9 @@ export const TradeProvider = ({ children }) => {
   const auth = useAuth();
 
   const [{ margins }] = useStore();
+
+  // message queue
+  const queue = useQueue();
 
   const checkTrade = () => {
     fetch(`${rest.pnl}`, {
@@ -133,47 +137,7 @@ export const TradeProvider = ({ children }) => {
           trade.api_key = localStorage.getItem("@apiKey");
           trade.token = localStorage.getItem("@authToken");
           // send the trade to message queue
-          fetch(rest.enque, {
-            method: "POST",
-            body: JSON.stringify(trade),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Token ${trade.token}`,
-            },
-          })
-            .then((res) => {
-              return res.json();
-            })
-            .then((data) => {
-              // ask for the status of the task that is inserted into the queue
-              const interval = setInterval(() => {
-                fetch(rest.task_status(data.id), {
-                  method: "GET",
-                  headers: {
-                    Authorization: `Token ${trade.token}`,
-                  },
-                })
-                  .then((res) => {
-                    if (res.ok) {
-                      return res.json();
-                    }
-                    throw new Error("task failed");
-                  })
-                  .then((data) => {
-                    if (data["status"] === "SUCCESS") {
-                      if (trade.tag === "ENTRY") {
-                        setBuys((x) => x + 1);
-                      } else if (trade.tag === "EXIT") {
-                        setSells((x) => x + 1);
-                      }
-                      clearInterval(interval);
-                    } else if (data["status"] === "FAILURE") {
-                      clearInterval(interval);
-                    }
-                  })
-                  .catch((err) => console.log(err));
-              }, 10000);
-            });
+          queue.push(trade);
         }
       }
     };
