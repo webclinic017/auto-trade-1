@@ -29,7 +29,7 @@ export const TradeProvider = ({ children }) => {
 
   const auth = useAuth();
 
-  const [{ margins }] = useStore();
+  const [{ margins, positions }, dispatch] = useStore();
 
   // message queue
   const queue = useQueue();
@@ -79,6 +79,22 @@ export const TradeProvider = ({ children }) => {
       }
     }, 1000 * 30);
 
+    fetch(rest.positions, {
+      method: "GET",
+      headers: {
+        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        dispatch({
+          type: "UPDATE_POSITIONS",
+          positions: positions,
+        });
+      });
+
     return () => {
       clearInterval(interval);
     };
@@ -118,17 +134,19 @@ export const TradeProvider = ({ children }) => {
         }
 
         if (
-          ((trade.tag === "ENTRY" &&
-            trade.ltp * trade.quantity <=
-              margins?.equity?.available?.cash / 1.5) ||
-            trade.tag === "EXIT") &&
+          trade.tag === "ENTRY" &&
+          trade.ltp * trade.quantity <=
+            margins?.equity?.available?.cash / 1.5 &&
           trade.ltp > 0 &&
           trade.entry_price > 0 &&
           trade.price > 0
         ) {
           should_trade = true;
-        } else {
-          should_trade = false;
+        } else if (trade.tag === "EXIT") {
+          should_trade = positions.find((el) => {
+            return el.instrument_token === trade.instrument_token;
+          });
+          should_trade = should_trade === undefined ? false : true;
         }
 
         if (flag && should_trade) {

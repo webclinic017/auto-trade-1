@@ -1,11 +1,14 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { make_order_request } from "../services/zerodha";
+import { useStore } from "../context/StoreContext";
+import { rest } from "../api";
 
 export const QueueContext = createContext();
 
 export const QueueProvider = ({ children }) => {
   const [queue, setQueue] = useState([]);
   const [lock, setLock] = useState(false);
+  const [, dispatch] = useStore();
 
   const push = (trade) => {
     setQueue((q) => {
@@ -29,7 +32,22 @@ export const QueueProvider = ({ children }) => {
       make_order_request(trade)
         .then((txt) => {
           console.log(txt);
+          return fetch(rest.positions, {
+            method: "GET",
+            headers: {
+              Authorization: `Token ${trade.token}`,
+            },
+          });
+        })
+        .then((res) => {
+          return res.json();
+        })
+        .then((positions) => {
           setLock(false);
+          dispatch({
+            type: "UPDATE_POSITIONS",
+            positions: positions,
+          });
         })
         .catch((err) => {
           console.log(err);
