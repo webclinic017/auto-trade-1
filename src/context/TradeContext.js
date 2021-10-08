@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState, useContext } from "react";
 import { socket } from "../services/ws";
 import { rest } from "../api";
 import { useAuth } from "./AuthContext";
-// import { useStore } from "./StoreContext";
+import { useStore } from "./StoreContext";
 
 const TradeContext = createContext();
 
