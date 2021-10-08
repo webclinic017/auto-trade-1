@@ -27,7 +27,8 @@ export const TradeProvider = ({ children }) => {
   const [sells, setSells] = useState(0);
 
   const auth = useAuth();
-  // const [, dispatch] = useStore();
+
+  const [{ margins }] = useStore();
 
   const checkTrade = () => {
     fetch(`${rest.pnl}`, {
@@ -84,10 +85,11 @@ export const TradeProvider = ({ children }) => {
   // single websocket for handling all the trades
   useEffect(() => {
     socket.onmessage = async (e) => {
+      let should_trade, flag;
+
       if (tradeMode) {
         let data = JSON.parse(e.data);
         const type = data.trade.type;
-        let flag = false;
         const trade = data.trade;
 
         switch (type) {
@@ -111,7 +113,16 @@ export const TradeProvider = ({ children }) => {
             break;
         }
 
-        if (flag) {
+        if (
+          trade.tag === "ENTRY" &&
+          trade.ltp * trade.quantity <= margins?.equity?.available?.cash
+        ) {
+          should_trade = true;
+        } else {
+          should_trade = false;
+        }
+
+        if (flag && should_trade) {
           // modify the trade
           trade.access_token = localStorage.getItem("@accessToken");
           trade.api_key = localStorage.getItem("@apiKey");
