@@ -19,6 +19,7 @@ import { NetworkProvider } from "./context/NetworkContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import LoadingScreen from "./components/LoadingScreen";
 import { QueueProvider } from "./context/QueueContext";
+import RequestToken from "./components/RequestToken";
 
 function Main() {
   const auth = useAuth();
@@ -27,6 +28,9 @@ function Main() {
     <Router>
       <Header />
       <Switch>
+        <Route exact path="/request_token-zerodha/:requestToken">
+          <RequestToken />
+        </Route>
         <Route excat path="/settings">
           {auth.login ? <Settings /> : <Redirect to="/login" />}
         </Route>

@@ -12,13 +12,25 @@ import { useAuth } from "../context/AuthContext";
 function Header() {
   const history = useHistory();
   const [popup, setPopup] = useState(false);
-  const requestToken = useRef();
+  // const requestToken = useRef();
 
   const auth = useAuth();
 
-  const connectZerodha = () => {
-    auth.connectZerodha(requestToken.current.value, () => {
-      setPopup(false);
+  const removeTokenListener = () => {
+    window.removeEventListener("storage", null);
+  };
+
+  const listenForReqToken = () => {
+    localStorage.removeItem("@requestToken");
+    window.addEventListener("storage", () => {
+      const requestToken = localStorage.getItem("@requestToken");
+      if (requestToken !== null) {
+        auth.connectZerodha(requestToken, () => {
+          setPopup(false);
+          removeTokenListener();
+          localStorage.removeItem("@requestToken");
+        });
+      }
     });
   };
 
@@ -59,6 +71,7 @@ function Header() {
               setPopup(true);
               localStorage.removeItem("@accessToken");
               auth.setAccessToken(null);
+              listenForReqToken();
               window.open(
                 `https://kite.zerodha.com/connect/login?api_key=${localStorage.getItem(
                   "@apiKey"
@@ -76,27 +89,19 @@ function Header() {
 
       {popup ? (
         <div className="w-screen h-screen  absolute top-0 right-0 bg-opacity-50 bg-gray-500 flex flex-col justify-center items-center">
-          <div className="bg-white z-50 p-2 rounded-lg flex flex-col items-center justify-center">
-            <div className="grid grid-cols-5 gap-1">
-              <input
-                type="text"
-                className="border-gray-300 col-span-3"
-                placeholder="request token"
-                ref={requestToken}
-              />
-              <button
-                onClick={connectZerodha}
-                className="bg-blue-500 text-white font-bold"
-              >
-                connect
-              </button>
-              <button
-                onClick={() => setPopup(false)}
-                className="bg-red-500 text-white font-bold"
-              >
-                close
-              </button>
-            </div>
+          <div className="z-50 rounded-lg flex flex-col items-center justify-center">
+            <h1 className="font-bold text-xl text-white my-3">
+              connecting ......
+            </h1>
+            <button
+              onClick={() => {
+                setPopup(false);
+                removeTokenListener();
+              }}
+              className="bg-red-500 px-4 py-2 rounded text-white font-bold"
+            >
+              close
+            </button>
           </div>
         </div>
       ) : null}
