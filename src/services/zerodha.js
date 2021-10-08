@@ -13,12 +13,12 @@ const is_status_success = (status_code) => {
 };
 
 export const make_order_request = (trade) => {
-  console.log("market order started");
-  return new Promise(async (resolve, reject) => {
+  let promise = new Promise(async (resolve, reject) => {
     const endpoint = rest.uri + trade.endpoint;
     const token = trade.token;
 
     if (trade.tag === "ENTRY") {
+      console.log("market order started");
       const margins_req = await fetch(rest.margins, {
         method: "POST",
         headers: {
@@ -31,18 +31,21 @@ export const make_order_request = (trade) => {
         }),
       });
 
+      console.log(margins_req.status);
+
       if (
         is_status_client_error(margins_req.status) ||
         is_status_server_error(margins_req.status)
       ) {
-        reject("failure");
-        throw new Error("margins error");
+        return reject(new Error("margins error"));
       }
 
       const margins = await margins_req.json();
       const price = trade.ltp * trade.quantity;
 
-      if (price <= margins?.equity?.avaliable?.cash / 1.5) {
+      console.log(margins);
+
+      if (price <= margins?.equity?.available?.live_balance / 2) {
         const req = await fetch(endpoint, {
           method: "POST",
           headers: {
@@ -56,8 +59,7 @@ export const make_order_request = (trade) => {
           is_status_client_error(req.status) ||
           is_status_server_error(req.status)
         ) {
-          reject("failure");
-          throw new Error("failed to place order");
+          return reject(new Error("failed to place order"));
         }
 
         const position_req = await fetch(
@@ -73,11 +75,9 @@ export const make_order_request = (trade) => {
         );
 
         if (is_status_success(position_req)) {
-          resolve("success");
-          return;
+          return resolve("success");
         } else {
-          reject("failure");
-          return;
+          return reject(new Error("position failure"));
         }
       }
     } else if (trade.tag === "EXIT") {
@@ -92,8 +92,7 @@ export const make_order_request = (trade) => {
         is_status_server_error(position_req) ||
         is_status_client_error(position_req.status)
       ) {
-        reject("failed");
-        throw new Error("position failure");
+        return reject(new Error("position failure"));
       }
 
       const position = await position_req.json();
@@ -111,8 +110,7 @@ export const make_order_request = (trade) => {
         is_status_client_error(request.status) ||
         is_status_server_error(request.status)
       ) {
-        reject("failure");
-        throw new Error("failed to place order");
+        return reject(new Error("failed to place order"));
       }
 
       await fetch(rest.position(trade.instrument_token), {
@@ -123,6 +121,9 @@ export const make_order_request = (trade) => {
         },
         body: JSON.stringify(trade),
       });
+
+      return resolve("success");
     }
   });
+  return promise;
 };
