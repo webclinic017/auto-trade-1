@@ -167,6 +167,8 @@ export const TradeProvider = ({ children }) => {
     tradeStockOpt,
     tradeStockFut,
     margins,
+    positions,
+    queue,
   ]);
 
   return (
