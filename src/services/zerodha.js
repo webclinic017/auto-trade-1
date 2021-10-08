@@ -24,10 +24,10 @@ export const make_order_request = (trade) => {
           "Content-Type": "application/json",
           Authorization: `Token ${token}`,
         },
-        body: {
+        body: JSON.stringify({
           api_key: trade.api_key,
           access_token: trade.access_token,
-        },
+        }),
       });
 
       if (
