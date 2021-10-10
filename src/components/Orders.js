@@ -23,8 +23,8 @@ function Orders() {
   const [is_loading, setIsLoading] = useState(true);
 
   const loadMarketOrders = (url) => {
-    if (url.find("https") === -1) {
-      url.replace("http", "https");
+    if (url.search("https") === -1) {
+      url = url.replace("http", "https");
     }
 
     fetch(url, {
@@ -42,8 +42,8 @@ function Orders() {
   };
 
   const loadLimitOrders = (url) => {
-    if (url.find("https") === -1) {
-      url.replace("http", "https");
+    if (url.search("https") === -1) {
+      url = url.replace("http", "https");
     }
 
     fetch(url, {
