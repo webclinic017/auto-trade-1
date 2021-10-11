@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
       api_secret: api_secret,
     };
 
-    fetch("https://ws.bittrade.space/zerodha_login/access_token", {
+    fetch(`${rest.uri}/zerodha_login/access_token`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
