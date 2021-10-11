@@ -65,7 +65,7 @@ export const make_order_request = (trade) => {
         const position_req = await fetch(
           rest.position(trade.instrument_token),
           {
-            method: "GET",
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Token ${token}`,
