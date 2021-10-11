@@ -104,7 +104,7 @@ export const TradeProvider = ({ children }) => {
 
   // single websocket for handling all the trades
   useEffect(() => {
-    socket.onmessage = async (e) => {
+    socket.onmessage = (e) => {
       let should_trade, flag;
 
       if (tradeMode) {
@@ -149,6 +149,7 @@ export const TradeProvider = ({ children }) => {
           should_trade = should_trade === undefined ? false : true;
         }
 
+        console.log(positions);
         if (flag && should_trade) {
           // modify the trade
           trade.access_token = localStorage.getItem("@accessToken");
