@@ -144,15 +144,15 @@ export const TradeProvider = ({ children }) => {
           should_trade = true;
         } else if (trade.tag === "EXIT") {
           should_trade = positions.find((el) => {
-            return el.instrument_token === trade.instrument_token;
+            return el.trading_symbol === trade.trading_symbol;
           });
           console.log(trade);
-          console.log(should_trade);
+          console.log(positions);
+
           should_trade = should_trade === undefined ? false : true;
         }
 
         // console.log(positions);
-        console.log(should_trade);
         if (flag && should_trade) {
           // modify the trade
           trade.access_token = localStorage.getItem("@accessToken");
