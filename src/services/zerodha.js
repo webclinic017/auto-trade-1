@@ -74,7 +74,7 @@ export const make_order_request = (trade) => {
           }
         );
 
-        if (is_status_success(position_req)) {
+        if (is_status_success(position_req.status)) {
           return resolve("success");
         } else {
           return reject(new Error("position failure"));
@@ -89,7 +89,7 @@ export const make_order_request = (trade) => {
       });
 
       if (
-        is_status_server_error(position_req) ||
+        is_status_server_error(position_req.status) ||
         is_status_client_error(position_req.status)
       ) {
         return reject(new Error("position failure"));
