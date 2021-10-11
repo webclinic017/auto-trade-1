@@ -1,4 +1,4 @@
-const uri = "ws.bittrade.space";
+const uri = "auto.bittrade.space";
 const protocol = "https";
 const wsprotocol = "wss";
 
