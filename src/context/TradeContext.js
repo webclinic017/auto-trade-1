@@ -143,13 +143,20 @@ export const TradeProvider = ({ children }) => {
         ) {
           should_trade = true;
         } else if (trade.tag === "EXIT") {
-          should_trade = positions.find((el) => {
-            return el.trading_symbol === trade.trading_symbol;
-          });
-          console.log(trade);
+          should_trade = false;
+          console.log("positions");
           console.log(positions);
 
-          should_trade = should_trade === undefined ? false : true;
+          positions.forEach((el) => {
+            if (
+              el.trading_symbol === trade.trading_symbol ||
+              String(el.instrument_token) === String(trade.instrument_token)
+            ) {
+              should_trade = true;
+            }
+          });
+
+          console.log(should_trade);
         }
 
         // console.log(positions);

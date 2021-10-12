@@ -36,7 +36,7 @@ export const QueueProvider = ({ children }) => {
 
   useEffect(() => {
     // check for the length of the queue
-    // console.log(queue);
+    console.log(queue);
     if (queue.length > 0 && lock === false) {
       let queue_ = queue;
       setLock(true);
