@@ -32,7 +32,7 @@ export const QueueProvider = ({ children }) => {
           positions: positions,
         });
       });
-  });
+  }, []);
 
   useEffect(() => {
     // check for the length of the queue
