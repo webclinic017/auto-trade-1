@@ -20,7 +20,7 @@ export const QueueProvider = ({ children }) => {
     fetch(rest.positions, {
       method: "GET",
       headers: {
-        Authorization: `Token ${trade.token}`,
+        Authorization: `Token ${localStorage.getItem("@authToken")}`,
       },
     })
       .then((res) => {
