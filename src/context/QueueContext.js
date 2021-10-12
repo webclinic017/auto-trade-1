@@ -17,6 +17,24 @@ export const QueueProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    fetch(rest.positions, {
+      method: "GET",
+      headers: {
+        Authorization: `Token ${trade.token}`,
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((positions) => {
+        dispatch({
+          type: "UPDATE_POSITIONS",
+          positions: positions,
+        });
+      });
+  });
+
+  useEffect(() => {
     // check for the length of the queue
     // console.log(queue);
     if (queue.length > 0 && lock === false) {
