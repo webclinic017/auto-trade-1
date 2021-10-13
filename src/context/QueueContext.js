@@ -48,7 +48,7 @@ export const QueueProvider = ({ children }) => {
   useEffect(() => {
     // check for the length of the queue
     console.log(queueBuy);
-    if (queueBuy.length > 0 && queueBuy.length <= 10 && lockBuy === false) {
+    if (queueBuy.length > 0 && lockBuy === false) {
       let queue_ = queueBuy;
       setLockBuy(true);
 

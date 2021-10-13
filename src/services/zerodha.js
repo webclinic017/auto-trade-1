@@ -96,6 +96,9 @@ export const make_order_request = (trade) => {
       }
 
       const position = await position_req.json();
+      if(trade.type.includes('STOCK')){
+        
+      }
       trade.quantity = position.quantity <= 2000 ? position.quantity : 2000;
       const request = await fetch(endpoint, {
         method: "POST",
