@@ -6,12 +6,21 @@ import { rest } from "../api";
 export const QueueContext = createContext();
 
 export const QueueProvider = ({ children }) => {
-  const [queue, setQueue] = useState([]);
-  const [lock, setLock] = useState(false);
+  const [queueBuy, setQueueBuy] = useState([]);
+  const [lockBuy, setLockBuy] = useState(false);
+  const [queueSell, setQueueSell] = useState([]);
+  const [lockSell, setLockSell] = useState(false);
+
   const [, dispatch] = useStore();
 
-  const push = (trade) => {
-    setQueue((q) => {
+  const pushBuy = (trade) => {
+    setQueueBuy((q) => {
+      return [...q, trade];
+    });
+  };
+
+  const pushSell = (trade) => {
+    setQueueSell((q) => {
       return [...q, trade];
     });
   };
@@ -36,14 +45,14 @@ export const QueueProvider = ({ children }) => {
 
   useEffect(() => {
     // check for the length of the queue
-    console.log(queue);
-    if (queue.length > 0 && lock === false) {
-      let queue_ = queue;
+    console.log(queueBuy);
+    if (queueBuy.length > 0 && queueBuy.length <= 10 && lockBuy === false) {
+      let queue_ = queueBuy;
       setLock(true);
 
       // get the trade object from the queue
       const trade = queue_.shift();
-      setQueue(queue_);
+      setQueueBuy(queue_);
       make_order_request(trade)
         .then((txt) => {
           console.log(txt);
@@ -58,7 +67,7 @@ export const QueueProvider = ({ children }) => {
           return res.json();
         })
         .then((positions) => {
-          setLock(false);
+          setLockBuy(false);
           dispatch({
             type: "UPDATE_POSITIONS",
             positions: positions,
@@ -66,13 +75,52 @@ export const QueueProvider = ({ children }) => {
         })
         .catch((err) => {
           console.log(err);
-          setLock(false);
+          setLockBuy(false);
         });
     }
-  }, [queue, lock]);
+  });
+
+  useEffect(() => {
+    // check for the length of the queue
+    console.log(queueSell);
+    if (queueSell.length > 0 && lockSell === false) {
+      let queue_ = queueSell;
+      setLock(true);
+
+      // get the trade object from the queue
+      const trade = queue_.shift();
+      setQueueSell(queue_);
+      make_order_request(trade)
+        .then((txt) => {
+          console.log(txt);
+          return fetch(rest.positions, {
+            method: "GET",
+            headers: {
+              Authorization: `Token ${trade.token}`,
+            },
+          });
+        })
+        .then((res) => {
+          return res.json();
+        })
+        .then((positions) => {
+          setLockSell(false);
+          dispatch({
+            type: "UPDATE_POSITIONS",
+            positions: positions,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          setLockSell(false);
+        });
+    }
+  });
 
   return (
-    <QueueContext.Provider value={{ push }}>{children}</QueueContext.Provider>
+    <QueueContext.Provider value={{ pushBuy, pushSell }}>
+      {children}
+    </QueueContext.Provider>
   );
 };
 

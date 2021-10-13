@@ -166,7 +166,12 @@ export const TradeProvider = ({ children }) => {
           trade.api_key = localStorage.getItem("@apiKey");
           trade.token = localStorage.getItem("@authToken");
           // send the trade to message queue
-          queue.push(trade);
+
+          if (trade.tag === "ENTRY") {
+            queue.pushBuy(trade);
+          } else {
+            queue.pushSell(trade);
+          }
         }
       }
     };
