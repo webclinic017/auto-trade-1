@@ -14,9 +14,11 @@ export const QueueProvider = ({ children }) => {
   const [, dispatch] = useStore();
 
   const pushBuy = (trade) => {
-    setQueueBuy((q) => {
-      return [...q, trade];
-    });
+    if (queueBuy.length <= 10) {
+      setQueueBuy((q) => {
+        return [...q, trade];
+      });
+    }
   };
 
   const pushSell = (trade) => {
