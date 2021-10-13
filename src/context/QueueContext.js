@@ -48,7 +48,7 @@ export const QueueProvider = ({ children }) => {
     console.log(queueBuy);
     if (queueBuy.length > 0 && queueBuy.length <= 10 && lockBuy === false) {
       let queue_ = queueBuy;
-      setLock(true);
+      setLockBuy(true);
 
       // get the trade object from the queue
       const trade = queue_.shift();
@@ -85,7 +85,7 @@ export const QueueProvider = ({ children }) => {
     console.log(queueSell);
     if (queueSell.length > 0 && lockSell === false) {
       let queue_ = queueSell;
-      setLock(true);
+      setLockSell(true);
 
       // get the trade object from the queue
       const trade = queue_.shift();
