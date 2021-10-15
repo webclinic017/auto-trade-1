@@ -48,14 +48,13 @@ export const TradeProvider = ({ children }) => {
         }
 
         if (data["pnl"]["error"] === undefined) {
-          setPnl(data["pnl"]["pnl"]);
           let maxProfit = Number(localStorage.getItem("maxProfit"));
 
           if (maxProfit === 0 || Number.isNaN(maxProfit)) {
             maxProfit = Infinity;
           }
           let maxLoss = -1 * Number(localStorage.getItem("maxLoss"));
-          let pnl = data.pnl;
+          let pnl = data["pnl"]["pnl"];
           setPnl(pnl);
           if (pnl >= maxProfit || pnl <= maxLoss) {
             setTradeMode(false);
