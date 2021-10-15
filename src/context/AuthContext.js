@@ -17,6 +17,9 @@ export const AuthProvider = ({ children }) => {
   const [api_secret, setApiSecret] = useState(
     localStorage.getItem("@apiSecret")
   );
+  const [auth_token, setAuthToken] = useState(
+    localStorage.getItem("@authToken")
+  );
 
   const [is_loading, setIsLoading] = useState(true);
 
@@ -43,6 +46,7 @@ export const AuthProvider = ({ children }) => {
       })
       .then((data) => {
         localStorage.setItem("@authToken", data.token);
+        setAuthToken(data.token);
         updateProfile();
         setLogin(true);
         cb();
@@ -180,6 +184,7 @@ export const AuthProvider = ({ children }) => {
     loginError,
     access_token,
     api_key,
+    auth_token,
     is_loading,
     profileError,
     userLogin,

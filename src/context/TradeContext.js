@@ -1,6 +1,5 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
-import { socket } from "../services/ws";
-import { rest } from "../api";
+import { socket, sockuser } from "../services/ws";
 import { useAuth } from "./AuthContext";
 import { useStore } from "./StoreContext";
 import { useQueue } from "./QueueContext";
@@ -27,80 +26,61 @@ export const TradeProvider = ({ children }) => {
   const [buys, setBuys] = useState(0);
   const [sells, setSells] = useState(0);
 
+  // authentication context
   const auth = useAuth();
 
+  // get the margins of the user
   const [{ margins, positions }, dispatch] = useStore();
 
   // message queue
   const queue = useQueue();
 
-  const checkTrade = () => {
-    fetch(`${rest.pnl}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Token ${localStorage.getItem("@authToken")}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        api_key: localStorage.getItem("@apiKey"),
-        access_token: localStorage.getItem("@accessToken"),
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        let maxProfit = Number(localStorage.getItem("maxProfit"));
-
-        if (maxProfit === 0 || Number.isNaN(maxProfit)) {
-          maxProfit = Infinity;
-        }
-
-        let maxLoss = -1 * Number(localStorage.getItem("maxLoss"));
-        let pnl = data.pnl;
-        setPnl(pnl);
-
-        if (pnl >= maxProfit || pnl <= maxLoss) {
-          setTradeMode(false);
-          // api for exiting all orders
-        } else {
-          setTradeMode(true);
-        }
-      })
-      .catch((err) => auth.setAccessToken(null));
-  };
-
   useEffect(() => {
-    checkTrade();
-    let interval = setInterval(() => {
-      if (
-        localStorage.getItem("@authToken") &&
-        localStorage.getItem("@accessToken")
-      ) {
-        checkTrade();
-      }
-    }, 1000 * 30);
+    if (auth.auth_token && auth.access_token) {
+      sockuser.onmessage = (e) => {
+        const data = JSON.parse(e.data);
 
-    fetch(rest.positions, {
-      method: "GET",
-      headers: {
-        Authorization: `Token ${localStorage.getItem("@authToken")}`,
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        dispatch({
-          type: "UPDATE_POSITIONS",
-          positions: positions,
-        });
-      });
+        if (data["positions"]["error"] === undefined) {
+          dispatch({
+            type: "UPDATE_POSITIONS",
+            positions: data["positions"]["net"],
+          });
+        }
+
+        if (data["pnl"]["error"] === undefined) {
+          setPnl(data["pnl"]["pnl"]);
+          let maxProfit = Number(localStorage.getItem("maxProfit"));
+
+          if (maxProfit === 0 || Number.isNaN(maxProfit)) {
+            maxProfit = Infinity;
+          }
+          let maxLoss = -1 * Number(localStorage.getItem("maxLoss"));
+          let pnl = data.pnl;
+          setPnl(pnl);
+          if (pnl >= maxProfit || pnl <= maxLoss) {
+            setTradeMode(false);
+            // api for exiting all orders
+          } else {
+            setTradeMode(true);
+          }
+        }
+      };
+    }
+
+    const interval = setInterval(() => {
+      sockuser.send(
+        JSON.stringify({
+          api_key: auth.api_key,
+          access_token: auth.access_token,
+        })
+      );
+    }, 30000);
 
     return () => {
       clearInterval(interval);
     };
-
     // eslint-disable-next-line
-  }, []);
+  }, [auth.access_token, auth.auth_token]);
 
   // single websocket for handling all the trades
   useEffect(() => {
@@ -165,10 +145,10 @@ export const TradeProvider = ({ children }) => {
           trade.access_token = localStorage.getItem("@accessToken");
           trade.api_key = localStorage.getItem("@apiKey");
           trade.token = localStorage.getItem("@authToken");
-          // send the trade to message queue
 
+          // send the trade to message queue
           if (trade.tag === "ENTRY") {
-            queue.pushBuy(trade);
+            queue.pushBuy({ trade });
           } else {
             queue.pushSell(trade);
           }
@@ -196,6 +176,7 @@ export const TradeProvider = ({ children }) => {
         setTradeStockOpt,
         setTradeStockFut,
         setTradeMode,
+        checkTrade,
         tradeMode,
         tradeIndexOpt,
         tradeIndexFut,
