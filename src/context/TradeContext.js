@@ -176,7 +176,6 @@ export const TradeProvider = ({ children }) => {
         setTradeStockOpt,
         setTradeStockFut,
         setTradeMode,
-        checkTrade,
         tradeMode,
         tradeIndexOpt,
         tradeIndexFut,
