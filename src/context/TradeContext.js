@@ -1,8 +1,6 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
 import { socket, sockuser } from "../services/ws";
 import { useAuth } from "./AuthContext";
-import { useStore } from "./StoreContext";
-import { useQueue } from "./QueueContext";
 import { rest } from "../api";
 import { orders } from "../services/ws";
 
@@ -19,8 +17,6 @@ export const TradeProvider = ({ children }) => {
   const [buys, setBuys] = useState(0);
   const [sells, setSells] = useState(0);
   const auth = useAuth();
-  const [{ margins, positions }, dispatch] = useStore();
-  const queue = useQueue();
 
   const updateMargins = () => {
     fetch(rest.margins, {
@@ -137,8 +133,6 @@ export const TradeProvider = ({ children }) => {
 
         if (
           trade.tag === "ENTRY" &&
-          trade.ltp * trade.quantity <=
-            margins?.equity?.available?.cash / 1.5 &&
           trade.ltp > 0 &&
           trade.entry_price > 0 &&
           trade.price > 0
