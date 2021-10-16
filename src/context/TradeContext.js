@@ -87,15 +87,6 @@ export const TradeProvider = ({ children }) => {
       };
     }
 
-    setTimeout(() => {
-      sockuser.send(
-        JSON.stringify({
-          api_key: auth.api_key,
-          access_token: auth.access_token,
-        })
-      );
-    }, 2000);
-
     const interval = setInterval(() => {
       sockuser.send(
         JSON.stringify({
@@ -103,7 +94,7 @@ export const TradeProvider = ({ children }) => {
           access_token: auth.access_token,
         })
       );
-    }, 30000);
+    }, 10000);
 
     return () => {
       clearInterval(interval);
