@@ -171,7 +171,12 @@ export const TradeProvider = ({ children }) => {
           if (trade.tag === "ENTRY") {
             queue.pushBuy(trade);
           } else {
-            queue.pushSell(trade);
+            const position = positions.find(
+              (el) =>
+                el.tradingsymbol === trade.trading_symbol ||
+                String(el.instrument_token) === String(trade.instrument_token)
+            );
+            queue.pushSell([trade, position]);
           }
         }
       }
@@ -199,6 +204,8 @@ export const TradeProvider = ({ children }) => {
         setTradeStockOpt,
         setTradeStockFut,
         setTradeMode,
+        setBuys,
+        setSells,
         tradeMode,
         tradeIndexOpt,
         tradeIndexFut,
@@ -208,8 +215,6 @@ export const TradeProvider = ({ children }) => {
         sells,
         buys,
         pnl,
-        setBuys,
-        setSells,
       }}
     >
       {children}

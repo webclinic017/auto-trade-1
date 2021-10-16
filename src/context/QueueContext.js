@@ -54,7 +54,14 @@ export const QueueProvider = ({ children }) => {
           setLockBuy(false);
         });
     }
-  }, [queueBuy, queueBuy.length, lockBuy, auth.api_key, auth.access_token]);
+  }, [
+    queueBuy,
+    queueBuy.length,
+    lockBuy,
+    auth.api_key,
+    auth.access_token,
+    sendPositionReq,
+  ]);
 
   useEffect(() => {
     // check for the length of the queue
@@ -64,9 +71,9 @@ export const QueueProvider = ({ children }) => {
       setLockSell(true);
 
       // get the trade object from the queue
-      const trade = queue_.shift();
+      const [trade, position] = queue_.shift();
       setQueueSell(queue_);
-      make_order_request(trade)
+      make_order_request(trade, position)
         .then((txt) => {
           console.log(txt);
           sendPositionReq();
@@ -78,7 +85,14 @@ export const QueueProvider = ({ children }) => {
           setLockSell(false);
         });
     }
-  }, [queueSell, queueSell.length, lockSell, auth.api_key, auth.access_token]);
+  }, [
+    queueSell,
+    queueSell.length,
+    lockSell,
+    auth.api_key,
+    auth.access_token,
+    sendPositionReq,
+  ]);
 
   return (
     <QueueContext.Provider value={{ pushBuy, pushSell }}>
