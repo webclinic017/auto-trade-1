@@ -87,6 +87,15 @@ export const TradeProvider = ({ children }) => {
       };
     }
 
+    setTimeout(() => {
+      sockuser.send(
+        JSON.stringify({
+          api_key: auth.api_key,
+          access_token: auth.access_token,
+        })
+      );
+    }, 2000);
+
     const interval = setInterval(() => {
       sockuser.send(
         JSON.stringify({
