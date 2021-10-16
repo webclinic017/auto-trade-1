@@ -3,6 +3,7 @@ import { socket, sockuser } from "../services/ws";
 import { useAuth } from "./AuthContext";
 import { useStore } from "./StoreContext";
 import { useQueue } from "./QueueContext";
+import { rest } from "../api";
 
 const TradeContext = createContext();
 
@@ -35,6 +36,41 @@ export const TradeProvider = ({ children }) => {
   // message queue
   const queue = useQueue();
 
+  const updateMargins = () => {
+    fetch(rest.margins, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+      },
+      body: JSON.stringify({
+        api_key: auth.api_key,
+        access_token: auth.access_token,
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+
+        throw new Error("failed to reterive margin");
+      })
+      .then((data) => {
+        dispatch({
+          type: "UPDATE_MARGINS",
+          margins: data,
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    if (auth.access_token !== null) {
+      updateMargins();
+    }
+    // eslint-disable-next-line
+  }, [auth.access_token, auth.api_key]);
+
   useEffect(() => {
     if (auth.auth_token && auth.access_token) {
       sockuser.onmessage = (e) => {
@@ -45,6 +81,9 @@ export const TradeProvider = ({ children }) => {
             type: "UPDATE_POSITIONS",
             positions: data["positions"]["net"],
           });
+        } else {
+          auth.setAccessToken(null);
+          return;
         }
 
         if (data["pnl"]["error"] === undefined) {
@@ -73,7 +112,7 @@ export const TradeProvider = ({ children }) => {
           access_token: auth.access_token,
         })
       );
-    }, 30000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
@@ -141,9 +180,9 @@ export const TradeProvider = ({ children }) => {
         // console.log(positions);
         if (flag && should_trade) {
           // modify the trade
-          trade.access_token = localStorage.getItem("@accessToken");
-          trade.api_key = localStorage.getItem("@apiKey");
-          trade.token = localStorage.getItem("@authToken");
+          trade.access_token = auth.access_token;
+          trade.api_key = auth.api_key;
+          trade.token = auth.auth_token;
 
           // send the trade to message queue
           if (trade.tag === "ENTRY") {
@@ -164,6 +203,7 @@ export const TradeProvider = ({ children }) => {
     margins,
     positions,
     queue,
+    auth,
   ]);
 
   return (

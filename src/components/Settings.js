@@ -33,7 +33,7 @@ function Settings() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+        Authorization: `Token ${auth.auth_token}`,
       },
       body: JSON.stringify(body),
     }).then((res) => {

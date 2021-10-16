@@ -73,9 +73,7 @@ function Header() {
               auth.setAccessToken(null);
               listenForReqToken();
               window.open(
-                `https://kite.zerodha.com/connect/login?api_key=${localStorage.getItem(
-                  "@apiKey"
-                )}`,
+                `https://kite.zerodha.com/connect/login?api_key=${auth.api_key}`,
                 "zerodha",
                 "height=500,width=650,top=100,left=400"
               );

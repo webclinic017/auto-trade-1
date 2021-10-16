@@ -8,25 +8,10 @@ import {
   TableRow,
   Paper,
 } from "@material-ui/core";
-import { rest } from "../api";
+import { useStore } from "../context/StoreContext";
 
 function Positions() {
-  const [positions, setPositions] = useState([]);
-
-  useEffect(() => {
-    fetch(rest.positions, {
-      method: "GET",
-      headers: {
-        Authorization: `Token ${localStorage.getItem("@authToken")}`,
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setPositions(data);
-      });
-  }, []);
+  const [{ positions }] = useStore();
 
   return (
     <div className="p-3 mt-3">
@@ -35,21 +20,39 @@ function Positions() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>id</TableCell>
-              <TableCell>entry price</TableCell>
-              <TableCell>trading symbol</TableCell>
-              <TableCell>price</TableCell>
-              <TableCell>quantity</TableCell>
+              <TableCell>
+                <strong>id</strong>
+              </TableCell>
+              <TableCell>
+                <strong>average price</strong>
+              </TableCell>
+              <TableCell>
+                <strong>trading symbol</strong>
+              </TableCell>
+              <TableCell>
+                <strong>pnl</strong>
+              </TableCell>
+              <TableCell>
+                <strong>quantity</strong>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {positions.map((item) => {
+            {positions.map((id, item) => {
               return (
                 <TableRow>
-                  <TableCell>{item.id}</TableCell>
-                  <TableCell>{item.entry_price}</TableCell>
-                  <TableCell>{item.trading_symbol}</TableCell>
-                  <TableCell>{item.price}</TableCell>
+                  <TableCell>{id}</TableCell>
+                  <TableCell>{item.average_price}</TableCell>
+                  <TableCell>{item.tradingsymbol}</TableCell>
+                  <TableCell>
+                    <strong
+                      className={`text-${
+                        item.pnl < 0 ? "red-200" : "green-200"
+                      }`}
+                    >
+                      {item.pnl}
+                    </strong>
+                  </TableCell>
                   <TableCell>{item.quantity}</TableCell>
                 </TableRow>
               );

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { make_order_request } from "../services/zerodha";
 import { useStore } from "../context/StoreContext";
+import { useAuth } from "../context/AuthContext";
 import { rest } from "../api";
 
 export const QueueContext = createContext();
@@ -10,6 +11,7 @@ export const QueueProvider = ({ children }) => {
   const [lockBuy, setLockBuy] = useState(false);
   const [queueSell, setQueueSell] = useState([]);
   const [lockSell, setLockSell] = useState(false);
+  const auth = useAuth();
 
   const [, dispatch] = useStore();
 
@@ -31,7 +33,7 @@ export const QueueProvider = ({ children }) => {
     fetch(rest.positions, {
       method: "GET",
       headers: {
-        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+        Authorization: `Token ${auth.auth_token}`,
       },
     })
       .then((res) => {

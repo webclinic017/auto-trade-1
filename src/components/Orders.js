@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import color from "tailwindcss/colors";
 import LoadingScreen from "./LoadingScreen";
+import { useAuth } from "../context/AuthContext";
 
 import { rest } from "../api";
 
@@ -21,16 +22,13 @@ function Orders() {
   const [market_orders, setMarketOrders] = useState([]);
   const [limit_orders, setLimitOrders] = useState([]);
   const [is_loading, setIsLoading] = useState(true);
+  const auth = useAuth();
 
   const loadMarketOrders = (url) => {
-    if (url.search("https") === -1) {
-      url = url.replace("http", "https");
-    }
-
     fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+        Authorization: `Token ${auth.auth_token}`,
       },
     })
       .then((res) => {
@@ -42,14 +40,10 @@ function Orders() {
   };
 
   const loadLimitOrders = (url) => {
-    if (url.search("https") === -1) {
-      url = url.replace("http", "https");
-    }
-
     fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Token ${localStorage.getItem("@authToken")}`,
+        Authorization: `Token ${auth.auth_token}`,
       },
     })
       .then((res) => {

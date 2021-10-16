@@ -116,34 +116,6 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
-  const updateMargins = () => {
-    fetch(rest.margins, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${localStorage.getItem("@authToken")}`,
-      },
-      body: JSON.stringify({
-        api_key: api_key,
-        access_token: access_token,
-      }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-
-        throw new Error("failed to reterive margin");
-      })
-      .then((data) => {
-        dispatch({
-          type: "UPDATE_MARGINS",
-          margins: data,
-        });
-      })
-      .catch((err) => console.log(err));
-  };
-
   useEffect(() => {
     fetch(rest.is_login, {
       method: "GET",
@@ -166,14 +138,6 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
       });
   }, []);
-
-  useEffect(() => {
-    if (access_token !== null) {
-      updateMargins();
-    }
-
-    // eslint-disable-next-line
-  }, [access_token, api_key]);
 
   useEffect(() => {
     console.log(margins);
