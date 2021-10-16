@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
 import { socket, sockuser } from "../services/ws";
 import { useAuth } from "./AuthContext";
+import { useStore } from "./StoreContext";
 import { rest } from "../api";
 import { orders } from "../services/ws";
 
@@ -17,6 +18,7 @@ export const TradeProvider = ({ children }) => {
   const [buys, setBuys] = useState(0);
   const [sells, setSells] = useState(0);
   const auth = useAuth();
+  const [, dispatch] = useStore();
 
   const updateMargins = () => {
     fetch(rest.margins, {
