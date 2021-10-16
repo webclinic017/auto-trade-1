@@ -4,6 +4,7 @@ import { useAuth } from "./AuthContext";
 import { useStore } from "./StoreContext";
 import { useQueue } from "./QueueContext";
 import { rest } from "../api";
+import { orders } from "../services/ws";
 
 const TradeContext = createContext();
 
@@ -144,20 +145,9 @@ export const TradeProvider = ({ children }) => {
         ) {
           should_trade = true;
         } else if (trade.tag === "EXIT") {
+          should_trade = true;
+        } else {
           should_trade = false;
-          console.log("positions");
-          console.log(positions);
-
-          positions.forEach((el) => {
-            if (
-              el.tradingsymbol === trade.trading_symbol ||
-              String(el.instrument_token) === String(trade.instrument_token)
-            ) {
-              should_trade = true;
-            }
-          });
-
-          console.log(should_trade);
         }
 
         // console.log(positions);
@@ -165,19 +155,7 @@ export const TradeProvider = ({ children }) => {
           // modify the trade
           trade.access_token = auth.access_token;
           trade.api_key = auth.api_key;
-          trade.token = auth.auth_token;
-
-          // send the trade to message queue
-          if (trade.tag === "ENTRY") {
-            queue.pushBuy(trade);
-          } else {
-            const position = positions.find(
-              (el) =>
-                el.tradingsymbol === trade.trading_symbol ||
-                String(el.instrument_token) === String(trade.instrument_token)
-            );
-            queue.pushSell([trade, position]);
-          }
+          orders.send(JSON.stringify(trade));
         }
       }
     };
@@ -188,10 +166,6 @@ export const TradeProvider = ({ children }) => {
     tradeStock,
     tradeStockOpt,
     tradeStockFut,
-    margins,
-    positions,
-    positions.length,
-    queue,
     auth,
   ]);
 

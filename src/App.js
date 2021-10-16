@@ -16,7 +16,7 @@ import { initialState, reducer } from "./reducers";
 import { NetworkProvider } from "./context/NetworkContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import LoadingScreen from "./components/LoadingScreen";
-import { QueueProvider } from "./context/QueueContext";
+// import { QueueProvider } from "./context/QueueContext";
 import RequestToken from "./components/RequestToken";
 import { useNetwork } from "./context/NetworkContext";
 import { socket, sockuser } from "./services/ws";
@@ -75,11 +75,11 @@ function App() {
     <StoreProvider initialState={initialState} reducer={reducer}>
       <AuthProvider>
         <NetworkProvider>
-          <QueueProvider>
-            <TradeProvider>
-              <Main />
-            </TradeProvider>
-          </QueueProvider>
+          {/* <QueueProvider> */}
+          <TradeProvider>
+            <Main />
+          </TradeProvider>
+          {/* </QueueProvider> */}
         </NetworkProvider>
       </AuthProvider>
     </StoreProvider>
