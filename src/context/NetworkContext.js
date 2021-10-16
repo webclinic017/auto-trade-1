@@ -12,7 +12,7 @@ export const NetworkProvider = ({ children }) => {
   }, []);
 
   return (
-    <NetworkContext.Provider value={network}>
+    <NetworkContext.Provider value={{ network, setNetwork }}>
       {children}
     </NetworkContext.Provider>
   );

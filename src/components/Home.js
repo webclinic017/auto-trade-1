@@ -36,7 +36,7 @@ function Home() {
     setTradeStockFut,
   } = useTrade();
 
-  const network = useNetwork();
+  const { network } = useNetwork();
   const auth = useAuth();
   const [{ margins }] = useStore();
 
@@ -102,7 +102,7 @@ function Home() {
         />
       </div>
 
-      <h1 className="my-5 text-2xl p-2 font-semibold">Workers</h1>
+      <h1 className="my-2 mt-10 text-2xl p-2 font-semibold">INSTRUMENTS</h1>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
         <WorkerCard
           title="index options"

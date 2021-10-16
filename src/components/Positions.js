@@ -35,25 +35,33 @@ function Positions() {
               <TableCell>
                 <strong>quantity</strong>
               </TableCell>
+              {/* <TableCell>
+                <strong>exit</strong>
+              </TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
-            {positions.map((id, item) => {
+            {positions.map((item, id) => {
               return (
-                <TableRow>
+                <TableRow key={id}>
                   <TableCell>{id}</TableCell>
                   <TableCell>{item.average_price}</TableCell>
                   <TableCell>{item.tradingsymbol}</TableCell>
                   <TableCell>
                     <strong
                       className={`text-${
-                        item.pnl < 0 ? "red-200" : "green-200"
+                        item.pnl < 0 ? "red-600" : "green-600"
                       }`}
                     >
                       {item.pnl}
                     </strong>
                   </TableCell>
                   <TableCell>{item.quantity}</TableCell>
+                  {/* <TableCell>
+                    <button className="bg-red-600 px-5 py-2 rounded-md text-white font-bold">
+                      exit
+                    </button>
+                  </TableCell> */}
                 </TableRow>
               );
             })}

@@ -1,17 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Settings from "./components/Settings";
 import Login from "./components/Login";
 import Orders from "./components/Orders";
-
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from "react-router-dom";
-
 import { TradeProvider } from "./context/TradeContext";
 import { StoreProvider } from "./context/StoreContext";
 import { initialState, reducer } from "./reducers";
@@ -20,9 +18,27 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import LoadingScreen from "./components/LoadingScreen";
 import { QueueProvider } from "./context/QueueContext";
 import RequestToken from "./components/RequestToken";
+import { useNetwork } from "./context/NetworkContext";
+import { socket, sockuser } from "./services/ws";
 
 function Main() {
   const auth = useAuth();
+  const { setNetwork } = useNetwork();
+
+  useEffect(() => {
+    socket.onerror = () => {
+      setNetwork(false);
+    };
+    sockuser.onerror = () => {
+      setNetwork(false);
+    };
+    socket.onclose = () => {
+      setNetwork(false);
+    };
+    sockuser.onclose = () => {
+      setNetwork(false);
+    };
+  }, []);
 
   return (
     <Router>

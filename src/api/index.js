@@ -4,7 +4,7 @@ const wsprotocol = "wss";
 
 // const protocol = "http";
 // const wsprotocol = "ws";
-// const uri = "127.0.0.1:8000";
+// const uri = "127.0.0.1";
 
 export const rest = {
   uri: `${protocol}://` + uri,

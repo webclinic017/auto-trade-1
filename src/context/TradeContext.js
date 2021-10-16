@@ -75,7 +75,6 @@ export const TradeProvider = ({ children }) => {
     if (auth.auth_token && auth.access_token) {
       sockuser.onmessage = (e) => {
         const data = JSON.parse(e.data);
-
         if (data["positions"]["error"] === undefined) {
           dispatch({
             type: "UPDATE_POSITIONS",
@@ -112,7 +111,7 @@ export const TradeProvider = ({ children }) => {
           access_token: auth.access_token,
         })
       );
-    }, 5000);
+    }, 10000);
 
     return () => {
       clearInterval(interval);
