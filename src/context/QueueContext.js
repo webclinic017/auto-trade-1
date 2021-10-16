@@ -1,8 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { make_order_request } from "../services/zerodha";
-import { useStore } from "../context/StoreContext";
 import { useAuth } from "../context/AuthContext";
-import { rest } from "../api";
+import { sockuser } from "../services/ws";
 
 export const QueueContext = createContext();
 
@@ -12,8 +11,6 @@ export const QueueProvider = ({ children }) => {
   const [queueSell, setQueueSell] = useState([]);
   const [lockSell, setLockSell] = useState(false);
   const auth = useAuth();
-
-  const [, dispatch] = useStore();
 
   const pushBuy = (trade) => {
     if (queueBuy.length <= 10) {
@@ -29,23 +26,11 @@ export const QueueProvider = ({ children }) => {
     });
   };
 
-  useEffect(() => {
-    fetch(rest.positions, {
-      method: "GET",
-      headers: {
-        Authorization: `Token ${auth.auth_token}`,
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((positions) => {
-        dispatch({
-          type: "UPDATE_POSITIONS",
-          positions: positions,
-        });
-      });
-  }, []);
+  const sendPositionReq = () => {
+    sockuser.send(
+      JSON.stringify({ api_key: auth.api_key, access_token: auth.access_token })
+    );
+  };
 
   useEffect(() => {
     // check for the length of the queue
@@ -60,29 +45,16 @@ export const QueueProvider = ({ children }) => {
       make_order_request(trade)
         .then((txt) => {
           console.log(txt);
-          return fetch(rest.positions, {
-            method: "GET",
-            headers: {
-              Authorization: `Token ${trade.token}`,
-            },
-          });
-        })
-        .then((res) => {
-          return res.json();
-        })
-        .then((positions) => {
+          sendPositionReq();
           setLockBuy(false);
-          dispatch({
-            type: "UPDATE_POSITIONS",
-            positions: positions,
-          });
         })
         .catch((err) => {
           console.log(err);
+          sendPositionReq();
           setLockBuy(false);
         });
     }
-  });
+  }, [queueBuy, queueBuy.length, lockBuy, auth.api_key, auth.access_token]);
 
   useEffect(() => {
     // check for the length of the queue
@@ -97,29 +69,16 @@ export const QueueProvider = ({ children }) => {
       make_order_request(trade)
         .then((txt) => {
           console.log(txt);
-          return fetch(rest.positions, {
-            method: "GET",
-            headers: {
-              Authorization: `Token ${trade.token}`,
-            },
-          });
-        })
-        .then((res) => {
-          return res.json();
-        })
-        .then((positions) => {
+          sendPositionReq();
           setLockSell(false);
-          dispatch({
-            type: "UPDATE_POSITIONS",
-            positions: positions,
-          });
         })
         .catch((err) => {
           console.log(err);
+          sendPositionReq();
           setLockSell(false);
         });
     }
-  });
+  }, [queueSell, queueSell.length, lockSell, auth.api_key, auth.access_token]);
 
   return (
     <QueueContext.Provider value={{ pushBuy, pushSell }}>

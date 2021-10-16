@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
 
   const [is_loading, setIsLoading] = useState(true);
 
-  const [{ margins }, dispatch] = useStore();
+  const [{ margins }] = useStore();
 
   const userLogin = (username, password, cb = () => {}) => {
     fetch(rest.user_login, {

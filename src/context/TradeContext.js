@@ -8,32 +8,17 @@ import { rest } from "../api";
 const TradeContext = createContext();
 
 export const TradeProvider = ({ children }) => {
-  // index
   const [tradeIndexOpt, setTradeIndexOpt] = useState(false);
   const [tradeIndexFut, setTradeIndexFut] = useState(false);
-
-  // stocks
   const [tradeStock, setTradeStock] = useState(false);
   const [tradeStockOpt, setTradeStockOpt] = useState(false);
   const [tradeStockFut, setTradeStockFut] = useState(false);
-
-  // trading mode
   const [tradeMode, setTradeMode] = useState(true);
-
-  //pnl
   const [pnl, setPnl] = useState(0);
-
-  // keep track of number of orders
   const [buys, setBuys] = useState(0);
   const [sells, setSells] = useState(0);
-
-  // authentication context
   const auth = useAuth();
-
-  // get the margins of the user
   const [{ margins, positions }, dispatch] = useStore();
-
-  // message queue
   const queue = useQueue();
 
   const updateMargins = () => {
@@ -96,7 +81,6 @@ export const TradeProvider = ({ children }) => {
           setPnl(pnl);
           if (pnl >= maxProfit || pnl <= maxLoss) {
             setTradeMode(false);
-            // api for exiting all orders
           } else {
             setTradeMode(true);
           }
@@ -166,7 +150,7 @@ export const TradeProvider = ({ children }) => {
 
           positions.forEach((el) => {
             if (
-              el.trading_symbol === trade.trading_symbol ||
+              el.tradingsymbol === trade.trading_symbol ||
               String(el.instrument_token) === String(trade.instrument_token)
             ) {
               should_trade = true;
@@ -185,7 +169,7 @@ export const TradeProvider = ({ children }) => {
 
           // send the trade to message queue
           if (trade.tag === "ENTRY") {
-            queue.pushBuy({ trade });
+            queue.pushBuy(trade);
           } else {
             queue.pushSell(trade);
           }
@@ -201,6 +185,7 @@ export const TradeProvider = ({ children }) => {
     tradeStockFut,
     margins,
     positions,
+    positions.length,
     queue,
     auth,
   ]);
@@ -223,6 +208,8 @@ export const TradeProvider = ({ children }) => {
         sells,
         buys,
         pnl,
+        setBuys,
+        setSells,
       }}
     >
       {children}

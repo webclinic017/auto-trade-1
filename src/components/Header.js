@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { LogoutIcon, SettingIcon } from "./icons";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";

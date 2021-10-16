@@ -58,6 +58,8 @@ function Orders() {
   useEffect(() => {
     loadMarketOrders(rest.market_api);
     loadLimitOrders(rest.limit_api);
+
+    // eslint-disable-next-line
   }, []);
 
   if (is_loading) {

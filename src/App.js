@@ -38,7 +38,7 @@ function Main() {
     sockuser.onclose = () => {
       setNetwork(false);
     };
-  }, []);
+  }, [setNetwork]);
 
   return (
     <Router>
