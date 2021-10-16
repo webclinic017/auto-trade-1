@@ -37,6 +37,8 @@ function Main() {
     sockuser.onclose = () => {
       setNetwork(false);
     };
+
+    console.log("🦚");
   }, [setNetwork]);
 
   return (
