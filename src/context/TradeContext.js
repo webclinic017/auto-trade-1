@@ -94,7 +94,7 @@ export const TradeProvider = ({ children }) => {
           access_token: auth.access_token,
         })
       );
-    }, 10000);
+    }, 30000);
 
     return () => {
       clearInterval(interval);
