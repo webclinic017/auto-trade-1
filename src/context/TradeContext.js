@@ -56,7 +56,7 @@ export const TradeProvider = ({ children }) => {
   }, [auth.access_token, auth.api_key]);
 
   useEffect(() => {
-    if (auth.auth_token && auth.access_token) {
+    if (auth.auth_token !== null && auth.access_token !== null) {
       sockuser.onmessage = (e) => {
         const data = JSON.parse(e.data);
         if (data["positions"]["error"] === undefined) {
