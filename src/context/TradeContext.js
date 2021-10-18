@@ -165,6 +165,22 @@ export const TradeProvider = ({ children }) => {
     auth,
   ]);
 
+  useEffect(() => {
+    orders.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+
+      if (data["error"] === undefined) {
+        if (data["type"] === "BUY") {
+          setBuys((x) => x + 1);
+        }
+
+        if (data["type"] === "SELL") {
+          setSells((x) => x + 1);
+        }
+      }
+    };
+  });
+
   return (
     <TradeContext.Provider
       value={{

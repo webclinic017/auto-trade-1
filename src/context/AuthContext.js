@@ -1,15 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { rest } from "../api";
 
-import { useStore } from "./StoreContext";
-
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [login, setLogin] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [profileError, setProfileError] = useState(false);
-
   const [access_token, setAccessToken] = useState(
     localStorage.getItem("@accessToken")
   );
@@ -20,10 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [auth_token, setAuthToken] = useState(
     localStorage.getItem("@authToken")
   );
-
   const [is_loading, setIsLoading] = useState(true);
-
-  const [{ margins }] = useStore();
 
   const userLogin = (username, password, cb = () => {}) => {
     fetch(rest.user_login, {
@@ -106,8 +100,6 @@ export const AuthProvider = ({ children }) => {
         setApiSecret(data.api_secret);
 
         localStorage.setItem("investment", data.investment);
-        localStorage.setItem("nfQuantity", data.nifty_investment);
-        localStorage.setItem("bfQuantity", data.banknifty_investment);
         localStorage.setItem("maxProfit", data.max_profit);
         localStorage.setItem("maxLoss", data.max_loss);
       })
@@ -138,10 +130,6 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
       });
   }, []);
-
-  useEffect(() => {
-    console.log(margins);
-  }, [margins]);
 
   const context = {
     login,

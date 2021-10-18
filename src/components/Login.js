@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 
-function Login({ setAuthToken }) {
+function Login() {
   const userName = useRef();
   const passWord = useRef();
 
@@ -16,7 +16,7 @@ function Login({ setAuthToken }) {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex-1 flex flex-col p-3 items-center justify-center">
+      <div className="flex-1 flex flex-col p-3 mb-2 items-center justify-center">
         {loginError ? (
           <strong className="font-sans text-red-700">
             error occured while login
