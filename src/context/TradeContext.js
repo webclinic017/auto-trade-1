@@ -88,12 +88,14 @@ export const TradeProvider = ({ children }) => {
     }
 
     const interval = setInterval(() => {
-      sockuser.send(
-        JSON.stringify({
-          api_key: auth.api_key,
-          access_token: auth.access_token,
-        })
-      );
+      if (auth.api_key !== null && auth.access_token !== null) {
+        sockuser.send(
+          JSON.stringify({
+            api_key: auth.api_key,
+            access_token: auth.access_token,
+          })
+        );
+      }
     }, 10000);
 
     return () => {
