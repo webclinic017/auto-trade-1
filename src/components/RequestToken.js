@@ -11,7 +11,7 @@ function RequestToken() {
     const interval = setTimeout(() => {
       window.close();
       window.top.close();
-    }, 10);
+    }, 1000);
 
     return () => {
       clearInterval(interval);

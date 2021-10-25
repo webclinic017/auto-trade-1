@@ -79,9 +79,21 @@ export const TradeProvider = ({ children }) => {
           let pnl = data["pnl"]["pnl"];
           setPnl(pnl);
           if (pnl >= maxProfit || pnl <= maxLoss) {
+            if (tradeMode) {
+              orders.send(
+                JSON.stringify({
+                  exit_all: true,
+                  api_key: auth.api_key,
+                  access_token: auth.access_token,
+                  tag: "ALL_EXIT",
+                })
+              );
+            }
             setTradeMode(false);
           } else {
-            setTradeMode(true);
+            if (!tradeMode) {
+              setTradeMode(true);
+            }
           }
         }
       };
