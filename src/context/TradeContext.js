@@ -114,7 +114,7 @@ export const TradeProvider = ({ children }) => {
       clearInterval(interval);
     };
     // eslint-disable-next-line
-  }, [auth.access_token, auth.auth_token]);
+  }, [auth.access_token, auth.auth_token, tradeMode]);
 
   // single websocket for handling all the trades
   useEffect(() => {
