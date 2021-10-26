@@ -12,6 +12,8 @@ function Settings() {
   const investment = useRef();
   const maxProfit = useRef();
   const maxLoss = useRef();
+  const niftyLot = useRef();
+  const bankniftyLot = useRef();
   const history = useHistory();
   const auth = useAuth();
   const [disabled, setDisabled] = useState(false);
@@ -23,6 +25,8 @@ function Settings() {
       investment: investment.current.value,
       max_profit: maxProfit.current.value,
       max_loss: maxLoss.current.value,
+      nifty_lot: niftyLot.current.value,
+      banknifty_lot: bankniftyLot.current.value,
     };
 
     return fetch(rest.update_profile, {
@@ -47,6 +51,8 @@ function Settings() {
     investment.current.value = localStorage.getItem("investment");
     maxProfit.current.value = localStorage.getItem("maxProfit");
     maxLoss.current.value = localStorage.getItem("maxLoss");
+    niftyLot.current.value = localStorage.getItem("niftyLot") | 1;
+    bankniftyLot.current.value = localStorage.getItem("bankniftyLot") | 1;
   }, []);
 
   const updateSettings = () => {
@@ -74,6 +80,12 @@ function Settings() {
 
       <label>investment</label>
       <input ref={investment} type="number" className="form-input" />
+
+      <label>nifty lot</label>
+      <input ref={niftyLot} type="number" className="form-input" />
+
+      <label>banknifty lot</label>
+      <input ref={bankniftyLot} type="number" className="form-input" />
 
       <label>max profit</label>
       <input ref={maxProfit} type="number" className="form-input" />

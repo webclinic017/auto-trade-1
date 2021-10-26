@@ -102,6 +102,8 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("investment", data.investment);
         localStorage.setItem("maxProfit", data.max_profit);
         localStorage.setItem("maxLoss", data.max_loss);
+        localStorage.setItem("niftyLot", data.nifty_lot | 1);
+        localStorage.setItem("bankniftyLot", data.banknifty_lot | 1);
       })
       .catch((err) => {
         setProfileError(true);

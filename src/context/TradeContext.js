@@ -165,6 +165,13 @@ export const TradeProvider = ({ children }) => {
           // modify the trade
           trade.access_token = auth.access_token;
           trade.api_key = auth.api_key;
+          if (type === "INDEXOPT" || type === "INDEXFUT") {
+            if (trade.trading_symbol.includes("BANKNIFTY")) {
+              trade.quantity *= localStorage.getItem("bankniftyLot") | 1;
+            } else {
+              trade.quantity *= localStorage.getItem("niftyLot") | 1;
+            }
+          }
           orders.send(JSON.stringify(trade));
         }
       }
