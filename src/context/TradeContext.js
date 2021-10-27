@@ -18,7 +18,11 @@ export const TradeProvider = ({ children }) => {
   const [buys, setBuys] = useState(0);
   const [sells, setSells] = useState(0);
   const auth = useAuth();
-  const [, dispatch] = useStore();
+  const [{ signals }, dispatch] = useStore();
+
+  useEffect(() => {
+    console.log(signals);
+  }, [signals]);
 
   const updateMargins = () => {
     fetch(rest.margins, {
@@ -174,6 +178,28 @@ export const TradeProvider = ({ children }) => {
           }
           orders.send(JSON.stringify(trade));
         }
+      } else {
+        const data = JSON.parse(e.data);
+        const trade = data.trade;
+        let flag = false;
+
+        if (
+          trade.tag === "ENTRY" &&
+          trade.ltp > 0 &&
+          trade.entry_price > 0 &&
+          trade.price > 0
+        ) {
+          flag = true;
+        } else if (trade.tag === "EXIT") {
+          flag = true;
+        }
+
+        if (flag) {
+          dispatch({
+            type: "ADD_SIGNAL",
+            signal: trade,
+          });
+        }
       }
     };
   }, [
@@ -184,6 +210,7 @@ export const TradeProvider = ({ children }) => {
     tradeStockOpt,
     tradeStockFut,
     auth,
+    dispatch,
   ]);
 
   useEffect(() => {

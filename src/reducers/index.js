@@ -1,6 +1,7 @@
 export const initialState = {
   margins: null,
   positions: [],
+  signals: [],
 };
 
 export const reducer = (state, action) => {
@@ -9,6 +10,8 @@ export const reducer = (state, action) => {
       return { ...state, margins: action.margins };
     case "UPDATE_POSITIONS":
       return { ...state, positions: action.positions };
+    case "ADD_SIGNAL":
+      return { ...state, signals: [...state.signals, action.signal] };
     default:
       return state;
   }

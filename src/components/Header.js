@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { LogoutIcon, SettingIcon } from "./icons";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
-import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
-
+// import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import LabelImportantIcon from "@material-ui/icons/LabelImportant";
+import SignalCellularAltIcon from "@material-ui/icons/SignalCellularAlt";
 import { IconButton } from "@material-ui/core";
-
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -46,13 +45,22 @@ function Header() {
 
       {auth.login ? (
         <div className="flex-1 flex flex-row justify-end items-center">
-          <IconButton
+          {/* <IconButton
             onClick={() => {
               history.push("/orders");
             }}
             className="mx-1 md:block"
           >
             <ShoppingBasketIcon className="h-6 w-6" />
+          </IconButton> */}
+
+          <IconButton
+            onClick={() => {
+              history.push("/signals");
+            }}
+            className="mx-1 md:block"
+          >
+            <SignalCellularAltIcon className="h-6 w-6" />
           </IconButton>
 
           <IconButton onClick={auth.userLogout} className="mx-1 md:block">

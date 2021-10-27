@@ -52,7 +52,7 @@ function Home() {
         </h1>
       ) : null}
       {auth.access_token === null ? (
-        <h1 className="text-center p-4 -mt-3 mb-3 bg-red-500 rounded-md text-white font-bold">
+        <h1 className="text-center p-4 my-3 bg-red-500 rounded-md text-white font-bold">
           please connect with zerodha
         </h1>
       ) : null}
