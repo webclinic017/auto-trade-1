@@ -178,28 +178,27 @@ export const TradeProvider = ({ children }) => {
           }
           orders.send(JSON.stringify(trade));
         }
-      } else {
-        const data = JSON.parse(e.data);
-        const trade = data.trade;
-        let flag = false;
+      }
+      const data = JSON.parse(e.data);
+      const trade = data.trade;
+      flag = false;
 
-        if (
-          trade.tag === "ENTRY" &&
-          trade.ltp > 0 &&
-          trade.entry_price > 0 &&
-          trade.price > 0
-        ) {
-          flag = true;
-        } else if (trade.tag === "EXIT") {
-          flag = true;
-        }
+      if (
+        trade.tag === "ENTRY" &&
+        trade.ltp > 0 &&
+        trade.entry_price > 0 &&
+        trade.price > 0
+      ) {
+        flag = true;
+      } else if (trade.tag === "EXIT") {
+        flag = true;
+      }
 
-        if (flag) {
-          dispatch({
-            type: "ADD_SIGNAL",
-            signal: trade,
-          });
-        }
+      if (flag) {
+        dispatch({
+          type: "ADD_SIGNAL",
+          signal: trade,
+        });
       }
     };
   }, [
