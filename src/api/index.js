@@ -2,6 +2,7 @@ const uri = "auto.bittrade.space";
 const protocol = "https";
 const wsprotocol = "wss";
 
+// below is the testing code
 // const protocol = "http";
 // const wsprotocol = "ws";
 // const uri = "127.0.0.1";
