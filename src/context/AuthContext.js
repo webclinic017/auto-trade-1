@@ -68,6 +68,7 @@ export const AuthProvider = ({ children }) => {
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Token ${localStorage.getItem("@authToken")}`,
       },
     })
       .then((res) => res.json())
