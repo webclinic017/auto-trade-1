@@ -124,11 +124,14 @@ export const TradeProvider = ({ children }) => {
   useEffect(() => {
     socket.onmessage = (e) => {
       let should_trade, flag;
+      const trade = JSON.parse(e.data);
+      const { type } = trade;
+
+      console.log(type);
+      console.log(trade);
+      console.log(tradeMode);
 
       if (tradeMode) {
-        const trade = JSON.parse(e.data);
-        const { type } = trade;
-
         switch (type) {
           case "INDEXOPT":
             flag = tradeIndexOpt;
@@ -150,12 +153,7 @@ export const TradeProvider = ({ children }) => {
             break;
         }
 
-        if (
-          trade.tag === "ENTRY" &&
-          trade.ltp > 0 &&
-          trade.entry_price > 0 &&
-          trade.price > 0
-        ) {
+        if (trade.tag === "ENTRY" && trade.entry_price > 0 && trade.price > 0) {
           should_trade = true;
         } else if (trade.tag === "EXIT") {
           should_trade = true;
@@ -177,27 +175,6 @@ export const TradeProvider = ({ children }) => {
           }
           orders.send(JSON.stringify(trade));
         }
-      }
-      const data = JSON.parse(e.data);
-      const trade = data.trade;
-      flag = false;
-
-      if (
-        trade.tag === "ENTRY" &&
-        trade.ltp > 0 &&
-        trade.entry_price > 0 &&
-        trade.price > 0
-      ) {
-        flag = true;
-      } else if (trade.tag === "EXIT") {
-        flag = true;
-      }
-
-      if (flag) {
-        dispatch({
-          type: "ADD_SIGNAL",
-          signal: trade,
-        });
       }
     };
   }, [
