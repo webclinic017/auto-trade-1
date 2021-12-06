@@ -126,9 +126,8 @@ export const TradeProvider = ({ children }) => {
       let should_trade, flag;
 
       if (tradeMode) {
-        let data = JSON.parse(e.data);
-        const type = data.trade.type;
-        const trade = data.trade;
+        const trade = JSON.parse(e.data);
+        const { type } = trade;
 
         switch (type) {
           case "INDEXOPT":
