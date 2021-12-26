@@ -1,14 +1,10 @@
 import axios from "axios";
 import { LocalStorage } from "../entities/localstorage";
 import { QueryClient } from "react-query";
-// const uri = "auto.bittrade.space";
-// const protocol = "https";
-// const wsprotocol = "wss";
 
-// below is the testing code
-const protocol = "http";
-const wsprotocol = "ws";
-const uri = "127.0.0.1";
+const uri = process.env.REACT_APP_API_URI;
+const protocol = process.env.REACT_APP_API_WEB_PROTOCOL;
+const wsprotocol = process.env.REACT_APP_API_WS_PROTOCOL;
 
 export const rest = {
   uri: `${protocol}://` + uri,
