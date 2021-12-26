@@ -1,11 +1,14 @@
-const uri = "auto.bittrade.space";
-const protocol = "https";
-const wsprotocol = "wss";
+import axios from "axios";
+import { LocalStorage } from "../entities/localstorage";
+import { QueryClient } from "react-query";
+// const uri = "auto.bittrade.space";
+// const protocol = "https";
+// const wsprotocol = "wss";
 
 // below is the testing code
-// const protocol = "http";
-// const wsprotocol = "ws";
-// const uri = "127.0.0.1";
+const protocol = "http";
+const wsprotocol = "ws";
+const uri = "127.0.0.1";
 
 export const rest = {
   uri: `${protocol}://` + uri,
@@ -20,8 +23,8 @@ export const rest = {
   profile_detail: `${protocol}://` + uri + "/users/profile/detail",
   positions: `${protocol}://` + uri + "/positions",
   enque: `${protocol}://` + uri + "/enque",
-  task_status: (id) => `${protocol}://` + uri + `/task/${id}/status`,
-  position: (instrument_token) =>
+  task_status: (id: any) => `${protocol}://` + uri + `/task/${id}/status`,
+  position: (instrument_token: any) =>
     `${protocol}://` + uri + "/position/" + instrument_token,
 };
 
@@ -31,3 +34,12 @@ export const ws = {
   users: `${wsprotocol}://` + uri + "/ws/users",
   orders: `${wsprotocol}://` + uri + "/ws/orders",
 };
+
+export const Axios = new axios.Axios({
+  baseURL: process.env.REACT_APP_API_HOST,
+  headers: {
+    Authorization: `Token ${LocalStorage.authToken}`,
+  },
+});
+
+export const queryClient = new QueryClient();

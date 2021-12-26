@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Settings from "./components/Settings";
@@ -20,6 +20,8 @@ import RequestToken from "./components/RequestToken";
 import { useNetwork } from "./context/NetworkContext";
 import { socket, sockuser } from "./services/ws";
 import SignalHistory from "./components/SignalHistory";
+import { QueryClientProvider } from "react-query";
+import { queryClient } from "./api";
 
 function Main() {
   const auth = useAuth();
@@ -49,7 +51,7 @@ function Main() {
         <Route exact path="/request_token-zerodha/:requestToken">
           <RequestToken />
         </Route>
-        <Route excat path="/settings">
+        <Route exact path="/settings">
           {auth.login ? <Settings /> : <Redirect to="/login" />}
         </Route>
         <Route exact path="/login">
@@ -67,7 +69,7 @@ function Main() {
         <Route exact path="/signals">
           {auth.login ? <SignalHistory /> : <Redirect to="/login" />}
         </Route>
-        <Route excat path="/">
+        <Route exact path="/">
           {auth.login ? <Home /> : <Redirect to="/login" />}
         </Route>
       </Switch>
@@ -77,15 +79,17 @@ function Main() {
 
 function App() {
   return (
-    <StoreProvider initialState={initialState} reducer={reducer}>
-      <AuthProvider>
-        <NetworkProvider>
-          <TradeProvider>
-            <Main />
-          </TradeProvider>
-        </NetworkProvider>
-      </AuthProvider>
-    </StoreProvider>
+    <QueryClientProvider client={queryClient}>
+      <StoreProvider initialState={initialState} reducer={reducer}>
+        <AuthProvider>
+          <NetworkProvider>
+            <TradeProvider>
+              <Main />
+            </TradeProvider>
+          </NetworkProvider>
+        </AuthProvider>
+      </StoreProvider>
+    </QueryClientProvider>
   );
 }
 
