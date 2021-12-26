@@ -17,6 +17,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "12"
+      - env:
+        REACT_APP_API_URI: ${{ secrets.API_URI }}
+        REACT_APP_API_WEB_PROTOCOL: ${{ secrets.API_WEB_PROTOCOL }}
+        REACT_APP_API_WS_PROTOCOL: ${{ secrets.API_WS_PROTOCOL }}
       - run: npm ci
       - run: CI=false npm run build
       - name: GitHub Action for Firebase
