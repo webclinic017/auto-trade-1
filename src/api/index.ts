@@ -2,6 +2,7 @@ import axios from "axios";
 import { LocalStorage } from "../entities/localstorage";
 import { QueryClient } from "react-query";
 
+//
 const uri = process.env.REACT_APP_API_URI;
 const protocol = process.env.REACT_APP_API_WEB_PROTOCOL;
 const wsprotocol = process.env.REACT_APP_API_WS_PROTOCOL;
