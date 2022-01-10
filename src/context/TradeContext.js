@@ -62,9 +62,10 @@ export const TradeProvider = ({ children }) => {
   }, [auth.access_token, auth.api_key]);
 
   useEffect(() => {
-    if (auth.auth_token !== null && auth.access_token !== null) {
+    if (auth.auth_token !== null) {
       sockuser.onmessage = (e) => {
         const data = JSON.parse(e.data);
+
         if (data["positions"]["error"] === undefined) {
           dispatch({
             type: "UPDATE_POSITIONS",
@@ -85,16 +86,6 @@ export const TradeProvider = ({ children }) => {
           let pnl = data["pnl"]["pnl"];
           setPnl(pnl);
           if (pnl >= maxProfit || pnl <= maxLoss) {
-            // if (tradeMode) {
-            //   orders.send(
-            //     JSON.stringify({
-            //       exit_all: true,
-            //       api_key: auth.api_key,
-            //       access_token: auth.access_token,
-            //       tag: "ALL_EXIT",
-            //     })
-            //   );
-            // }
             setTradeMode(false);
           } else {
             if (!tradeMode) {
@@ -106,11 +97,10 @@ export const TradeProvider = ({ children }) => {
     }
 
     const interval = setInterval(() => {
-      if (auth.api_key !== null && auth.access_token !== null) {
+      if (auth.auth_token !== null) {
         sockuser.send(
           JSON.stringify({
-            api_key: auth.api_key,
-            access_token: auth.access_token,
+            authtoken: auth.auth_token,
           })
         );
       }
