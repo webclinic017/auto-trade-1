@@ -1,6 +1,7 @@
-import { Axios } from "..";
+import { Axios, queryClient } from "..";
 import { AxiosError } from "axios";
 import { useMutation, UseMutationResult } from "react-query";
+import { LocalStorage } from "../../entities/localstorage";
 
 interface GetAuthTokenResponse {
   token: string;
@@ -14,8 +15,19 @@ interface GetAuthTokenRequest {
 export const getAuthToken = async (
   request: GetAuthTokenRequest
 ): Promise<GetAuthTokenResponse> => {
-  const { data } = await Axios.post("/api-token-auth", request);
-  return data;
+  const { data, status } = await Axios.post(
+    "/api-token-auth/",
+    JSON.stringify(request),
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  if (status !== 200) {
+    throw new Error("unauthorized");
+  }
+
+  return JSON.parse(data);
 };
 
 export const useGetAuthToken = (): UseMutationResult<
@@ -25,5 +37,13 @@ export const useGetAuthToken = (): UseMutationResult<
 > =>
   useMutation<GetAuthTokenResponse, AxiosError, GetAuthTokenRequest>(
     ["get-auth-token"],
-    getAuthToken
+    getAuthToken,
+    {
+      onSuccess: ({ token }) => {
+        LocalStorage.setAuthToken(token);
+
+        queryClient.invalidateQueries("get-is-login");
+        queryClient.invalidateQueries("get-zerodha-login-url");
+      },
+    }
   );

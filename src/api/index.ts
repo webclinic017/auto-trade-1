@@ -1,5 +1,4 @@
 import axios from "axios";
-import { LocalStorage } from "../entities/localstorage";
 import { QueryClient } from "react-query";
 
 const uri = process.env.REACT_APP_API_URI;
@@ -33,9 +32,12 @@ export const ws = {
 
 export const Axios = new axios.Axios({
   baseURL: process.env.REACT_APP_API_HOST,
-  headers: {
-    Authorization: `Token ${LocalStorage.authToken}`,
-  },
 });
 
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});

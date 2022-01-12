@@ -1,37 +1,16 @@
-import React, { useState } from "react";
-import { LogoutIcon, SettingIcon } from "./icons";
+import { LogoutIcon, SettingIcon } from "../icons";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
-// import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import LabelImportantIcon from "@material-ui/icons/LabelImportant";
 import SignalCellularAltIcon from "@material-ui/icons/SignalCellularAlt";
 import { IconButton } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
+import { useHeader } from "./Header.hooks";
 
 function Header() {
   const history = useHistory();
-  const [popup, setPopup] = useState(false);
-  // const requestToken = useRef();
-
+  const { openZerodhaLogin, isPopupOpen, closePopup } = useHeader();
   const auth = useAuth();
-
-  const removeTokenListener = () => {
-    window.removeEventListener("storage", null);
-  };
-
-  const listenForReqToken = () => {
-    localStorage.removeItem("@requestToken");
-    window.addEventListener("storage", () => {
-      const requestToken = localStorage.getItem("@requestToken");
-      if (requestToken !== null) {
-        auth.connectZerodha(requestToken, () => {
-          setPopup(false);
-          removeTokenListener();
-          localStorage.removeItem("@requestToken");
-        });
-      }
-    });
-  };
 
   return (
     <div className="p-3 shadow-md flex flex-row items-center sticky z-50 top-0 bg-white">
@@ -43,17 +22,8 @@ function Header() {
         <strong className="font-serif">Bit Trade</strong>
       </div>
 
-      {auth.login ? (
+      {auth.isAuthenticated ? (
         <div className="flex-1 flex flex-row justify-end items-center">
-          {/* <IconButton
-            onClick={() => {
-              history.push("/orders");
-            }}
-            className="mx-1 md:block"
-          >
-            <ShoppingBasketIcon className="h-6 w-6" />
-          </IconButton> */}
-
           <IconButton
             onClick={() => {
               history.push("/signals");
@@ -63,7 +33,7 @@ function Header() {
             <SignalCellularAltIcon className="h-6 w-6" />
           </IconButton>
 
-          <IconButton onClick={auth.userLogout} className="mx-1 md:block">
+          <IconButton onClick={auth.logoutUser} className="mx-1 md:block">
             <LogoutIcon className="h-6 w-6" />
           </IconButton>
 
@@ -74,36 +44,20 @@ function Header() {
             <SettingIcon className="h-6 w-6" />
           </IconButton>
 
-          <IconButton
-            onClick={() => {
-              setPopup(true);
-              localStorage.removeItem("@accessToken");
-              auth.setAccessToken(null);
-              listenForReqToken();
-              window.open(
-                `https://kite.zerodha.com/connect/login?api_key=${auth.api_key}`,
-                "zerodha",
-                "height=500,width=650,top=100,left=400"
-              );
-            }}
-            className="mx-1 md:block"
-          >
+          <IconButton onClick={openZerodhaLogin} className="mx-1 md:block">
             <LabelImportantIcon className="h-6 w-6 text-red-600" />
           </IconButton>
         </div>
       ) : null}
 
-      {popup ? (
+      {isPopupOpen ? (
         <div className="w-screen h-screen  absolute top-0 right-0 bg-opacity-50 bg-gray-500 flex flex-col justify-center items-center">
           <div className="z-50 rounded-lg flex flex-col items-center justify-center">
             <h1 className="font-bold text-xl text-white my-3">
               connecting ......
             </h1>
             <button
-              onClick={() => {
-                setPopup(false);
-                removeTokenListener();
-              }}
+              onClick={closePopup}
               className="bg-red-500 px-4 py-2 rounded text-white font-bold"
             >
               close

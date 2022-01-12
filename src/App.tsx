@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import Header from "./components/Header";
-import Home from "./components/Home";
+import Header from "./components/Header/Header";
+import Home from "./components/Home/Home";
 import Settings from "./components/Settings";
-import Login from "./components/Login";
+import Login from "./components/Login/Login";
 // import Orders from "./components/Orders";
 import {
   BrowserRouter as Router,
@@ -10,7 +10,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { TradeProvider } from "./context/TradeContext";
+// import { TradeProvider } from "./context/TradeContext";
 import { StoreProvider } from "./context/StoreContext";
 import { initialState, reducer } from "./reducers";
 import { NetworkProvider } from "./context/NetworkContext";
@@ -52,25 +52,22 @@ function Main() {
           <RequestToken />
         </Route>
         <Route exact path="/settings">
-          {auth.login ? <Settings /> : <Redirect to="/login" />}
+          {auth.isAuthenticated ? <Settings /> : <Redirect to="/login" />}
         </Route>
         <Route exact path="/login">
-          {auth.is_loading ? (
+          {auth.isAuthenticatedLoading ? (
             <LoadingScreen />
-          ) : auth.login ? (
+          ) : auth.isAuthenticated ? (
             <Redirect to="/" />
           ) : (
             <Login />
           )}
         </Route>
-        {/* <Route exact path="/orders">
-          {auth.login ? <Orders /> : <Redirect to="/login" />}
-        </Route> */}
         <Route exact path="/signals">
-          {auth.login ? <SignalHistory /> : <Redirect to="/login" />}
+          {auth.isAuthenticated ? <SignalHistory /> : <Redirect to="/login" />}
         </Route>
         <Route exact path="/">
-          {auth.login ? <Home /> : <Redirect to="/login" />}
+          {auth.isAuthenticated ? <Home /> : <Redirect to="/login" />}
         </Route>
       </Switch>
     </Router>
@@ -83,9 +80,9 @@ function App() {
       <StoreProvider initialState={initialState} reducer={reducer}>
         <AuthProvider>
           <NetworkProvider>
-            <TradeProvider>
-              <Main />
-            </TradeProvider>
+            {/* <TradeProvider> */}
+            <Main />
+            {/* </TradeProvider> */}
           </NetworkProvider>
         </AuthProvider>
       </StoreProvider>
