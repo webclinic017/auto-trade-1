@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Table,
   TableBody,
@@ -8,10 +7,11 @@ import {
   TableRow,
   Paper,
 } from "@material-ui/core";
-import { useStore } from "../context/StoreContext";
+import { useStore } from "../../context/StoreContext";
 
 function Positions() {
-  const [{ positions }] = useStore();
+  const { store } = useStore();
+  const { positions } = store;
 
   return (
     <div className="p-3 mt-3">
@@ -35,13 +35,10 @@ function Positions() {
               <TableCell>
                 <strong>quantity</strong>
               </TableCell>
-              {/* <TableCell>
-                <strong>exit</strong>
-              </TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
-            {positions.map((item, id) => {
+            {positions?.net?.map((item, id) => {
               return (
                 <TableRow key={id}>
                   <TableCell>{id}</TableCell>
@@ -57,11 +54,6 @@ function Positions() {
                     </strong>
                   </TableCell>
                   <TableCell>{item.quantity}</TableCell>
-                  {/* <TableCell>
-                    <button className="bg-red-600 px-5 py-2 rounded-md text-white font-bold">
-                      exit
-                    </button>
-                  </TableCell> */}
                 </TableRow>
               );
             })}

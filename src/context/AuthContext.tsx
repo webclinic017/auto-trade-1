@@ -2,20 +2,7 @@ import { createContext, FC, useContext } from "react";
 import { useGetIsLogin } from "../api/auth/getIsLogin";
 import { useGetUserProfile } from "../api/auth/getUserProfile";
 import { LocalStorage } from "../entities/localstorage";
-
-interface UserProfile {
-  user: string;
-  api_key: string;
-  api_secret: string;
-  access_token: string;
-  investment: number;
-  max_loss: number;
-  max_profit: number;
-  nifty_lot: number;
-  banknifty_lot: number;
-  is_accesstoken_valid: boolean;
-  zerodha_last_login: string;
-}
+import { UserProfile } from "../types/user";
 
 interface IAuthenticationContext {
   isAuthenticated: boolean;

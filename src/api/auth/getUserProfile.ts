@@ -2,20 +2,9 @@ import { Axios } from "..";
 import { useQuery } from "react-query";
 import { AxiosError } from "axios";
 import { LocalStorage } from "../../entities/localstorage";
+import { UserProfile } from "../../types/user";
 
-interface GetUserProfileReponse {
-  user: string;
-  api_key: string;
-  api_secret: string;
-  access_token: string;
-  investment: number;
-  max_loss: number;
-  max_profit: number;
-  nifty_lot: number;
-  banknifty_lot: number;
-  is_accesstoken_valid: boolean;
-  zerodha_last_login: string;
-}
+type GetUserProfileReponse = UserProfile;
 
 const getUserProfile = async (): Promise<GetUserProfileReponse> => {
   const { data } = await Axios.get("/users/profile/detail", {

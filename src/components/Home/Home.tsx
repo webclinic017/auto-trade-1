@@ -1,6 +1,6 @@
 import ColorCard from "../ColorCard";
 import WorkerCard from "../WorkerCard";
-import Positions from "../Positions";
+import Positions from "../Positions/Positions";
 
 import { DollarIcon, MoneyIcon } from "../icons";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
@@ -11,15 +11,18 @@ import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import { IconButton } from "@material-ui/core";
 import { useStore } from "../../context/StoreContext";
 import { useAuth } from "../../context/AuthContext";
+import { useNetwork } from "../../context/NetworkContext";
 
 function Home() {
-  const [{ margins }] = useStore();
+  const { store } = useStore();
+  const { margins } = store;
   const { profile, isGetUserProfileError } = useAuth();
+  const { isNetworkActive } = useNetwork();
 
   return (
     <div className="p-3 mt-5">
       <h1 className="my-1 text-2xl p-2 font-semibold">Dashboard</h1>
-      {true && (
+      {!isNetworkActive && (
         <h1 className="text-center p-2 my-3 bg-yellow-400 text-white font-bold rounded shadow-md">
           network disconnected please refresh the page
           <IconButton onClick={() => window.location.reload()}>
@@ -50,7 +53,7 @@ function Home() {
           title="Total Margin"
           color="yellow"
           icon={() => <DollarIcon className="h-6 w-6" />}
-          value={margins?.equity?.available?.opening_balance}
+          value={margins?.equity?.net}
         />
         <ColorCard
           title="Buy"
@@ -67,7 +70,7 @@ function Home() {
         <ColorCard
           title="Margin Avaliable"
           color="blue"
-          value={margins?.equity?.available?.live_balance}
+          value={margins?.equity?.available?.cash}
           icon={() => <AccountBalanceWalletIcon className="h-6 w-6" />}
         />
         <ColorCard

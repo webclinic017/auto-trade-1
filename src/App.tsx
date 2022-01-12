@@ -25,24 +25,24 @@ import { queryClient } from "./api";
 
 function Main() {
   const auth = useAuth();
-  const { setNetwork } = useNetwork();
+  const { setNetworkStatus } = useNetwork();
 
   useEffect(() => {
     socket.onerror = () => {
-      setNetwork(false);
+      setNetworkStatus(false);
     };
     sockuser.onerror = () => {
-      setNetwork(false);
+      setNetworkStatus(false);
     };
     socket.onclose = () => {
-      setNetwork(false);
+      setNetworkStatus(false);
     };
     sockuser.onclose = () => {
-      setNetwork(false);
+      setNetworkStatus(false);
     };
 
     console.log("🦚");
-  }, [setNetwork]);
+  }, [setNetworkStatus]);
 
   return (
     <Router>
