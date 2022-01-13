@@ -10,39 +10,23 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-// import { TradeProvider } from "./context/TradeContext";
+import { TradeProvider } from "./context/TradeContext";
 import { StoreProvider } from "./context/StoreContext";
 import { initialState, reducer } from "./reducers";
 import { NetworkProvider } from "./context/NetworkContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import LoadingScreen from "./components/LoadingScreen";
 import RequestToken from "./components/RequestToken";
-import { useNetwork } from "./context/NetworkContext";
-import { socket, sockuser } from "./services/ws";
 import SignalHistory from "./components/SignalHistory";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "./api";
 
 function Main() {
   const auth = useAuth();
-  const { setNetworkStatus } = useNetwork();
 
   useEffect(() => {
-    socket.onerror = () => {
-      setNetworkStatus(false);
-    };
-    sockuser.onerror = () => {
-      setNetworkStatus(false);
-    };
-    socket.onclose = () => {
-      setNetworkStatus(false);
-    };
-    sockuser.onclose = () => {
-      setNetworkStatus(false);
-    };
-
     console.log("🦚");
-  }, [setNetworkStatus]);
+  }, []);
 
   return (
     <Router>
@@ -80,9 +64,9 @@ function App() {
       <StoreProvider initialState={initialState} reducer={reducer}>
         <AuthProvider>
           <NetworkProvider>
-            {/* <TradeProvider> */}
-            <Main />
-            {/* </TradeProvider> */}
+            <TradeProvider>
+              <Main />
+            </TradeProvider>
           </NetworkProvider>
         </AuthProvider>
       </StoreProvider>

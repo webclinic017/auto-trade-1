@@ -76,7 +76,7 @@ function Home() {
         <ColorCard
           title="Pnl"
           color="gray"
-          value={1}
+          value={store?.pnl}
           icon={() => <AttachMoneyIcon className="h-6 w-6" />}
         />
       </div>
