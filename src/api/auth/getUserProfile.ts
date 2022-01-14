@@ -12,7 +12,7 @@ const getUserProfile = async (): Promise<GetUserProfileReponse> => {
       Authorization: `Token ${LocalStorage.authToken}`,
     },
   });
-  return data;
+  return JSON.parse(data);
 };
 
 export const useGetUserProfile = () =>
