@@ -10,7 +10,7 @@ const getIsLogin = async (): Promise<AxiosResponse> => {
     },
   });
 
-  if (response.status === 401) {
+  if (response.status !== 200) {
     throw new Error("unauthorized");
   }
 

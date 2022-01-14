@@ -9,16 +9,11 @@ type UpdateUserProfileRequest = UserProfileUpdateForm;
 export const updateUserProfile = async (
   request: UpdateUserProfileRequest
 ): Promise<void> => {
-  const { status } = await Axios.put(
-    `/users/update/profile`,
-    JSON.stringify(request),
-    {
-      headers: {
-        Authorization: `Token ${LocalStorage.authToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const { status } = await Axios.put(`/users/update/profile`, request, {
+    headers: {
+      Authorization: `Token ${LocalStorage.authToken}`,
+    },
+  });
 
   if (status !== 200) {
     throw new Error("unauthorized");

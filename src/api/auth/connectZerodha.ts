@@ -16,10 +16,9 @@ export const connectZerodha = async (
 ): Promise<ConnectZerodhaResponse> => {
   const { data, status } = await Axios.post(
     `/zerodha_login/access_token`,
-    JSON.stringify(request),
+    request,
     {
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Token ${LocalStorage.authToken}`,
       },
     }

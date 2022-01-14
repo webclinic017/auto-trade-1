@@ -13,7 +13,7 @@ export const getZerodhaLoginUrl =
       headers: { Authorization: `Token ${LocalStorage.authToken}` },
     });
 
-    return JSON.parse(data);
+    return data;
   };
 
 export const useGetZerodhaLoginUrl = () =>

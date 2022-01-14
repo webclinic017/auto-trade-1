@@ -15,19 +15,15 @@ interface GetAuthTokenRequest {
 export const getAuthToken = async (
   request: GetAuthTokenRequest
 ): Promise<GetAuthTokenResponse> => {
-  const { data, status } = await Axios.post(
-    "/api-token-auth/",
-    JSON.stringify(request),
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
+  const { data, status } = await Axios.post("/api-token-auth/", request, {
+    headers: { "Content-Type": "application/json" },
+  });
 
   if (status !== 200) {
     throw new Error("unauthorized");
   }
 
-  return JSON.parse(data);
+  return data;
 };
 
 export const useGetAuthToken = (): UseMutationResult<
