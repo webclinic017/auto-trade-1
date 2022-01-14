@@ -23,7 +23,13 @@ export type StoreActions =
   | "UPDATE_POSITIONS"
   | "UPDATE_PNL"
   | "ADD_BUYS"
-  | "ADD_SELLS";
+  | "ADD_SELLS"
+  | "TOGGEL_TRADE"
+  | "TOGGEL_INDEX_TRADE"
+  | "TOGGEL_INDEX_OPTIONS_TRADE"
+  | "TOGGEL_INDEX_FUTURES_TRADE"
+  | "TOGGEL_STOCK_OPTIONS_TRADE"
+  | "TOGGEL_STOCK_TRADE";
 
 export interface IStoreAction {
   type: StoreActions;
@@ -61,6 +67,49 @@ export const reducer = (
       return { ...state, buys: state.buys + 1 };
     case "ADD_SELLS":
       return { ...state, sells: state.sells + 1 };
+    case "TOGGEL_INDEX_TRADE":
+      return {
+        ...state,
+        trade_modes: {
+          ...state.trade_modes,
+          should_trade_index: !state.trade_modes.should_trade_index,
+        },
+      };
+    case "TOGGEL_INDEX_OPTIONS_TRADE":
+      return {
+        ...state,
+        trade_modes: {
+          ...state.trade_modes,
+          should_trade_index_options:
+            !state.trade_modes.should_trade_index_options,
+        },
+      };
+    case "TOGGEL_INDEX_FUTURES_TRADE":
+      return {
+        ...state,
+        trade_modes: {
+          ...state.trade_modes,
+          should_trade_index_futures:
+            !state.trade_modes.should_trade_index_futures,
+        },
+      };
+    case "TOGGEL_STOCK_TRADE":
+      return {
+        ...state,
+        trade_modes: {
+          ...state.trade_modes,
+          should_trade_stocks: !state.trade_modes.should_trade_stocks,
+        },
+      };
+    case "TOGGEL_STOCK_OPTIONS_TRADE":
+      return {
+        ...state,
+        trade_modes: {
+          ...state.trade_modes,
+          should_trade_stock_options:
+            !state.trade_modes.should_trade_stock_options,
+        },
+      };
     default:
       return state;
   }

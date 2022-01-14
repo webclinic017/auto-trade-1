@@ -97,6 +97,8 @@ export const TradeProvider: FC = ({ children }) => {
           payload: data.pnl ?? 0,
         });
       };
+    } else {
+      sockuser.onmessage = () => {};
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,6 +115,8 @@ export const TradeProvider: FC = ({ children }) => {
           orders.send(JSON.stringify(trade));
         }
       };
+    } else {
+      socket.onmessage = () => {};
     }
   }, [isAuthenticated, profile, trade_modes]);
 

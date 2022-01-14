@@ -12,12 +12,23 @@ import { IconButton } from "@material-ui/core";
 import { useStore } from "../../context/StoreContext";
 import { useAuth } from "../../context/AuthContext";
 import { useNetwork } from "../../context/NetworkContext";
+import { useHome } from "./Home.hooks";
 
 function Home() {
   const { store } = useStore();
   const { margins } = store;
   const { profile, isGetUserProfileError } = useAuth();
   const { isNetworkActive } = useNetwork();
+  const {
+    toggel_index_options_tradind,
+    toggel_index_futures_trading,
+    toggel_stock_trading,
+    toggel_stock_options_trading,
+    index_futures,
+    index_options,
+    stock_options,
+    stocks,
+  } = useHome();
 
   return (
     <div className="p-3 mt-5">
@@ -59,13 +70,13 @@ function Home() {
           title="Buy"
           color="green"
           icon={() => <MoneyIcon className="h-6 w-6" />}
-          value={1}
+          value={store.buys}
         />
         <ColorCard
           title="Sell"
           color="red"
           icon={() => <AccountBalanceIcon className="h-6 w-6" />}
-          value={1}
+          value={store.sells}
         />
         <ColorCard
           title="Margin Avaliable"
@@ -83,11 +94,22 @@ function Home() {
 
       <h1 className="my-2 mt-10 text-2xl p-2 font-semibold">INSTRUMENTS</h1>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-        <WorkerCard title="index options" value={true} fun={() => {}} />
-        <WorkerCard title="index futures" value={true} fun={() => {}} />
-        <WorkerCard title="stocks" value={true} fun={() => {}} />
-        <WorkerCard title="stock options" value={true} fun={() => {}} />
-        <WorkerCard title="stock futures" value={true} fun={() => {}} />
+        <WorkerCard
+          title="index options"
+          value={index_options}
+          fun={toggel_index_options_tradind}
+        />
+        <WorkerCard
+          title="index futures"
+          value={index_futures}
+          fun={toggel_index_futures_trading}
+        />
+        <WorkerCard title="stocks" value={stocks} fun={toggel_stock_trading} />
+        <WorkerCard
+          title="stock options"
+          value={stock_options}
+          fun={toggel_stock_options_trading}
+        />
       </div>
       <Positions />
     </div>
