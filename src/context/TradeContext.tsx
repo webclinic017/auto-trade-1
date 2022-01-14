@@ -12,18 +12,21 @@ interface UserSocketData {
   margins?: IMargins;
   positions?: IPositions;
   pnl?: number;
+  error?: {
+    status: boolean;
+    message: string;
+  };
 }
 
-export const TradeContext = createContext({} as any);
+interface ITradeContext {}
+
+export const TradeContext = createContext<ITradeContext>({} as any);
 
 export const TradeProvider: FC = ({ children }) => {
   const network = useNetwork();
   const { isAuthenticated, profile } = useAuth();
-  const { dispatch } = useStore();
-
-  useEffect(() => {
-    console.log("calling useEffect");
-  }, []);
+  const { store, dispatch } = useStore();
+  const { trade_modes } = store;
 
   useEffect(() => {
     //   handle all closing sockets .....
@@ -41,6 +44,8 @@ export const TradeProvider: FC = ({ children }) => {
   }, [network]);
 
   useEffect(() => {
+    let sock_user_interval: ReturnType<typeof setInterval> | undefined;
+
     //   when the user is authenticated send the auth token to the backend
     if (isAuthenticated) {
       // authenticate the user socket
@@ -54,13 +59,28 @@ export const TradeProvider: FC = ({ children }) => {
       orders.send(JSON.stringify({ authtoken: LocalStorage.authToken }));
 
       // for every 10 seconds ping the server
-      setInterval(() => {
+      sock_user_interval = setInterval(() => {
         sockuser.send(JSON.stringify({ message: "ping" }));
       }, 10000);
+    }
 
+    return () => {
+      if (sock_user_interval) {
+        clearInterval(sock_user_interval);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated && profile) {
       // when user socket receives a message
       sockuser.onmessage = (ev) => {
         const data = JSON.parse(ev.data) as UserSocketData;
+
+        if (data?.error?.status) {
+          return;
+        }
 
         dispatch({
           type: "UPDATE_MARGINS",
@@ -77,19 +97,24 @@ export const TradeProvider: FC = ({ children }) => {
           payload: data.pnl ?? 0,
         });
       };
+    }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, profile]);
+
+  useEffect(() => {
+    if (isAuthenticated && profile) {
       socket.onmessage = (ev) => {
         const _trade = JSON.parse(ev.data) as ITrade;
 
-        if (TradeUtil.shouldTrade(_trade)) {
+        if (TradeUtil.shouldTrade(_trade, trade_modes)) {
           const trade = TradeUtil.generateTrade(_trade, profile);
 
           orders.send(JSON.stringify(trade));
         }
       };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, isAuthenticated]);
+  }, [isAuthenticated, profile, trade_modes]);
 
   return <TradeContext.Provider value={{}}>{children}</TradeContext.Provider>;
 };

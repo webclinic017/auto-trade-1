@@ -30,7 +30,7 @@ function Home() {
           </IconButton>
         </h1>
       )}
-      {profile?.is_accesstoken_valid && (
+      {!profile?.is_accesstoken_valid && (
         <h1 className="text-center p-4 my-3 bg-red-500 rounded-md text-white font-bold">
           please connect with zerodha
         </h1>

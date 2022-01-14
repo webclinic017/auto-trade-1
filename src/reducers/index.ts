@@ -1,11 +1,21 @@
 import { IMargins, IPositions } from "../types/kite";
 
+export interface ITradeModes {
+  should_trade_index: boolean;
+  should_trade_index_options: boolean;
+  should_trade_index_futures: boolean;
+  should_trade_stocks: boolean;
+  should_trade_stock_options: boolean;
+  should_trade: boolean;
+}
+
 export interface IStoreState {
   margins?: IMargins;
   positions?: IPositions;
   pnl: number;
   buys: number;
   sells: number;
+  trade_modes: ITradeModes;
 }
 
 export type StoreActions =
@@ -26,6 +36,14 @@ export const initialState: IStoreState = {
   pnl: 0,
   buys: 0,
   sells: 0,
+  trade_modes: {
+    should_trade_index: false,
+    should_trade_index_options: false,
+    should_trade_index_futures: false,
+    should_trade_stock_options: false,
+    should_trade_stocks: false,
+    should_trade: true,
+  },
 };
 
 export const reducer = (
