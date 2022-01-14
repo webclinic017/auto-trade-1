@@ -32,6 +32,9 @@ export const ws = {
 
 export const Axios = new axios.Axios({
   baseURL: process.env.REACT_APP_API_HOST,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 export const queryClient = new QueryClient({
