@@ -30,11 +30,8 @@ export const ws = {
   orders: `${wsprotocol}://` + uri + "/ws/orders",
 };
 
-export const Axios = new axios.Axios({
+export const Axios = axios.create({
   baseURL: process.env.REACT_APP_API_HOST,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 export const queryClient = new QueryClient({
