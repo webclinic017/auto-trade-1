@@ -3,6 +3,7 @@ interface MarginAvailable {
   cash: number;
   collateral: number;
   intraday_payin: number;
+  live_balance: number;
 }
 
 interface MarginUtilised {

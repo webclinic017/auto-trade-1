@@ -65,7 +65,7 @@ function Home() {
           title="Total Margin"
           color="yellow"
           icon={() => <DollarIcon className="h-6 w-6" />}
-          value={margins?.equity?.net}
+          value={margins?.equity?.available?.cash}
         />
         <ColorCard
           title="Buy"
@@ -82,7 +82,7 @@ function Home() {
         <ColorCard
           title="Margin Avaliable"
           color="blue"
-          value={margins?.equity?.available?.cash}
+          value={margins?.equity?.available?.live_balance}
           icon={() => <AccountBalanceWalletIcon className="h-6 w-6" />}
         />
         <ColorCard
