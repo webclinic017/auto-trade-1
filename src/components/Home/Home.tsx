@@ -28,6 +28,7 @@ function Home() {
     index_options,
     stock_options,
     stocks,
+    should_trade,
   } = useHome();
 
   return (
@@ -47,7 +48,7 @@ function Home() {
         </h1>
       )}
 
-      {false ? null : (
+      {!should_trade && (
         <h1 className="text-center p-4 -mt-3 mb-3 bg-red-800 rounded-md text-red-600 font-bold">
           you cant trade as your limit of pnl has exceeded
         </h1>

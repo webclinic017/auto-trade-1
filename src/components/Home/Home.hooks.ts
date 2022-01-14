@@ -11,6 +11,7 @@ export interface UseHomeHooks {
   index_futures: boolean;
   stocks: boolean;
   stock_options: boolean;
+  should_trade: boolean;
 }
 
 export const useHome = (): UseHomeHooks => {
@@ -60,5 +61,6 @@ export const useHome = (): UseHomeHooks => {
     index_futures: store.trade_modes.should_trade_index_futures,
     stocks: store.trade_modes.should_trade_stocks,
     stock_options: store.trade_modes.should_trade_stock_options,
+    should_trade: store.trade_modes.should_trade,
   };
 };

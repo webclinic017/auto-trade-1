@@ -96,13 +96,28 @@ export const TradeProvider: FC = ({ children }) => {
           type: "UPDATE_PNL",
           payload: data.pnl ?? 0,
         });
+
+        if (
+          (data?.pnl ?? 0 < profile.max_loss) ||
+          (data?.pnl ?? 0 > profile.max_profit)
+        ) {
+          dispatch({
+            type: "DISABLE_TRADE",
+          });
+        } else {
+          if (!trade_modes.should_trade) {
+            dispatch({
+              type: "ENABLE_TRADE",
+            });
+          }
+        }
       };
     } else {
       sockuser.onmessage = () => {};
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated, profile]);
+  }, [isAuthenticated, profile, trade_modes.should_trade]);
 
   useEffect(() => {
     if (isAuthenticated && profile) {

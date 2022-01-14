@@ -29,7 +29,9 @@ export type StoreActions =
   | "TOGGEL_INDEX_OPTIONS_TRADE"
   | "TOGGEL_INDEX_FUTURES_TRADE"
   | "TOGGEL_STOCK_OPTIONS_TRADE"
-  | "TOGGEL_STOCK_TRADE";
+  | "TOGGEL_STOCK_TRADE"
+  | "ENABLE_TRADE"
+  | "DISABLE_TRADE";
 
 export interface IStoreAction {
   type: StoreActions;
@@ -109,6 +111,16 @@ export const reducer = (
           should_trade_stock_options:
             !state.trade_modes.should_trade_stock_options,
         },
+      };
+    case "ENABLE_TRADE":
+      return {
+        ...state,
+        trade_modes: { ...state.trade_modes, should_trade: true },
+      };
+    case "DISABLE_TRADE":
+      return {
+        ...state,
+        trade_modes: { ...state.trade_modes, should_trade: false },
       };
     default:
       return state;
