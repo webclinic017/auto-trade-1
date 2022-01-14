@@ -97,13 +97,13 @@ export const TradeProvider: FC = ({ children }) => {
           payload: data.pnl ?? 0,
         });
 
-        if (
-          (data?.pnl ?? 0 < profile.max_loss) ||
-          (data?.pnl ?? 0 > profile.max_profit)
-        ) {
-          dispatch({
-            type: "DISABLE_TRADE",
-          });
+        const pnl = data?.pnl ?? 0;
+        if (pnl < -1 * profile.max_loss && pnl > profile.max_profit) {
+          if (trade_modes.should_trade) {
+            dispatch({
+              type: "DISABLE_TRADE",
+            });
+          }
         } else {
           if (!trade_modes.should_trade) {
             dispatch({
