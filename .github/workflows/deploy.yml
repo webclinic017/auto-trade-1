@@ -9,6 +9,7 @@ env:
   REACT_APP_API_URI: ${{ secrets.API_URI }}
   REACT_APP_API_WEB_PROTOCOL: ${{ secrets.API_WEB_PROTOCOL }}
   REACT_APP_API_WS_PROTOCOL: ${{ secrets.API_WS_PROTOCOL }}
+  REACT_APP_API_HOST: ${{ secrets.REACT_APP_API_HOST }}
 
 # on:
 #   release:
