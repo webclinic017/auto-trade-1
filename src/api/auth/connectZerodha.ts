@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import { useMutation } from "react-query";
 import { Axios } from "..";
 import { LocalStorage } from "../../entities/localstorage";
+import { StatusCodeUtil } from "../../utils/StatusCodeUtil";
 
 interface ConnectZerodhaRequest {
   request_token: string;
@@ -14,7 +15,7 @@ interface ConnectZerodhaResponse {
 export const connectZerodha = async (
   request: ConnectZerodhaRequest
 ): Promise<ConnectZerodhaResponse> => {
-  const { data, status } = await Axios.post(
+  const { data, status, statusText } = await Axios.post(
     `/zerodha_login/access_token`,
     request,
     {
@@ -24,8 +25,8 @@ export const connectZerodha = async (
     }
   );
 
-  if (status !== 200) {
-    throw new Error("unauthorized");
+  if (StatusCodeUtil.is_error(status)) {
+    throw new Error(statusText);
   }
 
   return data;

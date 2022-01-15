@@ -2,6 +2,7 @@ import { Axios, queryClient } from "..";
 import { AxiosError } from "axios";
 import { useMutation, UseMutationResult } from "react-query";
 import { LocalStorage } from "../../entities/localstorage";
+import { StatusCodeUtil } from "../../utils/StatusCodeUtil";
 
 interface GetAuthTokenResponse {
   token: string;
@@ -15,12 +16,16 @@ interface GetAuthTokenRequest {
 export const getAuthToken = async (
   request: GetAuthTokenRequest
 ): Promise<GetAuthTokenResponse> => {
-  const { data, status } = await Axios.post("/api-token-auth/", request, {
-    headers: { "Content-Type": "application/json" },
-  });
+  const { data, status, statusText } = await Axios.post(
+    "/api-token-auth/",
+    request,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 
-  if (status !== 200) {
-    throw new Error("unauthorized");
+  if (StatusCodeUtil.is_error(status)) {
+    throw new Error(statusText);
   }
 
   return data;

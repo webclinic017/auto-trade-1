@@ -2,6 +2,7 @@ import { Axios, queryClient } from "..";
 import { AxiosResponse, AxiosError } from "axios";
 import { useQuery, UseQueryResult } from "react-query";
 import { LocalStorage } from "../../entities/localstorage";
+import { StatusCodeUtil } from "../../utils/StatusCodeUtil";
 
 const getIsLogin = async (): Promise<AxiosResponse> => {
   const response = await Axios.get("/users/is_login", {
@@ -10,8 +11,8 @@ const getIsLogin = async (): Promise<AxiosResponse> => {
     },
   });
 
-  if (response.status !== 200) {
-    throw new Error("unauthorized");
+  if (StatusCodeUtil.is_error(response.status)) {
+    throw new Error(response.statusText);
   }
 
   return response;
