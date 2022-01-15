@@ -1,7 +1,6 @@
 import { LogoutIcon, SettingIcon } from "../icons";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
 import LabelImportantIcon from "@material-ui/icons/LabelImportant";
-import SignalCellularAltIcon from "@material-ui/icons/SignalCellularAlt";
 import { IconButton } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -22,17 +21,8 @@ function Header() {
         <strong className="font-serif">Bit Trade</strong>
       </div>
 
-      {auth.isAuthenticated ? (
+      {auth.isAuthenticated && (
         <div className="flex-1 flex flex-row justify-end items-center">
-          <IconButton
-            onClick={() => {
-              history.push("/signals");
-            }}
-            className="mx-1 md:block"
-          >
-            <SignalCellularAltIcon className="h-6 w-6" />
-          </IconButton>
-
           <IconButton onClick={auth.logoutUser} className="mx-1 md:block">
             <LogoutIcon className="h-6 w-6" />
           </IconButton>
@@ -48,9 +38,9 @@ function Header() {
             <LabelImportantIcon className="h-6 w-6 text-red-600" />
           </IconButton>
         </div>
-      ) : null}
+      )}
 
-      {isPopupOpen ? (
+      {isPopupOpen && (
         <div className="w-screen h-screen  absolute top-0 right-0 bg-opacity-50 bg-gray-500 flex flex-col justify-center items-center">
           <div className="z-50 rounded-lg flex flex-col items-center justify-center">
             <h1 className="font-bold text-xl text-white my-3">
@@ -64,7 +54,7 @@ function Header() {
             </button>
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

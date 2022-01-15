@@ -3,7 +3,6 @@ import Header from "./components/Header/Header";
 import Home from "./components/Home/Home";
 import Settings from "./components/Settings/Settings";
 import Login from "./components/Login/Login";
-// import Orders from "./components/Orders";
 import {
   BrowserRouter as Router,
   Switch,
@@ -17,7 +16,6 @@ import { NetworkProvider } from "./context/NetworkContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import LoadingScreen from "./components/LoadingScreen";
 import RequestToken from "./components/RequestToken";
-import SignalHistory from "./components/SignalHistory";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "./api";
 
@@ -46,9 +44,6 @@ function Main() {
           ) : (
             <Login />
           )}
-        </Route>
-        <Route exact path="/signals">
-          {auth.isAuthenticated ? <SignalHistory /> : <Redirect to="/login" />}
         </Route>
         <Route exact path="/">
           {auth.isAuthenticated ? <Home /> : <Redirect to="/login" />}
