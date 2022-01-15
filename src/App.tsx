@@ -9,7 +9,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { TradeProvider } from "./context/TradeContext";
+// import { TradeProvider } from "./context/TradeContext";
 import { StoreProvider } from "./context/StoreContext";
 import { initialState, reducer } from "./reducers";
 import { NetworkProvider } from "./context/NetworkContext";
@@ -18,6 +18,7 @@ import LoadingScreen from "./components/LoadingScreen";
 import RequestToken from "./components/RequestToken";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "./api";
+import CreateStrategy from "./components/CreateStrategy/CreateStrategy";
 
 function Main() {
   const auth = useAuth();
@@ -45,8 +46,17 @@ function Main() {
             <Login />
           )}
         </Route>
+        <Route exact path="/create_strategy">
+          {auth.isAuthenticated ? <CreateStrategy /> : <Redirect to="/login" />}
+        </Route>
         <Route exact path="/">
-          {auth.isAuthenticated ? <Home /> : <Redirect to="/login" />}
+          {auth.isAuthenticatedLoading ? (
+            <LoadingScreen />
+          ) : auth.isAuthenticated ? (
+            <Home />
+          ) : (
+            <Redirect to="/login" />
+          )}
         </Route>
       </Switch>
     </Router>
@@ -59,9 +69,9 @@ function App() {
       <StoreProvider initialState={initialState} reducer={reducer}>
         <AuthProvider>
           <NetworkProvider>
-            <TradeProvider>
-              <Main />
-            </TradeProvider>
+            {/* <TradeProvider> */}
+            <Main />
+            {/* </TradeProvider> */}
           </NetworkProvider>
         </AuthProvider>
       </StoreProvider>

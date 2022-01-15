@@ -2,21 +2,23 @@ import { LogoutIcon, SettingIcon } from "../icons";
 import ShowChartIcon from "@material-ui/icons/ShowChart";
 import LabelImportantIcon from "@material-ui/icons/LabelImportant";
 import { IconButton } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useHeader } from "./Header.hooks";
+import CreateIcon from "@material-ui/icons/Create";
 
 function Header() {
-  const history = useHistory();
   const { openZerodhaLogin, isPopupOpen, closePopup } = useHeader();
   const auth = useAuth();
 
   return (
     <div className="p-3 shadow-md flex flex-row items-center sticky z-50 top-0 bg-white">
       <div className="flex items-center">
-        <IconButton className="mr-2" onClick={() => history.replace("/")}>
-          <ShowChartIcon className="h-6 w-6" />
-        </IconButton>
+        <Link to="/">
+          <IconButton className="mr-2">
+            <ShowChartIcon className="h-6 w-6" />
+          </IconButton>
+        </Link>
 
         <strong className="font-serif">Bit Trade</strong>
       </div>
@@ -27,12 +29,17 @@ function Header() {
             <LogoutIcon className="h-6 w-6" />
           </IconButton>
 
-          <IconButton
-            onClick={() => history.push("/settings")}
-            className="mx-1 md:block"
-          >
-            <SettingIcon className="h-6 w-6" />
-          </IconButton>
+          <Link to="/settings">
+            <IconButton className="mx-1 md:block">
+              <SettingIcon className="h-6 w-6" />
+            </IconButton>
+          </Link>
+
+          <Link to="/create_strategy">
+            <IconButton>
+              <CreateIcon />
+            </IconButton>
+          </Link>
 
           <IconButton onClick={openZerodhaLogin} className="mx-1 md:block">
             <LabelImportantIcon className="h-6 w-6 text-red-600" />
