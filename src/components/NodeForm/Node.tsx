@@ -57,7 +57,6 @@ const Node: FC<NodeProps> = ({ formik, name, count = 0 }) => {
       {isNodeOperator && (
         <div className="p-1 border-2 border-blue-300 shadow-md">
           <div>
-            operand 1
             <Node
               formik={formik}
               name={`${name}.left_child`}
@@ -66,7 +65,6 @@ const Node: FC<NodeProps> = ({ formik, name, count = 0 }) => {
           </div>
           <br />
           <div>
-            operand 2
             <Node
               formik={formik}
               name={`${name}.right_child`}

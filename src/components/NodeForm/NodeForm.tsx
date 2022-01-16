@@ -7,7 +7,7 @@ const NodeForm: FC = () => {
   return (
     <Formik<INodeForm>
       initialValues={{ root: undefined }}
-      onSubmit={(values) => console.log(values)}
+      onSubmit={(values) => console.log(JSON.stringify(values))}
     >
       {(formik) => {
         return (
