@@ -34,16 +34,21 @@ const CreateStrategy: FC = () => {
           </div>
         </div>
 
-        <h1 className="text-center font-bold">STRATEGY SETTING</h1>
+        <div className="flex flex-col">
+          <label className="text-sm font-bold">lot size</label>
+          <input type="number" className="form-input" />
+        </div>
+
+        <h1 className="text-center font-bold">STRATEGY SETTINGS</h1>
 
         <div>
           <h1 className="font-bold text-green-500">entry conditions</h1>
-          <NodeForm isRoot />
+          <NodeForm />
         </div>
 
         <div>
           <h1 className="font-bold text-red-500">exit conditions</h1>
-          <NodeForm isRoot />
+          <NodeForm />
         </div>
       </div>
     </div>
