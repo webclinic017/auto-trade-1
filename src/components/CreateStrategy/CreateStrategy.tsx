@@ -1,59 +1,49 @@
 import { FC } from "react";
-import { IconButton } from "@material-ui/core";
-import AddSharpIcon from "@material-ui/icons/AddSharp";
+import NodeForm from "../NodeForm/NodeForm";
 
 const CreateStrategy: FC = () => {
   return (
     <div className="p-3">
-      <h1 className="text-3xl text-gray-400">create strategy</h1>
+      <div className="text-md py-2 text-center font-semibold">
+        CREATE A STRATEGY
+      </div>
+      <div className="flex flex-col form space-y-3">
+        <div className="flex flex-col space-y-2">
+          <label className="text-sm font-bold text-blue-500">
+            Enter Strategy Name
+          </label>
+          <input className="form-input" type="text" />
+        </div>
 
-      <div className="mt-5">
-        <div className="flex flex-col items-center">
-          <h1 className="text-xl font-extrabold">settings</h1>
-          <div className="p-2 w-1/3">
+        <div className="flex space-x-2">
+          <div className="flex flex-col">
+            <label className="text-sm font-bold text-green-500">
+              profit (%)
+            </label>
             <input
-              className="form-input"
-              placeholder="Strategy Name . . ."
-              type="text"
+              className="form-input focus:ring-green-600 focus:border-transparent focus:ring-2"
+              type="number"
             />
-
-            <div className="flex space-x-1">
-              <input
-                className="form-input"
-                placeholder="Profit Percentage"
-                type="number"
-              />
-              <input
-                className="form-input"
-                placeholder="Loss Percentage"
-                type="number"
-              />
-            </div>
-            <button className="font-bold mt-2 shadow-lg text-white bg-blue-400 px-5 py-2 rounded-md w-full">
-              create
-            </button>
+          </div>
+          <div className="flex flex-col">
+            <label className="text-sm font-bold text-red-500">loss (%)</label>
+            <input
+              className="form-input focus:ring-red-600 focus:border-transparent focus:ring-2"
+              type="number"
+            />
           </div>
         </div>
-        <div>
-          <div className="flex items-center">
-            <h1 className="text-green-500 font-extrabold text-xl">
-              entry conditions
-            </h1>
 
-            <IconButton>
-              <AddSharpIcon className="text-green-600" />
-            </IconButton>
-          </div>
-        </div>
+        <h1 className="text-center font-bold">STRATEGY SETTING</h1>
+
         <div>
-          <div className="flex items-center">
-            <h1 className="text-red-500 font-extrabold text-xl">
-              exit conditions
-            </h1>
-            <IconButton>
-              <AddSharpIcon className="text-red-600" />
-            </IconButton>
-          </div>
+          <h1 className="font-bold text-green-500">entry conditions</h1>
+          <NodeForm isRoot />
+        </div>
+
+        <div>
+          <h1 className="font-bold text-red-500">exit conditions</h1>
+          <NodeForm isRoot />
         </div>
       </div>
     </div>

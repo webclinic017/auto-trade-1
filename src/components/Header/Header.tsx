@@ -12,7 +12,7 @@ function Header() {
   const auth = useAuth();
 
   return (
-    <div className="p-3 shadow-md flex flex-row items-center sticky z-50 top-0 bg-white">
+    <div className="p-3 shadow flex flex-row items-center sticky z-50 top-0 bg-white">
       <div className="flex items-center">
         <Link to="/">
           <IconButton className="mr-2">
@@ -20,7 +20,7 @@ function Header() {
           </IconButton>
         </Link>
 
-        <strong className="font-serif">Bit Trade</strong>
+        <strong className="hidden md:block font-serif">Bit Trade</strong>
       </div>
 
       {auth.isAuthenticated && (
