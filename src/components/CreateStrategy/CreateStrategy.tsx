@@ -81,6 +81,14 @@ const CreateStrategy: FC = () => {
                   <h1 className="font-bold text-red-500">exit conditions</h1>
                   <NodeForm formik={formik} name="exit" />
                 </div>
+
+                <div className="my-2">
+                  <div className="my-2 font-bold text-center">TICKERS</div>
+                  <textarea
+                    className="form-input"
+                    placeholder="tickers"
+                  ></textarea>
+                </div>
               </div>
 
               <button
