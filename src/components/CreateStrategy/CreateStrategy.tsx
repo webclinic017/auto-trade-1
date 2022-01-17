@@ -1,6 +1,16 @@
 import { FC } from "react";
 import NodeForm from "../NodeForm/NodeForm";
 import { Formik, Form, Field } from "formik";
+import { INodeForm } from "../../types/forms";
+
+interface ICreateStrategyForm {
+  name: string;
+  profit_percentage: number;
+  loss_percentage: number;
+  lot_size: number;
+  entry: INodeForm;
+  exit: INodeForm;
+}
 
 const CreateStrategy: FC = () => {
   return (
@@ -8,8 +18,20 @@ const CreateStrategy: FC = () => {
       <div className="text-md py-2 text-center font-semibold">
         CREATE A STRATEGY
       </div>
-      <Formik initialValues={{}} onSubmit={() => {}}>
-        {() => {
+      <Formik<ICreateStrategyForm>
+        initialValues={{
+          name: "",
+          profit_percentage: 0,
+          loss_percentage: 0,
+          lot_size: 1,
+          entry: { root: undefined },
+          exit: { root: undefined },
+        }}
+        onSubmit={(values) => {
+          console.log(values);
+        }}
+      >
+        {(formik) => {
           return (
             <Form>
               <div className="flex flex-col form space-y-3">
@@ -52,14 +74,21 @@ const CreateStrategy: FC = () => {
 
                 <div>
                   <h1 className="font-bold text-green-500">entry conditions</h1>
-                  <NodeForm />
+                  <NodeForm formik={formik} name="entry" />
                 </div>
 
                 <div>
                   <h1 className="font-bold text-red-500">exit conditions</h1>
-                  <NodeForm />
+                  <NodeForm formik={formik} name="exit" />
                 </div>
               </div>
+
+              <button
+                className="form-input py-2 px-3 bg-blue-900 text-white rounded-md shadow-lg"
+                type="submit"
+              >
+                create
+              </button>
             </Form>
           );
         }}
