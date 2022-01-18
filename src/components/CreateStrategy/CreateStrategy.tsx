@@ -1,18 +1,22 @@
 import { FC } from "react";
 import NodeForm from "../NodeForm/NodeForm";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FieldProps } from "formik";
 import { INodeForm } from "../../types/forms";
+import { useCreateStrategy } from "./CreateStrategy.hooks";
 
-interface ICreateStrategyForm {
+export interface ICreateStrategyForm {
   name: string;
-  profit_percentage: number;
-  loss_percentage: number;
+  profit_percent: number;
+  loss_percent: number;
   lot_size: number;
   entry: INodeForm;
   exit: INodeForm;
+  tickers: string;
 }
 
 const CreateStrategy: FC = () => {
+  const { createStrategy } = useCreateStrategy();
+
   return (
     <div className="p-3">
       <div className="text-md py-2 text-center font-semibold">
@@ -21,15 +25,14 @@ const CreateStrategy: FC = () => {
       <Formik<ICreateStrategyForm>
         initialValues={{
           name: "",
-          profit_percentage: 0,
-          loss_percentage: 0,
+          profit_percent: 0,
+          loss_percent: 0,
           lot_size: 1,
           entry: { root: undefined },
           exit: { root: undefined },
+          tickers: "",
         }}
-        onSubmit={(values) => {
-          console.log(values);
-        }}
+        onSubmit={createStrategy}
       >
         {(formik) => {
           return (
@@ -39,7 +42,12 @@ const CreateStrategy: FC = () => {
                   <label className="text-sm font-bold text-blue-500">
                     Enter Strategy Name
                   </label>
-                  <Field name="name" className="form-input" type="text" />
+                  <Field
+                    required
+                    name="name"
+                    className="form-input"
+                    type="text"
+                  />
                 </div>
 
                 <div className="flex space-x-2">
@@ -48,7 +56,8 @@ const CreateStrategy: FC = () => {
                       profit (%)
                     </label>
                     <Field
-                      name="profit_percentage"
+                      required
+                      name="profit_percent"
                       className="form-input focus:ring-green-600 focus:border-transparent focus:ring-2"
                       type="number"
                     />
@@ -58,7 +67,8 @@ const CreateStrategy: FC = () => {
                       loss (%)
                     </label>
                     <Field
-                      name="loss_percentage"
+                      required
+                      name="loss_percent"
                       className="form-input focus:ring-red-600 focus:border-transparent focus:ring-2"
                       type="number"
                     />
@@ -67,7 +77,12 @@ const CreateStrategy: FC = () => {
 
                 <div className="flex flex-col">
                   <label className="text-sm font-bold">lot size</label>
-                  <Field type="number" name="lot_size" className="form-input" />
+                  <Field
+                    required
+                    type="number"
+                    name="lot_size"
+                    className="form-input"
+                  />
                 </div>
 
                 <h1 className="text-center font-bold">STRATEGY SETTINGS</h1>
@@ -84,10 +99,22 @@ const CreateStrategy: FC = () => {
 
                 <div className="my-2">
                   <div className="my-2 font-bold text-center">TICKERS</div>
-                  <textarea
-                    className="form-input"
-                    placeholder="tickers"
-                  ></textarea>
+                  <Field name="tickers">
+                    {({ field }: FieldProps) => {
+                      return (
+                        <textarea
+                          {...field}
+                          className="form-input"
+                          placeholder="tickers"
+                        ></textarea>
+                      );
+                    }}
+                  </Field>
+
+                  <small className="font-light text-sm my-1">
+                    enter tickers along with their exchange example
+                    NSE:ACC2020CE
+                  </small>
                 </div>
               </div>
 

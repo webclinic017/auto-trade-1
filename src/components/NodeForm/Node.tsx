@@ -29,6 +29,7 @@ const Node: FC<NodeProps> = ({ formik, name, count = 0 }) => {
               }}
               className="form-input"
               defaultValue={""}
+              required
             >
               <option disabled value="">
                 ----
@@ -45,6 +46,7 @@ const Node: FC<NodeProps> = ({ formik, name, count = 0 }) => {
         {({ field }: FieldProps) => {
           return (
             <input
+              required
               {...field}
               type="text"
               className="form-input"
