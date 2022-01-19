@@ -13,6 +13,7 @@ import { useStore } from "../../context/StoreContext";
 import { useAuth } from "../../context/AuthContext";
 import { useNetwork } from "../../context/NetworkContext";
 import { useHome } from "./Home.hooks";
+import TickerLiveData from "../TickerLiveData/TickerLiveData";
 
 function Home() {
   const { store } = useStore();
@@ -92,6 +93,8 @@ function Home() {
           icon={() => <AttachMoneyIcon className="h-6 w-6" />}
         />
       </div>
+
+      <TickerLiveData />
 
       <h1 className="my-2 mt-10 text-2xl p-2 font-semibold">INSTRUMENTS</h1>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">

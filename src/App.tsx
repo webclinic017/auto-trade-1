@@ -9,7 +9,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-// import { TradeProvider } from "./context/TradeContext";
+import { TradeProvider } from "./context/TradeContext";
 import { StoreProvider } from "./context/StoreContext";
 import { initialState, reducer } from "./reducers";
 import { NetworkProvider } from "./context/NetworkContext";
@@ -69,9 +69,9 @@ function App() {
       <StoreProvider initialState={initialState} reducer={reducer}>
         <AuthProvider>
           <NetworkProvider>
-            {/* <TradeProvider> */}
-            <Main />
-            {/* </TradeProvider> */}
+            <TradeProvider>
+              <Main />
+            </TradeProvider>
           </NetworkProvider>
         </AuthProvider>
       </StoreProvider>

@@ -3,7 +3,7 @@ import { orders, socket, sockuser } from "../services/ws";
 import { useNetwork } from "./NetworkContext";
 import { useAuth } from "./AuthContext";
 import { LocalStorage } from "../entities/localstorage";
-import { IMargins, IPositions } from "../types/kite";
+import { ILiveTicker, IMargins, IPositions } from "../types/kite";
 import { useStore } from "./StoreContext";
 import { ITrade } from "../types/trade";
 import { TradeUtil } from "../utils/TradeUtil";
@@ -16,6 +16,7 @@ interface UserSocketData {
     status: boolean;
     message: string;
   };
+  tickers?: ILiveTicker[];
 }
 
 interface ITradeContext {}
@@ -95,6 +96,11 @@ export const TradeProvider: FC = ({ children }) => {
         dispatch({
           type: "UPDATE_PNL",
           payload: data.pnl ?? 0,
+        });
+
+        dispatch({
+          type: "UPDATE_LIVE_TICKERS",
+          payload: data?.tickers ?? [],
         });
 
         const pnl = data?.pnl ?? 0;
