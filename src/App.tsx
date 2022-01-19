@@ -9,7 +9,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { TradeProvider } from "./context/TradeContext";
+// import { TradeProvider } from "./context/TradeContext";
 import { StoreProvider } from "./context/StoreContext";
 import { initialState, reducer } from "./reducers";
 import { NetworkProvider } from "./context/NetworkContext";
@@ -19,6 +19,7 @@ import RequestToken from "./components/RequestToken";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "./api";
 import CreateStrategy from "./components/CreateStrategy/CreateStrategy";
+import OHLCChart from "./components/OHLCChart/OHLCChart";
 
 function Main() {
   const auth = useAuth();
@@ -49,6 +50,9 @@ function Main() {
         <Route exact path="/create_strategy">
           {auth.isAuthenticated ? <CreateStrategy /> : <Redirect to="/login" />}
         </Route>
+        <Route exact path="/ohlc_chart/:instrument_token">
+          {auth.isAuthenticated ? <OHLCChart /> : <Redirect to="/login" />}
+        </Route>
         <Route exact path="/">
           {auth.isAuthenticatedLoading ? (
             <LoadingScreen />
@@ -69,9 +73,9 @@ function App() {
       <StoreProvider initialState={initialState} reducer={reducer}>
         <AuthProvider>
           <NetworkProvider>
-            <TradeProvider>
-              <Main />
-            </TradeProvider>
+            {/* <TradeProvider> */}
+            <Main />
+            {/* </TradeProvider> */}
           </NetworkProvider>
         </AuthProvider>
       </StoreProvider>

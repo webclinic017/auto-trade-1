@@ -2,6 +2,7 @@ import { FC } from "react";
 import { ILiveTicker } from "../../types/kite";
 import { IconButton } from "@material-ui/core";
 import AssessmentTwoToneIcon from "@material-ui/icons/AssessmentTwoTone";
+import { Link } from "react-router-dom";
 
 const Ticker: FC<ILiveTicker> = (props) => {
   return (
@@ -16,9 +17,11 @@ const Ticker: FC<ILiveTicker> = (props) => {
         {props.change}
       </td>
       <td className="border border-slate-600 p-3">
-        <IconButton>
-          <AssessmentTwoToneIcon />
-        </IconButton>
+        <Link to={`/ohlc_chart/${props.instrument_token}`}>
+          <IconButton>
+            <AssessmentTwoToneIcon />
+          </IconButton>
+        </Link>
       </td>
     </tr>
   );
