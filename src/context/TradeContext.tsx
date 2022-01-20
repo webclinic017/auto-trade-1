@@ -3,23 +3,17 @@ import { orders, socket, sockuser } from "../services/ws";
 import { useNetwork } from "./NetworkContext";
 import { useAuth } from "./AuthContext";
 import { LocalStorage } from "../entities/localstorage";
-import { ILiveTicker, IMargins, IPositions } from "../types/kite";
 import { useStore } from "./StoreContext";
 import { ITrade } from "../types/trade";
 import { TradeUtil } from "../utils/TradeUtil";
-
-interface UserSocketData {
-  margins?: IMargins;
-  positions?: IPositions;
-  pnl?: number;
-  error?: {
-    status: boolean;
-    message: string;
-  };
-  tickers?: ILiveTicker[];
-}
+import { ILiveTicker } from "../types/kite";
 
 interface ITradeContext {}
+
+interface WebSocketData {
+  type: "kite.tickers";
+  data: ILiveTicker[];
+}
 
 export const TradeContext = createContext<ITradeContext>({} as any);
 
@@ -57,12 +51,11 @@ export const TradeProvider: FC = ({ children }) => {
       );
 
       // authenticate the orders socket
-      orders.send(JSON.stringify({ authtoken: LocalStorage.authToken }));
+      // orders.send(JSON.stringify({ authtoken: LocalStorage.authToken }));
 
-      // for every 10 seconds ping the server
-      sock_user_interval = setInterval(() => {
-        sockuser.send(JSON.stringify({ message: "ping" }));
-      }, 10000);
+      // sock_user_interval = setInterval(() => {
+      //   sockuser.send(JSON.stringify({ ping: true }));
+      // }, 10000);
     }
 
     return () => {
@@ -77,45 +70,15 @@ export const TradeProvider: FC = ({ children }) => {
     if (isAuthenticated && profile) {
       // when user socket receives a message
       sockuser.onmessage = (ev) => {
-        const data = JSON.parse(ev.data) as UserSocketData;
+        const data = JSON.parse(ev.data) as WebSocketData;
 
-        if (data?.error?.status) {
-          return;
-        }
-
-        dispatch({
-          type: "UPDATE_MARGINS",
-          payload: data?.margins,
-        });
-
-        dispatch({
-          type: "UPDATE_POSITIONS",
-          payload: data?.positions,
-        });
-
-        dispatch({
-          type: "UPDATE_PNL",
-          payload: data.pnl ?? 0,
-        });
-
-        dispatch({
-          type: "UPDATE_LIVE_TICKERS",
-          payload: data?.tickers ?? [],
-        });
-
-        const pnl = data?.pnl ?? 0;
-        if (pnl < -1 * profile.max_loss && pnl > profile.max_profit) {
-          if (trade_modes.should_trade) {
+        switch (data.type) {
+          case "kite.tickers":
             dispatch({
-              type: "DISABLE_TRADE",
+              type: "UPDATE_LIVE_TICKERS",
+              payload: data.data,
             });
-          }
-        } else {
-          if (!trade_modes.should_trade) {
-            dispatch({
-              type: "ENABLE_TRADE",
-            });
-          }
+            break;
         }
       };
     } else {

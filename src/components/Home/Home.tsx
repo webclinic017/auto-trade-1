@@ -9,16 +9,13 @@ import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 
 import { IconButton } from "@material-ui/core";
-import { useStore } from "../../context/StoreContext";
 import { useAuth } from "../../context/AuthContext";
 import { useNetwork } from "../../context/NetworkContext";
 import { useHome } from "./Home.hooks";
 import TickerLiveData from "../TickerLiveData/TickerLiveData";
 
 function Home() {
-  const { store } = useStore();
-  const { margins } = store;
-  const { profile, isGetUserProfileError } = useAuth();
+  const { profile, isGetUserProfileError, margins, pnl } = useAuth();
   const { isNetworkActive } = useNetwork();
   const {
     toggel_index_options_tradind,
@@ -72,13 +69,13 @@ function Home() {
           title="Buy"
           color="green"
           icon={() => <MoneyIcon className="h-6 w-6" />}
-          value={store.buys}
+          value={0}
         />
         <ColorCard
           title="Sell"
           color="red"
           icon={() => <AccountBalanceIcon className="h-6 w-6" />}
-          value={store.sells}
+          value={0}
         />
         <ColorCard
           title="Margin Avaliable"
@@ -89,7 +86,7 @@ function Home() {
         <ColorCard
           title="Pnl"
           color="gray"
-          value={store?.pnl}
+          value={pnl}
           icon={() => <AttachMoneyIcon className="h-6 w-6" />}
         />
       </div>

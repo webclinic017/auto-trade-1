@@ -1,7 +1,11 @@
 import { createContext, FC, useContext } from "react";
 import { useGetIsLogin } from "../api/auth/getIsLogin";
 import { useGetUserProfile } from "../api/auth/getUserProfile";
+import { useGetMargins } from "../api/zerodha/getMargins";
+import { useGetPnl } from "../api/zerodha/getPnl";
+import { useGetPositions } from "../api/zerodha/getPositions";
 import { LocalStorage } from "../entities/localstorage";
+import { IMargins, IPositions } from "../types/kite";
 import { UserProfile } from "../types/user";
 
 interface IAuthenticationContext {
@@ -10,6 +14,9 @@ interface IAuthenticationContext {
   logoutUser: () => void;
   profile?: UserProfile;
   isGetUserProfileError: boolean;
+  margins?: IMargins;
+  positions?: IPositions;
+  pnl?: number;
 }
 
 export const AuthenticationContext = createContext<IAuthenticationContext>(
@@ -21,6 +28,9 @@ export const AuthProvider: FC = ({ children }) => {
     useGetUserProfile();
   const { isSuccess: isAuthenticated, isLoading: isAuthenticatedLoading } =
     useGetIsLogin();
+  const { data: margins } = useGetMargins();
+  const { data: positions } = useGetPositions();
+  const { data: pnl } = useGetPnl();
 
   const logoutUser = () => {
     LocalStorage.clearAuthToken();
@@ -34,6 +44,9 @@ export const AuthProvider: FC = ({ children }) => {
         logoutUser,
         isAuthenticatedLoading,
         isGetUserProfileError,
+        margins,
+        positions,
+        pnl: pnl?.pnl,
       }}
     >
       {children}

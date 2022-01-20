@@ -20,6 +20,11 @@ export class LocalStorage {
 
   public static clearRequestToken = (): void => {
     localStorage.removeItem("@requestToken");
+
+    queryClient.invalidateQueries("get-user-profile");
+    queryClient.invalidateQueries("get-margins");
+    queryClient.invalidateQueries("get-pnl");
+    queryClient.invalidateQueries("get-positions");
   };
 
   public static get requestToken(): string {
