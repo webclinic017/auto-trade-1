@@ -8,6 +8,7 @@ export type UserProfileUpdateForm = Partial<
 >;
 
 export interface INode {
+  id?: number;
   value: string;
   left_child: INode | undefined;
   right_child: INode | undefined;

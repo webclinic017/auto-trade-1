@@ -13,6 +13,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNetwork } from "../../context/NetworkContext";
 import { useHome } from "./Home.hooks";
 import TickerLiveData from "../TickerLiveData/TickerLiveData";
+import StrategyList from "../StrategyList/StrategyList";
 
 function Home() {
   const { profile, isGetUserProfileError, margins, pnl } = useAuth();
@@ -90,6 +91,8 @@ function Home() {
           icon={() => <AttachMoneyIcon className="h-6 w-6" />}
         />
       </div>
+
+      <StrategyList />
 
       <TickerLiveData />
 
