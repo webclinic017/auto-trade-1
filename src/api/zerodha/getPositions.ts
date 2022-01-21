@@ -5,7 +5,7 @@ import { IPositions } from "../../types/kite";
 import { StatusCodeUtil } from "../../utils/StatusCodeUtil";
 
 export const getPositions = async (): Promise<IPositions> => {
-  const { data, status, statusText } = await Axios.get(`/positions`, {
+  const { data, status, statusText } = await Axios.get(`/zerodha/positions`, {
     headers: {
       Authorization: `Token ${LocalStorage.authToken}`,
     },

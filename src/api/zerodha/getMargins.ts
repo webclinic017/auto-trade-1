@@ -5,7 +5,7 @@ import { IMargins } from "../../types/kite";
 import { StatusCodeUtil } from "../../utils/StatusCodeUtil";
 
 export const getMargins = async (): Promise<IMargins> => {
-  const { data, status, statusText } = await Axios.get(`/margins`, {
+  const { data, status, statusText } = await Axios.get(`/zerodha/margins`, {
     headers: {
       Authorization: `Token ${LocalStorage.authToken}`,
     },

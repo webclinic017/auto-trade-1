@@ -6,7 +6,7 @@ import { StatusCodeUtil } from "../../utils/StatusCodeUtil";
 type PnlResponse = { pnl: number };
 
 export const getPnl = async (): Promise<PnlResponse> => {
-  const { data, status, statusText } = await Axios.get(`/pnl`, {
+  const { data, status, statusText } = await Axios.get(`/zerodha/pnl`, {
     headers: {
       Authorization: `Token ${LocalStorage.authToken}`,
     },
