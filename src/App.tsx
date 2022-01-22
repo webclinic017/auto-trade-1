@@ -18,6 +18,8 @@ import LoadingScreen from "./components/LoadingScreen";
 import RequestToken from "./components/RequestToken";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "./api";
+import CreateStrategy from "./components/CreateStrategy/CreateStrategy";
+import OHLCChart from "./components/OHLCChart/OHLCChart";
 
 function Main() {
   const auth = useAuth();
@@ -45,8 +47,20 @@ function Main() {
             <Login />
           )}
         </Route>
+        <Route exact path="/create_strategy">
+          {auth.isAuthenticated ? <CreateStrategy /> : <Redirect to="/login" />}
+        </Route>
+        <Route exact path="/ohlc_chart/:instrument_token">
+          {auth.isAuthenticated ? <OHLCChart /> : <Redirect to="/login" />}
+        </Route>
         <Route exact path="/">
-          {auth.isAuthenticated ? <Home /> : <Redirect to="/login" />}
+          {auth.isAuthenticatedLoading ? (
+            <LoadingScreen />
+          ) : auth.isAuthenticated ? (
+            <Home />
+          ) : (
+            <Redirect to="/login" />
+          )}
         </Route>
       </Switch>
     </Router>

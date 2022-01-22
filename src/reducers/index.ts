@@ -1,4 +1,4 @@
-import { IMargins, IPositions } from "../types/kite";
+import { ILiveTicker, IMargins, IPositions } from "../types/kite";
 
 export interface ITradeModes {
   should_trade_index: boolean;
@@ -16,6 +16,7 @@ export interface IStoreState {
   buys: number;
   sells: number;
   trade_modes: ITradeModes;
+  live_tickers: ILiveTicker[];
 }
 
 export type StoreActions =
@@ -31,11 +32,12 @@ export type StoreActions =
   | "TOGGEL_STOCK_OPTIONS_TRADE"
   | "TOGGEL_STOCK_TRADE"
   | "ENABLE_TRADE"
-  | "DISABLE_TRADE";
+  | "DISABLE_TRADE"
+  | "UPDATE_LIVE_TICKERS";
 
 export interface IStoreAction {
   type: StoreActions;
-  payload?: IMargins | IPositions | number;
+  payload?: IMargins | IPositions | ILiveTicker[] | number;
 }
 
 export const initialState: IStoreState = {
@@ -52,6 +54,7 @@ export const initialState: IStoreState = {
     should_trade_stocks: false,
     should_trade: true,
   },
+  live_tickers: [],
 };
 
 export const reducer = (
@@ -122,6 +125,8 @@ export const reducer = (
         ...state,
         trade_modes: { ...state.trade_modes, should_trade: false },
       };
+    case "UPDATE_LIVE_TICKERS":
+      return { ...state, live_tickers: action.payload as ILiveTicker[] };
     default:
       return state;
   }

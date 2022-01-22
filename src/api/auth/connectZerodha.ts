@@ -16,7 +16,7 @@ export const connectZerodha = async (
   request: ConnectZerodhaRequest
 ): Promise<ConnectZerodhaResponse> => {
   const { data, status, statusText } = await Axios.post(
-    `/zerodha_login/access_token`,
+    `/zerodha/zerodha_login/access_token`,
     request,
     {
       headers: {

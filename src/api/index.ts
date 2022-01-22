@@ -4,6 +4,9 @@ import { QueryClient } from "react-query";
 const uri = process.env.REACT_APP_API_URI;
 const wsprotocol = process.env.REACT_APP_API_WS_PROTOCOL;
 
+export const sse_uri =
+  process.env.REACT_APP_API_HOST + "/events/notifier/trade" ?? "";
+
 export const ws = {
   ws: `${wsprotocol}://` + uri,
   socket: `${wsprotocol}://` + uri + "/ws/indian/trade",

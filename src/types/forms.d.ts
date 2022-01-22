@@ -6,3 +6,14 @@ export type UserProfileUpdateForm = Partial<
     "id" | "is_accesstoken_valid" | "user" | "zerodha_last_login"
   >
 >;
+
+export interface INode {
+  id?: number;
+  value: string;
+  left_child: INode | undefined;
+  right_child: INode | undefined;
+}
+
+export interface INodeForm {
+  root: INode | undefined;
+}

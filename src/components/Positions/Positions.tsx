@@ -7,11 +7,10 @@ import {
   TableRow,
   Paper,
 } from "@material-ui/core";
-import { useStore } from "../../context/StoreContext";
+import { useAuth } from "../../context/AuthContext";
 
 function Positions() {
-  const { store } = useStore();
-  const { positions } = store;
+  const { positions } = useAuth();
 
   return (
     <div className="p-3 mt-3">

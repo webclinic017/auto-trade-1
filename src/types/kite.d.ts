@@ -75,3 +75,18 @@ export interface IPositions {
   net: IPosition[];
   day: IPosition[];
 }
+
+export interface ILiveTicker {
+  average_price: number;
+  buy_quantity: number;
+  change: number;
+  instrument_token: number;
+  last_price: number;
+  last_quantity: 4;
+  mode: string;
+  ohlc: { open: number; high: number; low: number; close: number };
+  sell_quantity: number;
+  tradable: boolean;
+  volume: number;
+  tradingsymbol: string;
+}
