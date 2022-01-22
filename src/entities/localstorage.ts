@@ -30,4 +30,12 @@ export class LocalStorage {
   public static get requestToken(): string {
     return localStorage.getItem("@requestToken") ?? "";
   }
+
+  public static get throttleCount(): number {
+    return Number(localStorage.getItem("@throttleCount")) ?? 0;
+  }
+
+  public static setThrottleCount(val: number): void {
+    localStorage.setItem("@throttleCount", String(val));
+  }
 }

@@ -18,7 +18,7 @@ const Strategy: FC<StrategyProps> = ({ strategy }) => {
       <div className="flex-1 ml-4">{strategy.name}</div>
 
       <Switch
-        value={isStrategyEnabled}
+        checked={isStrategyEnabled}
         onChange={toggleStrategy}
         color="primary"
       />

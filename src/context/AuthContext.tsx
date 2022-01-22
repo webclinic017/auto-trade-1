@@ -17,6 +17,9 @@ interface IAuthenticationContext {
   margins?: IMargins;
   positions?: IPositions;
   pnl?: number;
+  refetchMargins: () => void;
+  refetchPositions: () => void;
+  refetchPnl: () => void;
 }
 
 export const AuthenticationContext = createContext<IAuthenticationContext>(
@@ -28,9 +31,9 @@ export const AuthProvider: FC = ({ children }) => {
     useGetUserProfile();
   const { isSuccess: isAuthenticated, isLoading: isAuthenticatedLoading } =
     useGetIsLogin();
-  const { data: margins } = useGetMargins();
-  const { data: positions } = useGetPositions();
-  const { data: pnl } = useGetPnl();
+  const { data: margins, refetch: refetchMargins } = useGetMargins();
+  const { data: positions, refetch: refetchPositions } = useGetPositions();
+  const { data: pnl, refetch: refetchPnl } = useGetPnl();
 
   const logoutUser = () => {
     LocalStorage.clearAuthToken();
@@ -47,6 +50,9 @@ export const AuthProvider: FC = ({ children }) => {
         margins,
         positions,
         pnl: pnl?.pnl,
+        refetchMargins,
+        refetchPositions,
+        refetchPnl,
       }}
     >
       {children}
