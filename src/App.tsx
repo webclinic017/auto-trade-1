@@ -10,8 +10,6 @@ import {
   Redirect,
 } from "react-router-dom";
 import { TradeProvider } from "./context/TradeContext";
-import { StoreProvider } from "./context/StoreContext";
-import { initialState, reducer } from "./reducers";
 import { NetworkProvider } from "./context/NetworkContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import LoadingScreen from "./components/LoadingScreen";
@@ -70,15 +68,13 @@ function Main() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <StoreProvider initialState={initialState} reducer={reducer}>
-        <AuthProvider>
-          <NetworkProvider>
-            <TradeProvider>
-              <Main />
-            </TradeProvider>
-          </NetworkProvider>
-        </AuthProvider>
-      </StoreProvider>
+      <AuthProvider>
+        <NetworkProvider>
+          <TradeProvider>
+            <Main />
+          </TradeProvider>
+        </NetworkProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
