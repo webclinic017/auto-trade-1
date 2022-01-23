@@ -1,9 +1,10 @@
 import { FC } from "react";
-import { useStore } from "../../context/StoreContext";
 import Ticker from "../Ticker/Ticker";
+import { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
 
 const TickerLiveData: FC = () => {
-  const { store } = useStore();
+  const tickers = useSelector((state: RootState) => state.tickers.data);
 
   return (
     <div className="my-5">
@@ -25,7 +26,7 @@ const TickerLiveData: FC = () => {
             </tr>
           </thead>
           <tbody>
-            {store.live_tickers.map((ticker) => {
+            {tickers.map((ticker) => {
               return <Ticker {...ticker} key={ticker.instrument_token} />;
             })}
           </tbody>
