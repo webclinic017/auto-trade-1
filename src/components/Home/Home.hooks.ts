@@ -1,66 +1,56 @@
-import { useStore } from "../../context/StoreContext";
+import {
+  toggle_index_options,
+  toggle_stock_options,
+  toggle_stocks,
+} from "../../redux/features/trade/tradeSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 export interface UseHomeHooks {
-  toggel_index_futures_trading: () => void;
-  toggel_index_options_tradind: () => void;
-  toggel_index_trading: () => void;
-  toggel_stock_trading: () => void;
-  toggel_stock_options_trading: () => void;
-  index: boolean;
-  index_options: boolean;
-  index_futures: boolean;
-  stocks: boolean;
-  stock_options: boolean;
-  should_trade: boolean;
+  toggleIndexOptions: () => void;
+  isIndexOptionsEnabled: boolean;
+  toggleStockOptions: () => void;
+  toggleStocks: () => void;
+  isStockOptionsEnabled: boolean;
+  isStocksEnabled: boolean;
+  isTraderEnabled: boolean;
 }
 
 export const useHome = (): UseHomeHooks => {
-  const { store, dispatch } = useStore();
+  const isIndexOptionsEnabled = useSelector(
+    (state: RootState) => state.trader.index_options
+  );
+  const isStockOptionsEnabled = useSelector(
+    (state: RootState) => state.trader.stock_options
+  );
+  const isStocksEnabled = useSelector(
+    (state: RootState) => state.trader.stocks
+  );
+  const isTraderEnabled = useSelector(
+    (state: RootState) => state.trader.enabled
+  );
 
-  const toggel_index_trading: UseHomeHooks["toggel_index_trading"] = () => {
-    dispatch({
-      type: "TOGGEL_INDEX_TRADE",
-    });
+  const dispatch = useDispatch();
+
+  const toggleIndexOptions: UseHomeHooks["toggleIndexOptions"] = () => {
+    dispatch(toggle_index_options());
   };
 
-  const toggel_index_options_tradind: UseHomeHooks["toggel_index_options_tradind"] =
-    () => {
-      dispatch({
-        type: "TOGGEL_INDEX_OPTIONS_TRADE",
-      });
-    };
-
-  const toggel_index_futures_trading: UseHomeHooks["toggel_index_futures_trading"] =
-    () => {
-      dispatch({
-        type: "TOGGEL_INDEX_FUTURES_TRADE",
-      });
-    };
-
-  const toggel_stock_trading: UseHomeHooks["toggel_stock_trading"] = () => {
-    dispatch({
-      type: "TOGGEL_STOCK_TRADE",
-    });
+  const toggleStockOptions = () => {
+    dispatch(toggle_stock_options());
   };
 
-  const toggel_stock_options_trading: UseHomeHooks["toggel_stock_options_trading"] =
-    () => {
-      dispatch({
-        type: "TOGGEL_STOCK_OPTIONS_TRADE",
-      });
-    };
+  const toggleStocks = () => {
+    dispatch(toggle_stocks());
+  };
 
   return {
-    toggel_index_futures_trading,
-    toggel_index_options_tradind,
-    toggel_index_trading,
-    toggel_stock_trading,
-    toggel_stock_options_trading,
-    index: store.trade_modes.should_trade_index,
-    index_options: store.trade_modes.should_trade_index_options,
-    index_futures: store.trade_modes.should_trade_index_futures,
-    stocks: store.trade_modes.should_trade_stocks,
-    stock_options: store.trade_modes.should_trade_stock_options,
-    should_trade: store.trade_modes.should_trade,
+    toggleIndexOptions,
+    isIndexOptionsEnabled,
+    toggleStockOptions,
+    toggleStocks,
+    isStockOptionsEnabled,
+    isStocksEnabled,
+    isTraderEnabled,
   };
 };

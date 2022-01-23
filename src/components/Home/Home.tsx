@@ -19,15 +19,13 @@ function Home() {
   const { profile, isGetUserProfileError, margins, pnl } = useAuth();
   const { isNetworkActive } = useNetwork();
   const {
-    toggel_index_options_tradind,
-    toggel_index_futures_trading,
-    toggel_stock_trading,
-    toggel_stock_options_trading,
-    index_futures,
-    index_options,
-    stock_options,
-    stocks,
-    should_trade,
+    isIndexOptionsEnabled,
+    isStockOptionsEnabled,
+    isStocksEnabled,
+    toggleIndexOptions,
+    toggleStockOptions,
+    toggleStocks,
+    isTraderEnabled,
   } = useHome();
 
   return (
@@ -47,7 +45,7 @@ function Home() {
         </h1>
       )}
 
-      {!should_trade && (
+      {!isTraderEnabled && (
         <h1 className="text-center p-4 -mt-3 mb-3 bg-red-800 rounded-md text-red-600 font-bold">
           you cant trade as your limit of pnl has exceeded
         </h1>
@@ -100,19 +98,14 @@ function Home() {
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
         <WorkerCard
           title="index options"
-          value={index_options}
-          fun={toggel_index_options_tradind}
+          value={isIndexOptionsEnabled}
+          fun={toggleIndexOptions}
         />
-        <WorkerCard
-          title="index futures"
-          value={index_futures}
-          fun={toggel_index_futures_trading}
-        />
-        <WorkerCard title="stocks" value={stocks} fun={toggel_stock_trading} />
+        <WorkerCard title="stocks" value={isStocksEnabled} fun={toggleStocks} />
         <WorkerCard
           title="stock options"
-          value={stock_options}
-          fun={toggel_stock_options_trading}
+          value={isStockOptionsEnabled}
+          fun={toggleStockOptions}
         />
       </div>
       <Positions />

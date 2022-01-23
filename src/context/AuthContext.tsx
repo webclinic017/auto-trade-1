@@ -1,4 +1,5 @@
-import { createContext, FC, useContext } from "react";
+import { createContext, FC, useContext, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useGetIsLogin } from "../api/auth/getIsLogin";
 import { useGetUserProfile } from "../api/auth/getUserProfile";
 import { useGetMargins } from "../api/zerodha/getMargins";
@@ -7,6 +8,7 @@ import { useGetPositions } from "../api/zerodha/getPositions";
 import { LocalStorage } from "../entities/localstorage";
 import { IMargins, IPositions } from "../types/kite";
 import { UserProfile } from "../types/user";
+import { toggle_trader } from "../redux/features/trade/tradeSlice";
 
 interface IAuthenticationContext {
   isAuthenticated: boolean;
@@ -34,6 +36,19 @@ export const AuthProvider: FC = ({ children }) => {
   const { data: margins, refetch: refetchMargins } = useGetMargins();
   const { data: positions, refetch: refetchPositions } = useGetPositions();
   const { data: pnl, refetch: refetchPnl } = useGetPnl();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (userProfile && pnl) {
+      if (
+        pnl.pnl <= userProfile.max_loss ||
+        pnl.pnl >= userProfile.max_profit
+      ) {
+        dispatch(toggle_trader());
+      }
+    }
+  }, [userProfile, pnl, dispatch]);
 
   const logoutUser = () => {
     LocalStorage.clearAuthToken();
