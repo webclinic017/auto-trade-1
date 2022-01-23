@@ -4,7 +4,9 @@ import { useExecuteTrade } from "../api/zerodha/executeTrade";
 import { ITrade } from "../types/trade";
 import { TradeUtil } from "../utils/TradeUtil";
 import { useAuth } from "./AuthContext";
-import { useStore } from "./StoreContext";
+
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 
 interface ITradeContext {}
 
@@ -13,7 +15,8 @@ export const TradeContext = createContext<ITradeContext>({} as any);
 export const TradeProvider: FC = ({ children }) => {
   const { isAuthenticated, profile, margins, positions } = useAuth();
   const { mutate: executeTrade } = useExecuteTrade();
-  const { store } = useStore();
+
+  const trader = useSelector((state: RootState) => state.trader);
 
   useEffect(() => {
     let tradeEvent: EventSource;
@@ -34,7 +37,7 @@ export const TradeProvider: FC = ({ children }) => {
 
         if (
           TradeUtil.validateTrade(trade, margins, positions) &&
-          TradeUtil.shouldTrade(trade, store.trade_modes)
+          TradeUtil.shouldTrade(trade, trader)
         ) {
           try {
             executeTrade(trade);
@@ -54,14 +57,7 @@ export const TradeProvider: FC = ({ children }) => {
         tradeEvent.close();
       }
     };
-  }, [
-    isAuthenticated,
-    profile,
-    executeTrade,
-    margins,
-    positions,
-    store.trade_modes,
-  ]);
+  }, [isAuthenticated, profile, executeTrade, margins, positions, trader]);
 
   return <TradeContext.Provider value={{}}>{children}</TradeContext.Provider>;
 };

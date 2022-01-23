@@ -1,4 +1,4 @@
-import { ITradeModes } from "../reducers";
+import { TraderState } from "../redux/features/trade/tradeSlice";
 import { IMargins, IPositions } from "../types/kite";
 import { ITrade } from "../types/trade";
 import { UserProfile } from "../types/user";
@@ -54,25 +54,18 @@ export class TradeUtil {
     }
   }
 
-  public static shouldTrade(trade: ITrade, trade_modes: ITradeModes): boolean {
-    if (!trade_modes.should_trade) {
-      return false;
-    }
-
+  public static shouldTrade(trade: ITrade, trade_modes: TraderState): boolean {
     let mode: boolean = false;
 
     switch (trade.type) {
-      case "INDEXFUT":
-        mode = trade_modes.should_trade_index_futures;
-        break;
       case "INDEXOPT":
-        mode = trade_modes.should_trade_index_options;
+        mode = trade_modes.index_options;
         break;
       case "STOCK":
-        mode = trade_modes.should_trade_stocks;
+        mode = trade_modes.stocks;
         break;
       case "STOCKOPT":
-        mode = trade_modes.should_trade_stock_options;
+        mode = trade_modes.stock_options;
         break;
     }
 
