@@ -31,8 +31,11 @@ const traderSlice = createSlice({
     toggle_stock_options: (state) => {
       state.stock_options = !state.stock_options;
     },
-    toggle_trader: (state) => {
-      state.enabled = !state.enabled;
+    disable_trader: (state) => {
+      state.enabled = false;
+    },
+    enable_trader: (state) => {
+      state.enabled = true;
     },
   },
 });
@@ -41,7 +44,8 @@ export const {
   toggle_stocks,
   toggle_index_options,
   toggle_stock_options,
-  toggle_trader,
+  enable_trader,
+  disable_trader,
 } = traderSlice.actions;
 
 export const traderReducer = traderSlice.reducer;
