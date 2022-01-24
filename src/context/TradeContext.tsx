@@ -47,9 +47,9 @@ export const TradeProvider: FC = ({ children }) => {
         }
       };
 
-      tradeEvent.onerror = () => {
-        tradeEvent.close();
-      };
+      // tradeEvent.onerror = () => {
+      //   tradeEvent.close();
+      // };
     }
 
     return () => {
