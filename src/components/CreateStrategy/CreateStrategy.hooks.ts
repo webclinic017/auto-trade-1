@@ -14,7 +14,7 @@ export const useCreateStrategy = (): UserCreateStrategy => {
     values
   ) => {
     try {
-      createStrategyAsync(values);
+      await createStrategyAsync(values);
 
       enqueueSnackbar("created strategy successfully", {
         variant: "success",
