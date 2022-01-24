@@ -31,7 +31,7 @@ export const useUpdateUserProfile = () =>
     updateUserProfile,
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("get-user-profile");
+        queryClient.refetchQueries("get-user-profile");
       },
     }
   );

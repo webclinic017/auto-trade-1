@@ -8,7 +8,10 @@ import { useGetPositions } from "../api/zerodha/getPositions";
 import { LocalStorage } from "../entities/localstorage";
 import { IMargins, IPositions } from "../types/kite";
 import { UserProfile } from "../types/user";
-import { toggle_trader } from "../redux/features/trade/tradeSlice";
+import {
+  disable_trader,
+  enable_trader,
+} from "../redux/features/trade/tradeSlice";
 
 interface IAuthenticationContext {
   isAuthenticated: boolean;
@@ -42,10 +45,12 @@ export const AuthProvider: FC = ({ children }) => {
   useEffect(() => {
     if (userProfile && pnl) {
       if (
-        pnl.pnl <= userProfile.max_loss ||
+        pnl.pnl <= -1 * userProfile.max_loss ||
         pnl.pnl >= userProfile.max_profit
       ) {
-        dispatch(toggle_trader());
+        dispatch(disable_trader());
+      } else {
+        dispatch(enable_trader());
       }
     }
   }, [userProfile, pnl, dispatch]);
