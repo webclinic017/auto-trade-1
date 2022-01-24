@@ -22,6 +22,7 @@ const CreateStrategy: FC = () => {
       <div className="text-md py-2 text-center font-semibold">
         CREATE A STRATEGY
       </div>
+
       <Formik<ICreateStrategyForm>
         initialValues={{
           name: "",

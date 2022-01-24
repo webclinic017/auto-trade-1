@@ -2,6 +2,9 @@ import { FC } from "react";
 import { useNode } from "./Node.hooks";
 import { Field, FieldProps, FormikProps } from "formik";
 import { INodeForm } from "../../types/forms";
+import { useGetIndicators } from "../../api/strategy_builder/getIndicators";
+import { Autocomplete } from "@material-ui/lab";
+import { TextField } from "@material-ui/core";
 
 interface NodeProps {
   count?: number;
@@ -11,12 +14,14 @@ interface NodeProps {
 
 const Node: FC<NodeProps> = ({ formik, name, count = 0 }) => {
   const { nodeTypeHandler, isNodeOperator } = useNode();
+  const { data: indicators } = useGetIndicators();
 
   return (
     <div className="form">
       <div className="bg-yellow-500 inline-block px-2 rounded-full text-sm text-white font-bold">
         {count}
       </div>
+
       <Field type="select" name={`${name}.type`}>
         {({ field }: FieldProps) => {
           return (
@@ -45,13 +50,23 @@ const Node: FC<NodeProps> = ({ formik, name, count = 0 }) => {
       <Field name={`${name}.value`} type="text">
         {({ field }: FieldProps) => {
           return (
-            <input
-              required
-              {...field}
-              type="text"
-              className="form-input"
-              placeholder="value"
-            />
+            indicators !== undefined && (
+              <Autocomplete
+                options={indicators}
+                getOptionLabel={(option) =>
+                  `${option.key}(${option.input_string})`
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    {...field}
+                    size="small"
+                    label="Combo box"
+                    variant="outlined"
+                  />
+                )}
+              />
+            )
           );
         }}
       </Field>
