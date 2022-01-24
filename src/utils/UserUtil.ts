@@ -13,7 +13,7 @@ export class UserUtil {
       nifty_lot: profile?.nifty_lot,
       investment: profile?.investment,
       max_loss: profile?.max_loss,
-      max_profit: profile?.max_loss,
+      max_profit: profile?.max_profit,
     };
 
     return updateProfileForm;

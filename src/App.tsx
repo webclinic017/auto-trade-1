@@ -16,6 +16,7 @@ import LoadingScreen from "./components/LoadingScreen";
 import RequestToken from "./components/RequestToken";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "./api";
+import { SnackbarProvider } from "notistack";
 import CreateStrategy from "./components/CreateStrategy/CreateStrategy";
 import OHLCChart from "./components/OHLCChart/OHLCChart";
 
@@ -71,7 +72,12 @@ function App() {
       <AuthProvider>
         <NetworkProvider>
           <TradeProvider>
-            <Main />
+            <SnackbarProvider
+              anchorOrigin={{ vertical: "top", horizontal: "left" }}
+              autoHideDuration={2000}
+            >
+              <Main />
+            </SnackbarProvider>
           </TradeProvider>
         </NetworkProvider>
       </AuthProvider>
