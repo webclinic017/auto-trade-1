@@ -3,6 +3,7 @@ import NodeForm from "../NodeForm/NodeForm";
 import { Formik, Form, Field, FieldProps } from "formik";
 import { INodeForm } from "../../types/forms";
 import { useCreateStrategy } from "./CreateStrategy.hooks";
+import SearchTicker from "../SearchTicker/SearchTicker";
 
 export interface ICreateStrategyForm {
   name: string;
@@ -100,6 +101,7 @@ const CreateStrategy: FC = () => {
 
                 <div className="my-2">
                   <div className="my-2 font-bold text-center">TICKERS</div>
+                  <SearchTicker />
                   <Field name="tickers">
                     {({ field }: FieldProps) => {
                       return (
