@@ -16,7 +16,7 @@ interface CreateStrategyRequest {
   lot_size: number;
   entry: INodeForm;
   exit: INodeForm;
-  tickers: string;
+  tickers: string[];
 }
 
 export const createStrategy = async (

@@ -98,7 +98,11 @@ const Indicators: FC = () => {
           <div hidden={!indicator}>outputs</div>
           {indicator &&
             indicator.output_names.map((out: string, idx: number) => {
-              return <span key={idx}>&nbsp;{out}&nbsp;</span>;
+              return (
+                <span key={idx}>
+                  &nbsp;{indicator.name}({out})&nbsp;
+                </span>
+              );
             })}
         </div>
       </div>

@@ -1,8 +1,21 @@
 import { FC } from "react";
 import { useSearchTicker } from "./SearchTicker.hooks";
 
-const SearchTicker: FC = () => {
-  const { ticker, tickerChangeHandler, instruments } = useSearchTicker();
+interface SearchTickerProps {
+  onSelectTicker?: ({
+    ticker,
+    exchange,
+    instrument_type,
+  }: {
+    ticker?: string;
+    exchange?: string;
+    instrument_type?: string;
+  }) => void;
+}
+
+const SearchTicker: FC<SearchTickerProps> = ({ onSelectTicker }) => {
+  const { ticker, tickerChangeHandler, instruments, clearSearch } =
+    useSearchTicker();
 
   return (
     <div>
@@ -14,7 +27,23 @@ const SearchTicker: FC = () => {
       />
       <div className="border p-3">
         {instruments.map((instrument, id) => {
-          return <div key={id}>{instrument.tradingsymbol}</div>;
+          return (
+            <div
+              key={id}
+              onClick={() => {
+                onSelectTicker &&
+                  onSelectTicker({
+                    ticker: instrument.tradingsymbol,
+                    exchange: instrument.exchange,
+                    instrument_type: instrument.instrument_type,
+                  });
+
+                clearSearch();
+              }}
+            >
+              {instrument.tradingsymbol}
+            </div>
+          );
         })}
       </div>
     </div>

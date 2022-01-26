@@ -1,9 +1,10 @@
 import { FC } from "react";
 import NodeForm from "../NodeForm/NodeForm";
-import { Formik, Form, Field, FieldProps } from "formik";
+import { Formik, Form, Field, FieldArray } from "formik";
 import { INodeForm } from "../../types/forms";
 import { useCreateStrategy } from "./CreateStrategy.hooks";
 import SearchTicker from "../SearchTicker/SearchTicker";
+import DebugFormik from "../DebugFormik/DebugFormik";
 
 export interface ICreateStrategyForm {
   name: string;
@@ -12,7 +13,7 @@ export interface ICreateStrategyForm {
   lot_size: number;
   entry: INodeForm;
   exit: INodeForm;
-  tickers: string;
+  tickers: string[];
 }
 
 const CreateStrategy: FC = () => {
@@ -32,13 +33,14 @@ const CreateStrategy: FC = () => {
           lot_size: 1,
           entry: { root: undefined },
           exit: { root: undefined },
-          tickers: "",
+          tickers: [],
         }}
         onSubmit={createStrategy}
       >
         {(formik) => {
           return (
             <Form>
+              <DebugFormik />
               <div className="flex flex-col form space-y-3">
                 <div className="flex flex-col space-y-2">
                   <label className="text-sm font-bold text-blue-500">
@@ -101,23 +103,32 @@ const CreateStrategy: FC = () => {
 
                 <div className="my-2">
                   <div className="my-2 font-bold text-center">TICKERS</div>
-                  <SearchTicker />
-                  <Field name="tickers">
-                    {({ field }: FieldProps) => {
+
+                  <FieldArray
+                    name="tickers"
+                    render={({ push, remove }) => {
                       return (
-                        <textarea
-                          {...field}
-                          className="form-input"
-                          placeholder="tickers"
-                        ></textarea>
+                        <div>
+                          <SearchTicker
+                            onSelectTicker={({ ticker, exchange }) => {
+                              push(`${exchange}:${ticker}`);
+                            }}
+                          />
+
+                          <div>
+                            {formik.values.tickers.map((ticker, idx) => {
+                              return (
+                                <span>
+                                  &nbsp;{ticker}&nbsp;{" "}
+                                  <button onClick={() => remove(idx)}>x</button>
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </div>
                       );
                     }}
-                  </Field>
-
-                  <small className="font-light text-sm my-1">
-                    enter tickers along with their exchange example
-                    NSE:ACC2020CE
-                  </small>
+                  />
                 </div>
               </div>
 

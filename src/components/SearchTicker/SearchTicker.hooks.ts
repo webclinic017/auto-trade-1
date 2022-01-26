@@ -6,6 +6,7 @@ interface UseSearchTicker {
   ticker: string;
   tickerChangeHandler: (event: ChangeEvent<HTMLInputElement>) => void;
   instruments: Instrument[];
+  clearSearch: () => void;
 }
 
 export const useSearchTicker = (): UseSearchTicker => {
@@ -23,9 +24,14 @@ export const useSearchTicker = (): UseSearchTicker => {
     setTicker(event.target.value);
   };
 
+  const clearSearch: UseSearchTicker["clearSearch"] = () => {
+    setTicker("");
+  };
+
   return {
     ticker,
     tickerChangeHandler,
     instruments: instruments ?? [],
+    clearSearch,
   };
 };
