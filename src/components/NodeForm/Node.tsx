@@ -1,7 +1,8 @@
-import { FC } from "react";
+import { ChangeEvent, FC } from "react";
 import { useNode } from "./Node.hooks";
-import { Field, FieldProps, FormikProps } from "formik";
+import { Field, FormikProps } from "formik";
 import { INodeForm } from "../../types/forms";
+import Indicators from "../Indicators/Indicators";
 
 interface NodeProps {
   count?: number;
@@ -10,7 +11,7 @@ interface NodeProps {
 }
 
 const Node: FC<NodeProps> = ({ formik, name, count = 0 }) => {
-  const { nodeTypeHandler, isNodeOperator } = useNode();
+  const { nodeTypeHandler, isNodeOperator, isNodeIndicator } = useNode();
 
   return (
     <div className="form">
@@ -18,44 +19,38 @@ const Node: FC<NodeProps> = ({ formik, name, count = 0 }) => {
         {count}
       </div>
 
-      <Field type="select" name={`${name}.type`}>
-        {({ field }: FieldProps) => {
-          return (
-            <select
-              {...field}
-              name={`${name}.type`}
-              onChange={(event) => {
-                nodeTypeHandler(event);
-                formik.setFieldValue(event.target.name, event.target.value);
-              }}
-              className="form-input"
-              defaultValue={""}
-              required
-            >
-              <option disabled value="">
-                ----
-              </option>
-              <option value="indicator">indicator</option>
-              <option value="operator">operator</option>
-              <option value="constant">constant</option>
-            </select>
-          );
+      <Field
+        as="select"
+        name={`${name}.type`}
+        onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+          nodeTypeHandler(event);
+          formik.setFieldValue(name, {});
+          formik.setFieldValue(event.target.name, event.target.value);
         }}
+        required
+        className="form-input"
+        type="select"
+        defaultValue=""
+      >
+        <option selected disabled value="">
+          ---select---
+        </option>
+        <option value="indicator">indicator</option>
+        <option value="operator">operator</option>
+        <option value="constant">constant</option>
       </Field>
 
-      <Field name={`${name}.value`} type="text">
-        {({ field }: FieldProps) => {
-          return (
-            <input
-              required
-              {...field}
-              type="text"
-              className="form-input"
-              placeholder="value"
-            />
-          );
-        }}
-      </Field>
+      {isNodeIndicator ? (
+        <Indicators name={name} formik={formik} />
+      ) : (
+        <Field
+          name={`${name}.value`}
+          type="text"
+          required
+          className="form-input"
+          placeholder="value"
+        />
+      )}
       <br />
       {isNodeOperator && (
         <div className="p-1 border-2 border-blue-300 shadow-md">

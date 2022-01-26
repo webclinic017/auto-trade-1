@@ -1,7 +1,13 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, ChangeEvent } from "react";
 import { IndicatorUtil } from "../../utils/IndicatorUtil";
+import { Field, FormikProps } from "formik";
 
-const Indicators: FC = () => {
+interface IndicatorProps {
+  name?: string;
+  formik?: FormikProps<any>;
+}
+
+const Indicators: FC<IndicatorProps> = ({ name, formik }) => {
   const [indicator, setIndicator] = useState<any>();
   const [query, setQuery] = useState<string>("");
 
@@ -15,7 +21,10 @@ const Indicators: FC = () => {
         type="text"
         className="form-input"
         value={query}
-        onChange={(ev) => setQuery(ev.target.value)}
+        onChange={(ev: ChangeEvent<HTMLInputElement>) =>
+          setQuery(ev.target.value)
+        }
+        placeholder="Search for indicators"
       />
       <div id="suggestion-form" className="p-4">
         {query &&
@@ -28,6 +37,8 @@ const Indicators: FC = () => {
                 <div
                   key={indicator.name}
                   onClick={() => {
+                    name &&
+                      formik?.setFieldValue(name, { value: indicator.name });
                     setIndicator(indicator);
                     setQuery("");
                   }}
@@ -53,10 +64,9 @@ const Indicators: FC = () => {
                         return (
                           <div key={`${input_name}-${idx}`}>
                             <div>{`${input_name}[${idx}]`}</div>
-                            <input
-                              name={`${idx}`}
-                              defaultValue={val}
-                              placeholder={`${input_name}[${idx}]`}
+                            <Field
+                              name={`${name}.kwargs.inputs.${input_name}.${idx}`}
+                              placeholder={`eg :- ${val}`}
                             />
                           </div>
                         );
@@ -66,11 +76,10 @@ const Indicators: FC = () => {
                     return (
                       <div key={idx}>
                         <div>{input_name}</div>
-                        <input
-                          name={input_name}
+                        <Field
+                          name={`${name}.kwargs.inputs.${input_name}`}
                           type="text"
-                          placeholder={input_name}
-                          defaultValue={indicator.input_names[input_name]}
+                          placeholder={`eg :- ${indicator.input_names[input_name]}`}
                         />
                       </div>
                     );
@@ -85,10 +94,9 @@ const Indicators: FC = () => {
               return (
                 <div key={idx}>
                   <div>{parameter_key}</div>
-                  <input
-                    name={parameter_key}
-                    placeholder={parameter_key}
-                    defaultValue={indicator.parameters[parameter_key]}
+                  <Field
+                    name={`${name}.kwargs.paramentrs.${parameter_key}`}
+                    placeholder={`eg :- ${indicator.parameters[parameter_key]}`}
                     type={typeof indicator.parameters[parameter_key]}
                   />
                 </div>
