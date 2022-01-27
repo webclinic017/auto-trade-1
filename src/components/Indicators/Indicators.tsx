@@ -40,7 +40,7 @@ const Indicators: FC<IndicatorProps> = ({ name, formik }) => {
                     name &&
                       formik?.setFieldValue(name, { value: indicator.name });
 
-                    name && formik?.setFieldValue(`${name}.type`, "instrument");
+                    name && formik?.setFieldValue(`${name}.type`, "indicator");
 
                     setIndicator(indicator);
                     setQuery("");
