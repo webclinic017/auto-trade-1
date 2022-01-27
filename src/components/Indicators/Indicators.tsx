@@ -98,7 +98,7 @@ const Indicators: FC<IndicatorProps> = ({ name, formik }) => {
                 <div key={idx}>
                   <div>{parameter_key}</div>
                   <Field
-                    name={`${name}.kwargs.paramentrs.${parameter_key}`}
+                    name={`${name}.kwargs.parameters.${parameter_key}`}
                     placeholder={`eg :- ${indicator.parameters[parameter_key]}`}
                     type={typeof indicator.parameters[parameter_key]}
                   />
