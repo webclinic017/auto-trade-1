@@ -11,3 +11,10 @@ export interface IStrategy {
   tickers: string;
   enabled?: boolean;
 }
+
+export interface ITechnicalIndicator {
+  key: string;
+  id: number;
+  name: string;
+  input_string: string;
+}

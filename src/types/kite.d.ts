@@ -90,3 +90,12 @@ export interface ILiveTicker {
   volume: number;
   tradingsymbol: string;
 }
+
+export interface Instrument {
+  tradingsymbol: string;
+  expiry: string;
+  instrument_type: string;
+  exchange: string;
+  instrument_token: string;
+  lot_size: string;
+}

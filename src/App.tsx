@@ -19,6 +19,7 @@ import { queryClient } from "./api";
 import { SnackbarProvider } from "notistack";
 import CreateStrategy from "./components/CreateStrategy/CreateStrategy";
 import OHLCChart from "./components/OHLCChart/OHLCChart";
+import Indicators from "./components/Indicators/Indicators";
 
 function Main() {
   const auth = useAuth();
@@ -51,6 +52,9 @@ function Main() {
         </Route>
         <Route exact path="/ohlc_chart/:instrument_token">
           {auth.isAuthenticated ? <OHLCChart /> : <Redirect to="/login" />}
+        </Route>
+        <Route exact path="/indicators">
+          <Indicators />
         </Route>
         <Route exact path="/">
           {auth.isAuthenticatedLoading ? (
