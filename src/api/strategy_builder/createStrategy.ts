@@ -3,6 +3,7 @@ import { useMutation } from "react-query";
 import { Axios } from "..";
 import { LocalStorage } from "../../entities/localstorage";
 import { INodeForm } from "../../types/forms";
+import { Instrument } from "../../types/kite";
 import { StatusCodeUtil } from "../../utils/StatusCodeUtil";
 
 interface CreateStrategyResponse {
@@ -16,7 +17,10 @@ interface CreateStrategyRequest {
   lot_size: number;
   entry: INodeForm;
   exit: INodeForm;
-  tickers: string[];
+  tickers: Pick<
+    Instrument,
+    "exchange" | "instrument_token" | "tradingsymbol" | "lot_size"
+  >[];
 }
 
 export const createStrategy = async (

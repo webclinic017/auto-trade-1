@@ -3,13 +3,15 @@ import { useSearchTicker } from "./SearchTicker.hooks";
 
 interface SearchTickerProps {
   onSelectTicker?: ({
-    ticker,
+    tradingsymbol,
     exchange,
-    instrument_type,
+    instrument_token,
+    lot_size,
   }: {
-    ticker?: string;
+    tradingsymbol?: string;
     exchange?: string;
-    instrument_type?: string;
+    instrument_token?: string;
+    lot_size?: string;
   }) => void;
 }
 
@@ -33,9 +35,10 @@ const SearchTicker: FC<SearchTickerProps> = ({ onSelectTicker }) => {
               onClick={() => {
                 onSelectTicker &&
                   onSelectTicker({
-                    ticker: instrument.tradingsymbol,
+                    tradingsymbol: instrument.tradingsymbol,
                     exchange: instrument.exchange,
-                    instrument_type: instrument.instrument_type,
+                    instrument_token: instrument.instrument_token,
+                    lot_size: instrument.lot_size,
                   });
 
                 clearSearch();

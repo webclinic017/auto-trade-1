@@ -96,4 +96,6 @@ export interface Instrument {
   expiry: string;
   instrument_type: string;
   exchange: string;
+  instrument_token: string;
+  lot_size: string;
 }

@@ -5,6 +5,7 @@ import { INodeForm } from "../../types/forms";
 import { useCreateStrategy } from "./CreateStrategy.hooks";
 import SearchTicker from "../SearchTicker/SearchTicker";
 import DebugFormik from "../DebugFormik/DebugFormik";
+import { Instrument } from "../../types/kite";
 
 export interface ICreateStrategyForm {
   name: string;
@@ -13,7 +14,10 @@ export interface ICreateStrategyForm {
   lot_size: number;
   entry: INodeForm;
   exit: INodeForm;
-  tickers: string[];
+  tickers: Pick<
+    Instrument,
+    "exchange" | "instrument_token" | "tradingsymbol" | "lot_size"
+  >[];
 }
 
 const CreateStrategy: FC = () => {
@@ -108,22 +112,36 @@ const CreateStrategy: FC = () => {
                     name="tickers"
                     render={({ push, remove }) => {
                       return (
-                        <div>
+                        <div key={1}>
                           <SearchTicker
-                            onSelectTicker={({ ticker, exchange }) => {
-                              push(`${exchange}:${ticker}`);
+                            onSelectTicker={({
+                              tradingsymbol,
+                              exchange,
+                              instrument_token,
+                              lot_size,
+                            }) => {
+                              push({
+                                tradingsymbol,
+                                exchange,
+                                instrument_token,
+                                lot_size,
+                              });
                             }}
                           />
 
                           <div>
-                            {formik.values.tickers.map((ticker, idx) => {
-                              return (
-                                <span>
-                                  &nbsp;{ticker}&nbsp;{" "}
-                                  <button onClick={() => remove(idx)}>x</button>
-                                </span>
-                              );
-                            })}
+                            {formik.values.tickers.map(
+                              ({ tradingsymbol, exchange }, idx) => {
+                                return (
+                                  <span>
+                                    &nbsp;{exchange}:{tradingsymbol}&nbsp;{" "}
+                                    <button onClick={() => remove(idx)}>
+                                      x
+                                    </button>
+                                  </span>
+                                );
+                              }
+                            )}
                           </div>
                         </div>
                       );

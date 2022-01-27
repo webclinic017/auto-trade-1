@@ -39,6 +39,9 @@ const Indicators: FC<IndicatorProps> = ({ name, formik }) => {
                   onClick={() => {
                     name &&
                       formik?.setFieldValue(name, { value: indicator.name });
+
+                    name && formik?.setFieldValue(`${name}.type`, "instrument");
+
                     setIndicator(indicator);
                     setQuery("");
                   }}
